@@ -2,11 +2,9 @@
   <div class="col-lg-8 col-lg-offset-2">
     <div class="menu glow-yellow">
       <ul>
-        {% for item in site.data.navigation %}
-        <li>
-          <a href="{{ item.link }}" {% if page.title == item.name %}class="navbar-active"{% endif %}>{{ item.name }}</a>
-        </li>
-         {% endfor %}
+          <li><a href="{{ "/" | absolute_url}}" {% if page.title == "home" %} class="navbar-active" {% endif %}>home</a></li>
+          <li><a href="{{ "/resources" | absolute_url}}" {% if page.title == "resources" %} class="navbar-active" {% endif %}>resources</a></li>
+          <li><a href="{{ "/writeups" | absolute_url}}" {% if page.title == "writeups" %} class="navbar-active" {% endif %}>writeups</a></li>
       </ul>
     </div>
   </div>
