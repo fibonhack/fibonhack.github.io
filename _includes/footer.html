@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <footer>
+            <div>
+                <div class="footer left column one-half">
+                    <small class="glow-yellow">
+                        Theme <a href="https://github.com/gildasio/clyell"> clyell</a> by <a
+                            href="https://github.com/gildasio/">gildasio</a> <br class="hidden visible-xs">powered by <a
+                            href="https://github.com/jekyll/jekyll">{% raw %}{{ jekyll }}{% endraw %}</a>
+                    </small>
+                </div>
+
+                <div class="footer right column one-half">
+                    <section class="small-font">
+                        {% if site.github_username %}
+                        {% include icon-github.html username=site.github_username %}
+                        {% endif %}
+                        {% if site.twitter_username %}
+                        {% include icon-twitter.html username=site.twitter_username %}
+                        {% endif %}
+                    </section>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>

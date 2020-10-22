@@ -1,0 +1,34 @@
+title: "fibonhack"
+
+# Build settings
+markdown: kramdown
+
+collections:
+  authors:
+    # By default, collections do not output a page for documents.
+    # In this case we want each author to have their own page so
+    # let’s tweak the collection configuration.
+    output: true
+  main:
+    permalink: /:title
+    output: true
+  writeups:
+    permalink: /:path
+    output: true
+
+
+defaults:
+  - scope:
+      path: ""
+      type: "authors"
+    values:
+      layout: "author"
+  - scope:
+      path: ""
+      type: "writeups"
+    values:
+      layout: "writeup"
+  - scope:
+      path: ""
+    values:
+      layout: "default"

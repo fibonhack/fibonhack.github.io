@@ -1,0 +1,6 @@
+- name: home
+  link: /
+- name: resources
+  link: /resources
+- name: writeups
+  link: /writeups
