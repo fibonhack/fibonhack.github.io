@@ -55,4 +55,4 @@ One smart way to display the final image would be to calculate the final positio
 
 One final catch, since the flag was written in white part of it was not readable, but changing the body background color to blue did the trick.
 
-![Screenshot]({{ site.baseurl }}/files/shitty-scaling-flag.png)
+![Screenshot]({{ "/assets/files/shitty-scaling-flag.png" | absolute_url}})
