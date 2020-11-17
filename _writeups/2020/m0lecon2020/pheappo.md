@@ -14,13 +14,13 @@ That was a standard heap pwnable with some restrictions:
 - UAF possible, but not double free because of some additionals checks enforced with the global array `bitmap`
 - Can't overwrite malloc_hook and free_hook
 
-To exploit under those conditions I ended up using this known technique which i didn't know the existence of, [house of husk](https://ptr-yudai.hatenablog.com/entry/2020/04/02/111507), pretty cool exploit chain which make use of a very strange printf functionality... did you know that
+To exploit under those conditions I ended up using this known technique which i didn't know the existence of, [house of husk](https://ptr-yudai.hatenablog.com/entry/2020/04/02/111507), pretty cool exploit chain which make use of a very strange printf functionality. Did you know that...
 
-> The GNU C Library lets you define your own custom conversion specifiers? 
+> The GNU C Library lets you define your own cuNo captcha required for preview. Please, do not write just a link to original writeup here.stom conversion specifiers? 
 
-No? Well neither me. Find out more about this at [http://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html](http://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html)
+No? Well neither did I. Find out more about this at [http://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html](http://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html)
 
-The exploit is mainly an implementation of `house-of-husk` technique so I'm not gonna explain it deeply, since you can find more detailed information in the linked post. I tried to divide the epxloit in sections the post author's did, so it should be easier to follow it. 
+The exploit is mainly an implementation of `house-of-husk` technique so I'm not gonna explain it deeply, since you can find more detailed information in the linked post. I tried to divide the exploit in sections like the post author's did, so it should be easier to follow it. 
 
 Thanks to the organizers for those nice challenges, actually learnt a lot of new stuffs :).
 

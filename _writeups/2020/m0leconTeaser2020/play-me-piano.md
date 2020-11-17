@@ -3,7 +3,7 @@ ctf_name: "m0lecon 2020 Teaser"
 title:	"play me piano"
 date:	2020-05-24
 category: "reverse"
-author: "nick0ve, AvengerF12, lorenz"
+author: "NicolaVV, AvengerF12, lorenz"
 ---
 
 ### Description
