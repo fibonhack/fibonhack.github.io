@@ -7,7 +7,15 @@ layout: page
   <header class="post-header" style="padding-bottom: 0.8em;">
     <p> {{ page.date | date: "%b %-d, %Y" }} </p>
     <h1 style="margin: -0.02em auto;"> {{ page.title }} - {{page.ctf_name}}{% if page.category %} - {{ page.category }}{% endif %}</h1>
-    {% if page.author %}</h3>by {{ page.author }}</h3>{% endif %}
+    <div id="authors"> by
+    {% assign authors = page.author | split: ", " %}
+    {% for author in authors %}
+      {% assign author_url = "/members/" | append: author %}
+      <a href="{{ author_url | absolute_url }}">{{ author }}</a>
+      {% assign author_url = nil %}
+    {% endfor %}
+    {% assign authors = nil %} 
+    </div>
   </header>
 
   <article class="post-content">

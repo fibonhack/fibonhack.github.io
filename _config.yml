@@ -8,6 +8,7 @@ collections:
     # By default, collections do not output a page for documents.
     # In this case we want each author to have their own page so
     # let’s tweak the collection configuration.
+    permalink: /members/:title
     output: true
   main:
     permalink: /:title

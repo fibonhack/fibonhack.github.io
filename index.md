@@ -13,9 +13,11 @@ Contact us at [todo](mailto:todo)
 
 # Members
 
-* Lorenzo Catoni ([lorenz](https://lorenzcat.github.io/))
-* Nicola Vella (nick0ve)
-* Marco Gaglianese (marcog)
-* Fabio Zoratti ([OrsoBruno96](https://fabiozoratti.it/))
-* Antonello Dettori (AvengerF12)
-* Mattia Furlani (Maxpnl)
+{% for author in site.authors %}
+
+{% assign author_url = "/members/" | append: author.short_name %}
+* [{{ author.short_name }}]( {{ author_url | absolute_url }} )
+{% assign author_url = nil %}
+
+{% endfor %}
+
