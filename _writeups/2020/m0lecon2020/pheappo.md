@@ -16,7 +16,7 @@ That was a standard heap pwnable with some restrictions:
 
 To exploit under those conditions I ended up using this known technique which i didn't know the existence of, [house of husk](https://ptr-yudai.hatenablog.com/entry/2020/04/02/111507), pretty cool exploit chain which make use of a very strange printf functionality. Did you know that...
 
-> The GNU C Library lets you define your own cuNo captcha required for preview. Please, do not write just a link to original writeup here.stom conversion specifiers? 
+> The GNU C Library lets you define your own custom conversion specifiers? 
 
 No? Well neither did I. Find out more about this at [http://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html](http://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html)
 
