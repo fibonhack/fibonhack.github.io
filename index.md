@@ -9,7 +9,7 @@ We are interested in computer security, but no we can't hack your friend's Faceb
 
 Check out how good (bad) we are doing at [CTFTime](https://ctftime.org/team/117538)
 
-{% if site.social.email %} Contact us at [{{site.social.email}}](mailto:{{site.social.email}}) {% endif %}
+{% if site.social.email %} Contact us at `{{site.social.email}}` {% endif %}
 
 # Members
 
