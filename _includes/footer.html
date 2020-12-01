@@ -12,12 +12,8 @@
 
                 <div class="footer right column one-half">
                     <section class="small-font">
-                        {% if site.github_username %}
-                        {% include icon-github.html username=site.github_username %}
-                        {% endif %}
-                        {% if site.twitter_username %}
-                        {% include icon-twitter.html username=site.twitter_username %}
-                        {% endif %}
+                        {% if site.social.twitter %}<a href="{{site.social.twitter}}">{% include icons/twitter.html %}</a>{% endif %}
+                        {% if site.social.github %}<a href="{{site.social.github}}">{% include icons/github.html %}</a>{% endif %}
                     </section>
                 </div>
             </div>

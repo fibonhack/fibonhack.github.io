@@ -33,3 +33,8 @@ defaults:
       path: ""
     values:
       layout: "default"
+  
+social:
+  email: fibonhack@gmail.com
+  twitter: https://twitter.com/fibonhack
+  github: https://github.com/fibonhack
