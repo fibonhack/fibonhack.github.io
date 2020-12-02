@@ -245,9 +245,14 @@ If you are worried about how much time is needed to find a match do not worry, t
 
 Now we can put inside the ciphertext the json:
 ```python
+{"secret": "", "cmd": "get_secret", "who": "admin", "user": "admin"}
+```
+
+This would return in the first 2 block the $$admin_secret$$:
+```python
 {"secret": "123456789012345}", "cmd": "get_secret", "who": "admin", "user": "admin"}
 ```
-This would return in the first 2 block the $$admin_secret$$ that we can recover with first method by guessing a character at a time from the end. Starting from the 15th character:
+We can recover with first method by guessing a character at a time from the end. Starting from the 15th character:
 ```python
 '{"secret": "12345678901234} "}'+'\x02\x02'
 ```
