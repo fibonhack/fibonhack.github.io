@@ -2,7 +2,7 @@
 ctf_name: "hitcon 2020"
 layout: writeup
 title:	"another secret note"
-date:	2020-05-24
+date:	2020-12-2
 category: "crypto"
 author: "marcog" 
 ---
