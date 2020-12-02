@@ -118,7 +118,7 @@ if __name__ == '__main__':
             exit()
 ```
 
-Essentially we have the flag 32 byte long, divided in 2 parts $$user_secret$$ and $$admin_secret$$, and 2 function $$register$$ and $$login$$. 
+Essentially we have the flag 32 byte long, divided in 2 parts $$user\_secret$$ and $$admin\_secret$$, and 2 function $$register$$ and $$login$$. 
 
 In $$register$$ we can ask to encrypt a json that contains our username in the format:
 ```python
@@ -134,7 +134,7 @@ The objective of this challenge is to recover the two half of the flag, is possi
 ```python
 {"secret": "", "cmd": "get_secret", "who": "admin", "user": "admin"}
 ```
-Then the returned ciphertext contains the admin_secret in the first 3 block.
+Then the returned ciphertext contains the $$admin\_secret$$ in the first 3 block.
 
 The encryption/decryption is done using AES-CBC with a random IV and the same key every session.
 
@@ -247,7 +247,7 @@ Now we can put inside the ciphertext the json:
 ```python
 {"secret": "", "cmd": "get_secret", "who": "admin", "user": "admin"}
 ```
-This request would return the $$admin_secret$$ inside the first 2 blocks of the ciphertext returned:
+This request would return the $$admin\_secret$$ inside the first 2 blocks of the ciphertext returned:
 ```python
 {"secret": "123456789012345}", "cmd": "get_secret", "who": "admin", "user": "admin"}
 ```
