@@ -241,7 +241,7 @@ We can obtain the plaintext necessary for obtaining the target plaintext $$T1$$ 
 
 To continue concatenating block we can search for another ciphertext $$\overline{C1}$$ that satisfy the previous condition: $$P2_i = T2_i \oplus \overline{C1}_i \oplus C1_i$$ and $$P2$$ is printable and json escaped as before. Now we can generate the ciphertext $$C2$$ relative to $$P2$$ by generating using the same string inside the $$register$$ and appending $$P2$$ after the plaintext of $$\overline{C1}$$. After that we have now 3 blocks that we can use to generate whatever string we want inside the json, we can continue and search for a forth block by searching $$\overline{C2}$$ such that $$P3_i = T2_i \oplus \overline{C2}_i \oplus C2_i$$ and $$P3$$ is printable and json escaped etc...
 
-If you are worried about how much time is needed to find a match do not worry, the first match is found in less than 5 seconds, the next ones in less than a minute, so is very fast, just use username of 160000 of characters :)
+If you are worried about how much time is needed to find a match do not worry, the first match is found in less than 5 seconds, the next ones in less than a minute, so is very fast, just use username of 10000 blocks of 16 characters of characters :)
 
 Now we can put inside the ciphertext the json:
 ```python
