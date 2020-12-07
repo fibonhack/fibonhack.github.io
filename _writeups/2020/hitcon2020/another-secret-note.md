@@ -130,7 +130,7 @@ This json is encrypted and encoded in base64 and inserted inside a json:
 ```
 Inside $$login$$ we can input a json in the same format as above and we can also input a IV for the decryption of the ciphertext.
 
-The objective of this challenge is to recover the two half of the flag, is possible to recover the first half with an orable attack on the decryption (more on the next part), instead, the second part is recoverable only sending a ciphertext to the login function with a json:
+The objective of this challenge is to recover the two half of the flag, is possible to recover the first half with an oracle attack on the decryption (more on the next part), instead, the second part is recoverable only sending a ciphertext to the login function with a json:
 ```python
 {"secret": "", "cmd": "get_secret", "who": "admin", "user": "admin"}
 ```
@@ -154,7 +154,7 @@ This because the first make the decryption all zeros, instead the second make th
 ```python
 '{ "12345678":3}'+'\x01'
 ```
-So that the unpadding pass and is a correct json string. To do that we need to know the ninth character ninth unknown character of the flag, but we can try all the possible printable character to recover that. Next whe can continue to decode the plaintext by guessing the eight character as `'{ "1234567" :3}'+'\x01'` etc...
+So that the unpadding pass and is a correct json string. To do that we need to know the ninth unknown character of the flag, but we can try all the possible printable character to recover that. Next whe can continue to decode the plaintext by guessing the eight character as `'{ "1234567" :3}'+'\x01'` etc...
 
 Possible Script for the first part:
 ```python
@@ -253,9 +253,9 @@ This request would return the $$admin\_secret$$ inside the first 2 blocks of the
 ```
 We can recover with first method by guessing a character at a time from the end. Starting from the 15th character:
 ```python
-'{"secret": "12345678901234} "}'+'\x02\x02'
+'{"secret": "12345678901234"  }'+'\x02\x02'
 ```
 and continuing by guessing the 14th...
 ```python
-'{"secret": "1234567890123}  "}'+'\x02\x02'
+'{"secret": "1234567890123"   }'+'\x02\x02'
 ```
