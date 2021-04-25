@@ -5,7 +5,7 @@ layout: page
 <div class="post">
 
   <header class="post-header" style="padding-bottom: 0.8em;">
-    <p> {{ page.date | date: "%b %-d, %Y" }} </p>
+    <p> {{ page.date | date: "%-d %b %Y" }} </p>
     <h1 style="margin: -0.02em auto;"> {{ page.title }} - {{page.ctf_name}}{% if page.category %} - {{ page.category }}{% endif %}</h1>
     <div id="authors"> by
     {% assign authors = page.author | split: ", " %}

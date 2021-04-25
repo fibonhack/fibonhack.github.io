@@ -16,6 +16,9 @@ collections:
   writeups:
     permalink: /:path
     output: true
+  ourposts:
+    permalink: /:path
+    output: true
 
 
 defaults:
@@ -29,6 +32,11 @@ defaults:
       type: "writeups"
     values:
       layout: "writeup"
+  - scope:
+      path: ""
+      type: "ourposts"
+    values:
+      layout: "post"
   - scope:
       path: ""
     values:

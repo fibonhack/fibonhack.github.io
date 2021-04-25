@@ -1,14 +1,24 @@
 ---
-layout: default
+layout: page
 ---
-<h1>{{ page.title }}</h1>
 
-<p>
-  {{ page.date | date_to_string }}
-  {% assign author = site.authors | where: 'short_name', page.author | first %}
-  {% if author %}
-    - <a href="{{ author.url }}">{{ author.name }}</a>
-  {% endif %}
-</p>
+<div class="post">
 
-{{ content }}
+  <header class="post-header" style="padding-bottom: 0.8em;">
+    <p> {{ page.date | date: "%-d %b %Y" }} </p>
+    <h1 style="margin: -0.02em auto;"> {{ page.title }} </h1>
+    <div id="authors"> by
+    {% assign authors = page.author | split: ", " %}
+    {% for author in authors %}
+      {% assign author_url = "/members/" | append: author %}
+      <a href="{{ author_url | absolute_url }}">{{ author }}</a>
+      {% assign author_url = nil %}
+    {% endfor %}
+    {% assign authors = nil %} 
+    </div>
+  </header>
+
+  <article class="post-content">
+  {{ content }}
+  </article>
+</div>
