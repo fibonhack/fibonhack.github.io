@@ -4,7 +4,7 @@ title:	"Desktop Telematico (Agenzia delle entrate), MITM to RCE"
 date:	2021-04-16
 author: "Maxpnl, NicolaVV"
 ---
-
+Ciao a tutti, sono Mattia Furlani ed oggi vi parlerò di come sono riuscito a trovare un bug abbastanza grave all'interno del software Desktop Telematico, rilasciato dall'Agenzia delle entrate.
 
 ## Premesse
 Fino all'anno scorso, chiunque usasse, per motivi lavorativi o personali, il software Desktop Telematico, rischiava di scaricare codice malevolo (virus o quant'altro) ogni volta che aggiornava il programma.
