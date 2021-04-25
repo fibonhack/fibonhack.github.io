@@ -1,6 +1,6 @@
 ---
 layout: post
-title:	"# Desktop Telematico (Agenzia delle entrate), MITM to RCE"
+title:	"Desktop Telematico (Agenzia delle entrate), MITM to RCE"
 date:	2021-04-16
 author: "Maxpnl, NicolaVV"
 ---
