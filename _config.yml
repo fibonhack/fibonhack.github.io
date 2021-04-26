@@ -11,7 +11,7 @@ collections:
     permalink: /members/:title
     output: true
   main:
-    permalink: /:title
+    permalink: /:path
     output: true
   writeups:
     permalink: /:path
