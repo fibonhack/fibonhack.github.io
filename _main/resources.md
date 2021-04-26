@@ -3,7 +3,12 @@ layout: page
 title: "resources"
 ---
 
-# Kernel Exploitation
+# CTF notes
+- [Binary exploitation]({{ "/resources/pwn" | absolute_url }})
+
+# Random links
+
+#### Kernel Exploitation
 
 - [Linux kernel pwn basics by mem2019](https://mem2019.github.io/jekyll/update/2019/01/11/Linux-Kernel-Pwn-Basics.html)
 - [Attacking the Core: Kernel Exploiting Notes @ phrack](http://phrack.org/archives/issues/64/6.txt)
@@ -12,6 +17,6 @@ title: "resources"
 - [Linux kernel exploitation by AnanduR32](https://github.com/AnanduR32/linux-kernel-exploitation)
 - [CVE-2017-11176 walkthrough](https://blog.lexfo.fr/cve-2017-11176-linux-kernel-exploitation-part1.html)
 
-# Reverse Engineering
+#### Reverse Engineering
 
 - [Agner calling conventions](https://www.agner.org/optimize/calling_conventions.pdf)
