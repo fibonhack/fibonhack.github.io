@@ -183,7 +183,7 @@ Put a breakpoint in your shellcode and see if a SIGTRAP is triggered:
 ```py
 shellcode = b'\xcc' + shellcode
 ```
-What is 0xcc? int3 instruction. Basically is is an instruction is an instruction specifically used to support debugging, and its corresponding machine code is 0xCC. When the CPU executes this instruction, it will generate an exception and call the corresponding exception handler (interrupt 3) for further processing. [source there](https://www.programmersought.com/article/55404064361/)
+What is 0xcc? It corresponds to the instruction `int3`, which is used by all the common OSes to support debugging. When the CPU executes this instruction, an exception of type 3 (TRAP) is generated, the corresponding exception handler is called, and the Linux kernel will notify this exception to the process who generated it with a signal. The default behaviour for a process when a signal of type 3 is received, is to terminate because of SIGTRAP, but if a debugger (gdb in the Linux world) is attached, it will give the control to the user, like when a `sane` breakpoint is hit (e.g. the one you put from the gdb cli with the command `b *main`). [More info there](https://www.programmersought.com/article/55404064361/)
 
 Always remember to delete this extra byte before running your exploit on a process that is not being traced by gdb, for example the remote server, or this process will generate the exception and be killed!
 
