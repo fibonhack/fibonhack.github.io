@@ -93,8 +93,20 @@ tracepoint/syscalls/sys_enter_tee
 tracepoint/syscalls/sys_enter_dup3
 ```
 
-How can we find out which syscall is associated with which function? Before trying to read the documentation of ebpf's elf (which btw is the sane way to do it), we can give a try to XREFs. Those are the xrefs for FUN_ram_001005d8 
+How can we find out which syscall is associated with which function? 
 
+Before trying to read the documentation of ebpf's elf (which btw is the sane way to do it), we can give a try to XREFs. 
+
+XREFs for FUN_ram_001005d8:
 ![FunctionXREFs]({{ "/assets/images/reply2021-bin300/ghidra-ebpf-functionXREFs.png" | absolute_url}})
 
+Following the xref yields to the shdr array:
+![ElfShdrArray]({{ "/assets/images/reply2021-bin300/ghidra-ebpf-shdrTracepoint.png" | absolute_url}})
 
+So with those information we can associate every tracepoint to the corresponding function.
+
+
+```C
+SEC("tracepoint/syscalls/sys_enter_lseek")
+void FUN_ram_001005d8(longlong param_1);
+```
