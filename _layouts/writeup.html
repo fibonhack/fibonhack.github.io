@@ -11,10 +11,10 @@ layout: page
     {% assign authors = page.author | split: ", " %}
     {% for author in authors %}
       {% assign author_url = "/members/" | append: author %}
-      <a href="{{ author_url | absolute_url }}">{{ author }}</a>{% if forloop.index != authors.size %}, {% endif %} 
+      <a href="{{ author_url }}">{{ author }}</a>{% if forloop.index != authors.size %}, {% endif %}
       {% assign author_url = nil %}
     {% endfor %}
-    {% assign authors = nil %} 
+    {% assign authors = nil %}
     </div>
   </header>
 

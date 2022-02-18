@@ -12,11 +12,11 @@ layout: page
     {% for author in authors %}
       {% assign author_url = "/members/" | append: author %}
       {% assign realauthor = site.authors | where: 'short_name', author | first %}
-        <a href="{{ author_url | absolute_url }}">{{ realauthor.full_name }}</a>{% if forloop.index != authors.size %}, {% endif %} 
+        <a href="{{ author_url }}">{{ realauthor.full_name }}</a>{% if forloop.index != authors.size %}, {% endif %}
       {% assign author_url = nil %}
       {% assign realauthor = nil %}
     {% endfor %}
-    {% assign authors = nil %} 
+    {% assign authors = nil %}
     </div>
   </header>
 

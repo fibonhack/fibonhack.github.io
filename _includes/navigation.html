@@ -2,10 +2,10 @@
   <div class="col-lg-8 col-lg-offset-2">
     <div class="menu glow-yellow">
       <ul>
-          <li><a href="{{ "/" | absolute_url}}" {% if page.title == "home" %} class="navbar-active" {% endif %}>home</a></li>
-          <li><a href="{{ "/resources" | absolute_url}}" {% if page.title == "resources" %} class="navbar-active" {% endif %}>resources</a></li>
-          <li><a href="{{ "/posts" | absolute_url}}" {% if page.title == "posts" %} class="navbar-active" {% endif %}>posts</a></li>
-          <li><a href="{{ "/writeups" | absolute_url}}" {% if page.title == "writeups" %} class="navbar-active" {% endif %}>writeups</a></li>
+          <li><a href="/" {% if page.title == "home" %} class="navbar-active" {% endif %}>home</a></li>
+          <li><a href="/resources" {% if page.title == "resources" %} class="navbar-active" {% endif %}>resources</a></li>
+          <li><a href="/posts" {% if page.title == "posts" %} class="navbar-active" {% endif %}>posts</a></li>
+          <li><a href="/writeups" {% if page.title == "writeups" %} class="navbar-active" {% endif %}>writeups</a></li>
         </ul>
     </div>
   </div>

@@ -81,7 +81,7 @@ Purtroppo non ho fatto nessuno screenshot, tuttavia a partire da questo file XML
     <child location='Onlus'/>
     <child location='EntiEsterniCondivisa'/>
     <child location='Telematico-Comunicazioni'/>
-	<child location='Controlli-EntiEsterni-ControlliGenerali-Condivisa'/>	
+	<child location='Controlli-EntiEsterni-ControlliGenerali-Condivisa'/>
   </children>
 </repository>
 ```
@@ -106,9 +106,9 @@ http://jws.agenziaentrate.it/telematicoEntrateUpdateSite/Telematico-Controlli/ar
 ```
 Infine fa il fetch dei file a cui fanno riferimento gli artifacts, questo a meno che non li abbia già.
 
-Questo è il modo in cui gestisce gli aggiornamenti [p2 equinox](https://www.eclipse.org/equinox/p2/), personalmente non ho avuto voglia di studiare in modo approfondito come funziona, tuttavia, se vede che nel content.jar c'è una nuova versione di uno dei componenti principali, scarica ricorsivamente le sue dipendenze, sempre che non le abbia già ad una versione accettabile (buona parte del mio tempo l'ho perso per riuscire a far sentire al programma la presenza di un aggiornamento, è un sistema complesso e a parer mio sovraingegnerizzato). 
+Questo è il modo in cui gestisce gli aggiornamenti [p2 equinox](https://www.eclipse.org/equinox/p2/), personalmente non ho avuto voglia di studiare in modo approfondito come funziona, tuttavia, se vede che nel content.jar c'è una nuova versione di uno dei componenti principali, scarica ricorsivamente le sue dipendenze, sempre che non le abbia già ad una versione accettabile (buona parte del mio tempo l'ho perso per riuscire a far sentire al programma la presenza di un aggiornamento, è un sistema complesso e a parer mio sovraingegnerizzato).
 
-Una volta che sceglie i file di cui ha bisogno all'interno dei vari `contents.xml`, inizia a cercare il link di download a quei files da `artifacts.xml` 
+Una volta che sceglie i file di cui ha bisogno all'interno dei vari `contents.xml`, inizia a cercare il link di download a quei files da `artifacts.xml`
 
 Analizzando il `content.xml` di `Telematico-Desktop`, ho notato questa parte
 
@@ -149,7 +149,7 @@ Analizzando anche `artifacts.xml` si può notare che il file scaricato non viene
     </artifact>
  ```
 
-Come ho accennato prima,  `artifacts.xml` da anche informazioni su dove andarsi a prendere il file, di fatti questo file è raggiungibile all'url 
+Come ho accennato prima,  `artifacts.xml` da anche informazioni su dove andarsi a prendere il file, di fatti questo file è raggiungibile all'url
 ```
 /telematicoEntrateUpdateSite/Telematico-Desktop/binary/it.sogei.telematico.application.prodotto\_root.win32.win32.x86\_1.0.2.202012301051
 ```
@@ -160,8 +160,8 @@ Ho scelto di usare quel file per applicare la mia patch (contenente il codice ch
 
 Come prima cosa (grazie al consiglio di Nicola Vella) ho creato un nuova sezione eseguibile usando [CFF Explorer](https://ntcore.com/?page_id=388), sotto si può vedere la differenza tra le sezioni prima e dopo le modifiche fatte grazie a questo tool
 
-![Before]({{ "/assets/files/DesktopTelematico/Pasted image 20210422002433.png" | absolute_url}})
-![After]({{ "/assets/files/DesktopTelematico/Pasted image 20210422002553.png" | absolute_url}})
+![Before]({{ "/assets/files/DesktopTelematico/Pasted image 20210422002433.png"}})
+![After]({{ "/assets/files/DesktopTelematico/Pasted image 20210422002553.png"}})
 
 Ho aggiunto quindi questa nuova sezione al binario chiamata `patch`, con una dimensione abbondantemente grande per inserire il mio codice.
 
@@ -240,7 +240,7 @@ def interceptAndModify(request, path):
     if path in to_subst.keys():
         print(path, "last modified changed")
         resp["Last-Modified"] = "Wed, 20 Dec 2021 08:28:00 GMT"
-    
+
 
     if resp.status_code != 404:
         resp["Content-Type"] = "application/java-archive"
@@ -268,12 +268,12 @@ Finalmente posso dimostrare come, usando ettercap, da un pc connesso alla stessa
 
 Pur quanto fosse molto semplice accorgersi del bug, lo sviluppo dell'exploit non è stato altrettanto facile. Detto questo, non sarebbe male se in Italia fosse istituito un programma di bug bounty per gli applicativi della PA, cosicché falle di sicurezza come quella presentata in questo post, verrebbero segnalate e sistemate più velocemente e, soprattutto, non utilizzate da malintenzionati.
 
-Al momento ci sono delle linee guida sulla responsible disclosure per alcuni applicativi come PagoPA, ma non vengono offerte ricompense a chi segnala problemi di sicurezza, il che non incoraggia appassionati ed esperti a spendere del tempo alla ricerca di problemi. Qui un esempio di cosa ha portato l'iniziativa [Hack The Pentagon](https://www.hackerone.com/hack-the-pentagon): 
+Al momento ci sono delle linee guida sulla responsible disclosure per alcuni applicativi come PagoPA, ma non vengono offerte ricompense a chi segnala problemi di sicurezza, il che non incoraggia appassionati ed esperti a spendere del tempo alla ricerca di problemi. Qui un esempio di cosa ha portato l'iniziativa [Hack The Pentagon](https://www.hackerone.com/hack-the-pentagon):
 
-![Hack the Pentagon]({{ "/assets/files/DesktopTelematico/htp.png" | absolute_url}})
+![Hack the Pentagon]({{ "/assets/files/DesktopTelematico/htp.png"}})
 
 Inoltre, sia per un fattore di trasparenza nei confronti dei cittadini, sia per permettere a questi di contribuire alla risoluzione di problemi sugli applicativi pubblici, sarebbe ideale rendere i software rilasciati ed usati dalla pubblica amministrazione open source, [qui](https://publiccode.eu/it/) vengono spiegati i vantaggi che comporterebbe.
 
 Sono rimasto colpito dalla prontezza con la quale il team di sviluppo Sogei sia riuscito a sistemare il problema, ho reportato il bug a capodanno e dopo circa una settimana il problema è stato preso in carico in modo molto professionale.
 
-Ringrazio Nicola Vella per i consigli sullo sviluppo dell'exploit, Jacopo Bonomi per le sue skills da letterato (e per come probabilmente cambierà le conclusioni), infine Alessio De Pauli per aver provato a fare magie coi bytecode di Java prima di scoprire quell'unzip. 
+Ringrazio Nicola Vella per i consigli sullo sviluppo dell'exploit, Jacopo Bonomi per le sue skills da letterato (e per come probabilmente cambierà le conclusioni), infine Alessio De Pauli per aver provato a fare magie coi bytecode di Java prima di scoprire quell'unzip.

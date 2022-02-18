@@ -4,7 +4,7 @@ title: "resources"
 ---
 
 # CTF notes
-- [Binary exploitation]({{ "/resources/pwn" | absolute_url }})
+- [Binary exploitation]({{ "/resources/pwn" }})
 
 # Random links
 

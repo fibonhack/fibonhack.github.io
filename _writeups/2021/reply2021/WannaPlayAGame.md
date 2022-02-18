@@ -67,11 +67,11 @@ You can find a nice overview of what eBPF is [here](https://www.graplsecurity.co
 
 Thankfully [ghidra can understand this elf file](https://github.com/Nalen98/eBPF-for-Ghidra), so it should not be that hard to reverse this elf.
 
-![Nothing]({{ "/assets/images/reply2021-bin300/ghidra-ebpf-nothing.png" | absolute_url}})
+![Nothing]({{ "/assets/images/reply2021-bin300/ghidra-ebpf-nothing.png"}})
 
 Well that's not optimal, let's try to disassemble the section `.text` by pressing `D` and create a function with `F`
 
-![Something]({{ "/assets/images/reply2021-bin300/ghidra-ebpf-disassembleAndCreateFunction.png" | absolute_url}})
+![Something]({{ "/assets/images/reply2021-bin300/ghidra-ebpf-disassembleAndCreateFunction.png"}})
 
 
 Seems like something is working, if you disassemble and create function for all the .text section you should obtain those functions:
@@ -93,15 +93,15 @@ tracepoint/syscalls/sys_enter_tee
 tracepoint/syscalls/sys_enter_dup3
 ```
 
-How can we find out which syscall is associated with which function? 
+How can we find out which syscall is associated with which function?
 
-Before trying to read the documentation of ebpf's elf (which btw is the sane way to do it), we can give a try to XREFs. 
+Before trying to read the documentation of ebpf's elf (which btw is the sane way to do it), we can give a try to XREFs.
 
 XREFs for FUN_ram_001005d8:
-![FunctionXREFs]({{ "/assets/images/reply2021-bin300/ghidra-ebpf-functionXREFs.png" | absolute_url}})
+![FunctionXREFs]({{ "/assets/images/reply2021-bin300/ghidra-ebpf-functionXREFs.png"}})
 
 Following the xref yields to the shdr array:
-![ElfShdrArray]({{ "/assets/images/reply2021-bin300/ghidra-ebpf-shdrTracepoint.png" | absolute_url}})
+![ElfShdrArray]({{ "/assets/images/reply2021-bin300/ghidra-ebpf-shdrTracepoint.png"}})
 
 So with those information we can associate every tracepoint to the corresponding function.
 
