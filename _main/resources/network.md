@@ -16,14 +16,14 @@ Website [here](https://www.wireshark.org/) & doc [here](https://www.wireshark.or
 - filter with tcp analysis:   `tcp.analysis`
 - filter with tcp flag analysis:   `tcp.analysis.flags`
 - filter with http requests:   `http.request`
-- filter with an http response status code:   `http.response.code == <response status code>`
+- filter with an http response status code:<br>`http.response.code == <response status code>`
 - filter with a tcp flag:   `tcp.flags.<flag name> == <value>`
 - or operator:   `||` (alternative `or`)
 - and operator:   `&&` (alternative `and`)
 - not operator:   `!` (alternative `not`)
 - equal operator: `==` (alternative `eq`)
-- example combination of rules (in this case remove arp, icmp and dns protocol):   `!(arp or icmp or dns)`
-- filter with a (tcp/udp/tls/http) stream: right click on an interesting packet  ==> follow  ==> (tcp/udp/tls/http) stream (equivalent of `<protocol name>.stream == <number>`)
+- example combination of rules (in this case remove arp, icmp and dns protocol):<br>`!(arp or icmp or dns)`
+- filter with a (tcp/udp/tls/http) stream: right click on a packet  ==> follow  ==> stream<br>(equivalent of `<protocol name>.stream == <number>`)
 
 ## Useful links
 - tcp flags [here](https://www.howtouselinux.com/post/tcp-flags)
