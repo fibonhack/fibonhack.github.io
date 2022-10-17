@@ -41,7 +41,10 @@ defaults:
       path: ""
     values:
       layout: "default"
-  
+
+plugins:
+  - jekyll-postcss
+
 social:
   email: echo moc.liamg@kcahnobif|rev
   twitter: https://twitter.com/fibonhack
