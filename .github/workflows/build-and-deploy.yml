@@ -13,8 +13,10 @@ jobs:
     - name: Install Dependencies
       run: npm install
        
-    - name: Build the site
+    - name: Grant write permissions
       run: chmod +w /srv/jekyll
+
+    - name: Build the site
       run: |
         docker run \
         -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
