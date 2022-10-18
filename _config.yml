@@ -49,3 +49,19 @@ social:
   email: echo moc.liamg@kcahnobif|rev
   twitter: https://twitter.com/fibonhack
   github: https://github.com/fibonhack
+
+exclude:
+  - docker-compose.yml
+  - Dockerfile
+  - package.json
+  - package-lock.json
+  - postcss.config.js
+  - README
+  - tailwind.config.js
+
+sass:
+  load_paths:
+    - _sass
+    - node_modules
+
+include: ["node_modules/tailwindcss"]
