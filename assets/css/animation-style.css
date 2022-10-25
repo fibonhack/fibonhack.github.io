@@ -32,3 +32,13 @@
 	}
 }
 
+
+.animation-retard {
+	animation: retarded 0s 2s forwards;
+	visibility: hidden;
+}
+
+
+@keyframes retarded {
+to   { visibility: visible; }
+}
