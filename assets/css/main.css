@@ -19,3 +19,7 @@ body{
 	scrollbar-width: none;  /* Firefox */
 }
 
+#MathJax_Message{
+	display: none;
+}
+
