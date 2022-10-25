@@ -2,19 +2,20 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>{{ site.title }}{% if page.title != "home" %} | {{ page.title }}{% endif %}</title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="/assets/css/bootstrap-3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
+    <script src="{{ "/assets/js/main.js" | relative_url }}"></script>
 
+    <link rel="shortcut icon" href="{{ "assets/images/favicon.jpg" | relative_url }}">
 
-    <link rel="shortcut icon" href="/assets/images/favicon.jpg">
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?..."></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-167636907-1"></script>
+
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}

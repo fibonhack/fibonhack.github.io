@@ -1,2 +1,12 @@
 ## To build locally
-`docker run --rm --volume="$PWD:/srv/jekyll" --env JEKYLL_ENV=development -p 4000:4000 jekyll/jekyll:3.8 jekyll serve --incremental`
+
+```
+$ sudo docker-compose up --build
+```
+
+## to-do
+
+- remove ` from inline code
+- edit default color in code
+- edit default background in code to make it more like github
+- add links to social

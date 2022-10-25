@@ -1,7 +1,68 @@
-<header class="row">
-    <div class="col-lg-8 col-lg-offset-2">
-        <img class="main-logo" src="/assets/images/fibonhack.png" alt="fibonhack">
-    </div>
-</header>
+<div>
+    <nav class="w-full p-6 flex flex-col items-center justify-center my-3">
+        {% include icons/ascii_logo.html%}
+       	<h1 class="md:text-6xl text-4xl text-white font-bold ">fibonhack</h1>
 
-{% include navigation.html %}
+    </nav>
+
+    <nav class="md:py-6">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+          <div class="hidden sm:block relative flex h-16 items-center justify-between">
+            <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-center">
+              <div class="sm:ml-6">
+                <div class="flex space-x-4">
+                  
+                  <!-- TODO check current page -->
+                  
+                  <a href="/" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl {%if page.title == "home" %} text-white font-black {% else %} text-zinc-300 font-medium {% endif %}" {% if page.title == "home" %} aria-current="page" {% endif %}>Home</a>
+                  <a href="/resources" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl {%if page.title == "resources" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}" {% if page.title == "home" %} aria-current="page" {% endif %}>Resources</a>
+                  <a href="/posts" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl {%if page.title == "posts" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}" {% if page.title == "home" %} aria-current="page" {% endif %}>Posts</a>
+                  <a href="/writeups" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl  {%if page.title == "writeups" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}" {% if page.title == "home" %} aria-current="page" {% endif %}>Writeups</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div class="sm:hidden" id="mobile-menu">
+          <div class="space-y-1 px-2 pt-2 pb-3">
+            <a href="/" 
+              {% if page.title == "home" %} aria-current="page" {% endif %} 
+              class="border-b border-dashed border-1 border-zinc-600 text-white block px-3 py-2 text-lg {%if page.title == "home" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
+            >
+              Home
+            </a>
+            <a 
+              href="/resources" 
+              {% if page.title == "resources" %} aria-current="page" {% endif %} 
+              class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg {%if page.title == "resources" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
+            >
+              Resources
+            </a>
+            <a href="/posts" 
+               {% if page.title == "posts" %} aria-current="page" {% endif %} 
+              class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg {%if page.title == "posts" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
+            >
+              Posts
+            </a>
+            <a href="/writeups" 
+              {% if page.title == "writeups" %} aria-current="page" {% endif %} 
+              class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg {%if page.title == "writeups" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
+            >
+              Writeups
+            </a>
+          </div>
+        </div>
+    </nav>
+    <nav class="flex flex-wrap mx-auto w-full max-w-2xl md:px-0 px-4 text-white text-lg">
+        <span class="text-green-500">fibonhack@templeos</span>
+        <p>:</p>
+        <span class="text-blue-400">~{% if page.title != "home" %}/{{page.title}}{% endif %}</span>
+        <p>$</p>
+        <div class="ml-1 {% if page.title == "home" %} animate-typing {% endif %}">
+            cat main.txt
+        </div>
+    </nav>
+    
+</div>
+  

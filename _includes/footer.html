@@ -1,22 +1,33 @@
-<div class="row">
-    <div class="col-lg-8 col-lg-offset-2">
-        <footer>
-            <div>
-                <div class="footer left column one-half">
-                    <small class="glow-yellow">
-                        Theme <a href="https://github.com/gildasio/clyell"> clyell</a> by <a
-                            href="https://github.com/gildasio/">gildasio</a> <br class="hidden visible-xs">powered by <a
-                            href="https://github.com/jekyll/jekyll">{% raw %}{{ jekyll }}{% endraw %}</a>
-                    </small>
-                </div>
-
-                <div class="footer right column one-half">
-                    <section class="small-font">
-                        {% if site.social.twitter %}<a href="{{site.social.twitter}}">{% include icons/twitter.html %}</a>{% endif %}
-                        {% if site.social.github %}<a href="{{site.social.github}}">{% include icons/github.html %}</a>{% endif %}
-                    </section>
-                </div>
-            </div>
-        </footer>
+<nav class="
+    {% if page.title == "home" %} retarded hidden {% endif %} 
+    flex flex-wrap  mx-auto w-full max-w-2xl md:px-0 px-4 text-white text-lg mb-6 
+    "
+>
+    <span class="text-green-500">fibonhack@templeos</span>
+    <p>:</p>
+    <span class="text-blue-400">~{% if page.title != "home" %}/{{page.title}}{% endif %}</span>
+    <p>$</p>
+    <div class="flex ml-1 relative">
+        <p class="absolute animate-blink">█</p>
     </div>
-</div>
+</nav>
+
+<footer class="
+    {% if page.title == "home" %} retarded hidden {% endif %} 
+    text-white space-x-4 justify-end sw-full py-12 px-6 border-t border-dashed border-1 border-zinc-600 flex items-center
+    "
+>
+    
+    <a class="text-zinc-600 hover:text-zinc-100" href="https://github.com/fibonhack">
+        {% include icons/github.html %}
+    </a>
+
+    <a class="text-zinc-600 hover:text-blue-400" href="https://twitter.com/fibonhack?lang=en">
+        {% include icons/twitter.html %}
+        
+    </a>
+
+    <a class="saturate-0 contrast-[.75] brightness-[.75] hover:brightness-100 hover:contrast-100 hover:saturate-[.40]" href="https://ctftime.org/team/117538">
+        {% include icons/ctftime.html %}
+    </a>
+</footer>
