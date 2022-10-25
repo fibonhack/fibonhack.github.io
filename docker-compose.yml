@@ -10,4 +10,4 @@ services:
 
     working_dir: "/srv/jekyll"
 
-    command: sh -c "npm install && JEKYLL_ENV=production NODE_ENV=production bundle exec jekyll serve --incremental --trace --host 0.0.0.0"
+    command: sh -c "npm install && npm run dev"

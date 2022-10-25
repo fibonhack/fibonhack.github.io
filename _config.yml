@@ -51,6 +51,7 @@ social:
   github: https://github.com/fibonhack
 
 exclude:
+  - assets/css
   - docker-compose.yml
   - Dockerfile
   - package.json
