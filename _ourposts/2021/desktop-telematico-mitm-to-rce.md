@@ -113,28 +113,28 @@ Una volta che sceglie i file di cui ha bisogno all'interno dei vari `contents.xm
 Analizzando il `content.xml` di `Telematico-Desktop`, ho notato questa parte
 
 ```xml
-    <unit id='it.sogei.telematico.application.prodotto_root.win32.win32.x86' version='1.0.2.202012301051'>
-      <provides size='1'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='it.sogei.telematico.application.prodotto_root.win32.win32.x86' version='1.0.2.202012301051'/>
-      </provides>
-      <filter>
-        (&amp;(osgi.arch=x86)(osgi.os=win32)(osgi.ws=win32))
-      </filter>
-      <artifacts size='1'>
-        <artifact classifier='binary' id='it.sogei.telematico.application.prodotto_root.win32.win32.x86' version='1.0.2.202012301051'/>
-      </artifacts>
-      <touchpoint id='org.eclipse.equinox.p2.native' version='1.0.0'/>
-      <touchpointData size='2'>
-        <instructions size='2'>
-          <instruction key='uninstall'>
-            cleanupzip(source:@artifact, target:${installFolder});
-          </instruction>
-          <instruction key='install'>
-            unzip(source:@artifact, target:${installFolder});
-          </instruction>
-        </instructions>
-      </touchpointData>
-    </unit>
+<unit id='it.sogei.telematico.application.prodotto_root.win32.win32.x86' version='1.0.2.202012301051'>
+  <provides size='1'>
+    <provided namespace='org.eclipse.equinox.p2.iu' name='it.sogei.telematico.application.prodotto_root.win32.win32.x86' version='1.0.2.202012301051'/>
+  </provides>
+  <filter>
+    (&amp;(osgi.arch=x86)(osgi.os=win32)(osgi.ws=win32))
+  </filter>
+  <artifacts size='1'>
+    <artifact classifier='binary' id='it.sogei.telematico.application.prodotto_root.win32.win32.x86' version='1.0.2.202012301051'/>
+  </artifacts>
+  <touchpoint id='org.eclipse.equinox.p2.native' version='1.0.0'/>
+  <touchpointData size='2'>
+    <instructions size='2'>
+      <instruction key='uninstall'>
+        cleanupzip(source:@artifact, target:${installFolder});
+      </instruction>
+      <instruction key='install'>
+        unzip(source:@artifact, target:${installFolder});
+      </instruction>
+    </instructions>
+  </touchpointData>
+</unit>
 ```
 
 Sembra che si possa far scaricare uno zip all'applicativo e farglielo estrarre nella sua cartella di root, questo serve per scaricare una nuova versione dell'eseguibile principale.
@@ -142,11 +142,11 @@ Sembra che si possa far scaricare uno zip all'applicativo e farglielo estrarre n
 Analizzando anche `artifacts.xml` si può notare che il file scaricato non viene neanche sottoposto ad un controllo dell'hash, tuttavia anche se lo fosse stato, sarebbe comunque stato possibile modificarlo, a causa dell'assenza di SSL.
 
 ```xml
-    <artifact classifier='binary' id='it.sogei.telematico.application.prodotto_root.win32.win32.x86' version='1.0.2.202012301051'>
-      <properties size='1'>
-        <property name='download.size' value='114293'/>
-      </properties>
-    </artifact>
+<artifact classifier='binary' id='it.sogei.telematico.application.prodotto_root.win32.win32.x86' version='1.0.2.202012301051'>
+  <properties size='1'>
+    <property name='download.size' value='114293'/>
+  </properties>
+</artifact>
  ```
 
 Come ho accennato prima,  `artifacts.xml` da anche informazioni su dove andarsi a prendere il file, di fatti questo file è raggiungibile all'url
