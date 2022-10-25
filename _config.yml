@@ -49,6 +49,7 @@ social:
   email: echo moc.liamg@kcahnobif|rev
   twitter: https://twitter.com/fibonhack
   github: https://github.com/fibonhack
+  ctftime: https://ctftime.org/team/117538
 
 exclude:
   - assets/css
