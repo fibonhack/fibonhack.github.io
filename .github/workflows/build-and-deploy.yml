@@ -13,14 +13,14 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
-    - name: Build CSS
-      run: NODE_ENV=production ./node_modules/.bin/postcss assets/css/main.css --output _site/assets/css/style.css
-
     - name: Build the site
       run: |
         docker run \
         -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
         jekyll/jekyll:latest /bin/bash -c "chmod -R 777 /srv/jekyll && bundle install && JEKYLL_ENV=production bundle exec jekyll build --future"
+
+    - name: Build CSS
+      run: NODE_ENV=production ./node_modules/.bin/postcss assets/css/main.css --output _site/assets/css/style.css
 
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4
