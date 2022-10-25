@@ -1,12 +1,5 @@
 window.onload = () =>{
 
-	const retards = document.getElementsByClassName("retarded");
-	setTimeout(() => {
-		[].forEach.call(retards, r => {
-			r.classList.remove("hidden");
-		});
-	}, 900);
-
 	const snippets = document.querySelectorAll(".highlighter-rouge > .highlight");
 
 	[].forEach.call(snippets, s => {
