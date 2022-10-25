@@ -14,7 +14,7 @@ jobs:
       run: npm install
 
     - name: Build CSS
-      run: NODE_ENV=production postcss assets/css/main.css --output _site/assets/css/style.css
+      run: NODE_ENV=production ./node_modules/.bin/postcss assets/css/main.css --output _site/assets/css/style.css
 
     - name: Build the site
       run: |
