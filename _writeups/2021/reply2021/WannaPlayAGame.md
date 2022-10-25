@@ -106,7 +106,7 @@ Following the xref yields to the shdr array:
 So with those information we can associate every tracepoint to the corresponding function.
 
 
-```C
+```c
 SEC("tracepoint/syscalls/sys_enter_lseek")
 void FUN_ram_001005d8(longlong param_1);
 ```
