@@ -20,7 +20,7 @@ jobs:
         jekyll/jekyll:latest /bin/bash -c "chmod -R 777 /srv/jekyll && bundle install && JEKYLL_ENV=production bundle exec jekyll build --future"
 
     - name: Give permission to _site
-      run : chmod -R 777 /srv/jekyll/_site
+      run : chmod -R 777 ${{ github.workspace }}/_site
 
     - name: Build CSS
       run: NODE_ENV=production ./node_modules/.bin/postcss assets/css/main.css --output _site/assets/css/style.css
