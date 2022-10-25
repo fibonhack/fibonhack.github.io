@@ -34,7 +34,7 @@
 
 
 .animation-retard {
-	animation: retarded 0s 2s forwards;
+	animation: retarded 0s 1.5s forwards;
 	visibility: hidden;
 }
 
