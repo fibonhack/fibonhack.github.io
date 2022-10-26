@@ -32,9 +32,15 @@
 	}
 }
 
+:root{
+	--retard : 900ms;
+}
 
-.animation-retard {
-	animation: retarded 0s 1.5s forwards;
+
+
+/* animate reatards only when js isn't active */
+.no-js .animation-retard {
+	animation: retarded 0s var(--retard) forwards;
 	visibility: hidden;
 }
 

@@ -5,6 +5,7 @@
 @import "animation-style.css";
 @import "syntax-highlight.css";
 
+
 body{
 	@apply !font-mono;
 	@apply break-words;
