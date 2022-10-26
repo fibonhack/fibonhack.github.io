@@ -57,7 +57,7 @@
     <nav class="flex flex-wrap mx-auto w-full max-w-2xl md:px-0 px-4 text-white text-lg">
         <span class="text-green-500">fibonhack@templeos</span>
         <p>:</p>
-        <span class="text-blue-400">~{% if page.title != "home" %}/{{page.title}}{% endif %}</span>
+        <span class="text-blue-400">~{% if page.title != "home" %}/{{page.short_name}}{% endif %}</span>
         <p>$</p>
         <div class="ml-1 {% if page.title == "home" %} animate-typing {% endif %}">
             cat main.txt
