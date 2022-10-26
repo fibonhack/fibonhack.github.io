@@ -15,21 +15,29 @@
 </nav>
 
 <footer class="
-    {% if page.title == "home" %} animation-retard {% endif %} 
-    text-white space-x-4 justify-end sw-full py-12 px-6 border-t border-dashed border-1 border-zinc-600 flex items-center
+        {% if page.title == "home" %} animation-retard {% endif %} 
+        space-y-6 md:space-y-0 flex flex-col md:flex-row text-white justify-between 
+        w-full py-12 px-6 space-y-6 border-t border-dashed border-1 border-zinc-600 items-center
     "
 >
+
+    <div class="flex-1 items-center">
+        theme developed by <a class="underline" href="https://github.com/just-hms/">just-hms</a> 
+    </div>
+
+    <div class="space-x-4 flex items-center justify-center">
+        <a class="text-zinc-600 hover:text-zinc-100" href="{{site.social.github}}">
+            {% include icons/github.html %}
+        </a>
     
-    <a class="text-zinc-600 hover:text-zinc-100" href="{{site.social.github}}">
-        {% include icons/github.html %}
-    </a>
-
-    <a class="text-zinc-600 hover:text-blue-400" href="{{site.social.twitter}}">
-        {% include icons/twitter.html %}
-        
-    </a>
-
-    <a class="saturate-0 contrast-[.75] brightness-[.75] hover:brightness-100 hover:contrast-100 hover:saturate-[.40]" href="{{site.social.ctftime}}">
-        {% include icons/ctftime.html %}
-    </a>
+        <a class="text-zinc-600 hover:text-blue-400" href="{{site.social.twitter}}">
+            {% include icons/twitter.html %}
+            
+        </a>
+    
+        <a class="saturate-0 contrast-[.75] brightness-[.75] hover:brightness-100 hover:contrast-100 hover:saturate-[.40]" href="{{site.social.ctftime}}">
+            {% include icons/ctftime.html %}
+        </a>
+    </div>
+    
 </footer>

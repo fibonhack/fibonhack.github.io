@@ -36,8 +36,6 @@
 	--retard : 900ms;
 }
 
-
-
 /* animate reatards only when js isn't active */
 .no-js .animation-retard {
 	animation: retarded 0s var(--retard) forwards;
