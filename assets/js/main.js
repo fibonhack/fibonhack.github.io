@@ -57,49 +57,79 @@ const code_snippets = () => {
 	});
 }
 
-const terminal = () => {
+const handle_command = terminal_form => {
 
-	let terminal = document.getElementById("command_form");
+	const terminals = document.getElementsByClassName("terminal");
+	if(terminals.length == 0) return;
 
-	if(!terminal) return;
+	const terminal = terminals[terminals.length - 1];
+	const inputs = terminal_form.getElementsByTagName("input");
 
-	terminal.onsubmit = e => {
+	if (inputs.length == 0) return;
+
+	const command = inputs[inputs.length - 1];
+
+	if (command.value === "ls") {
 		
-		e.preventDefault();
+		const output = document.createElement("div");
 		
-		const command = document.getElementById("command");
+		output.classList.add(
+			"text-white",
+			"container",
+			"mb-6"
+		);
 
-		if (!command) return;
+		output.innerHTML += "Home<br>Resources<br>Posts<br>WriteUps"	
 
-		if (command.value === "cat flag.txt") {
-			alert("{{kek}}"); 
-			return;
-		} 
+		terminal.parentElement.insertBefore(output, terminal);
+		
+		const clone = terminal.cloneNode(true);
+		terminal.parentElement.insertBefore(clone, output);
 
-		if (command.value === "cd /") {
-			location.href ="/";
-			return; 
-		}
-		if (command.value === "cd .."){
-			const location_divided = location.href.split("/"); 
-			
-			if (location_divided.length < 2) return; 
-			
-			location.href = location_divided.slice(0, location_divided.length - 2).join('/'); 
-			return; 
-		}
-
-		if (command.value.startsWith("cd /")){
-			location.href = "/" + command.value.split(" /")[1]; 
-			return; 
-		}
-
-		if (command.value.startsWith("cd ")){
-			location.href += command.value.split(" ")[1]; 
-			return; 
-		}
+		command.value = "";
+		window.scrollTo(0, document.body.scrollHeight);
+		return;
 	}
 
+	if (command.value === "cat flag.txt") {
+		alert("{{kek}}"); 
+		return;
+	} 
+
+	if (command.value === "cd /") {
+		location.href ="/";
+		return; 
+	}
+	if (command.value === "cd .."){
+		const location_divided = location.href.split("/"); 
+		location.href = location_divided.slice(0, location_divided.length - 2).join('/'); 
+		return; 
+	}
+
+	if (command.value.startsWith("cd /")){
+		location.href = "/" + command.value.split(" /")[1]; 
+		return; 
+	}
+
+	if (command.value.startsWith("cd ")){
+		location.href += command.value.split(" ")[1]; 
+		return; 
+	}
+
+	// CHALLENGE HERE
+
+}
+
+const terminal = () => {
+
+	const terminals_form = document.getElementsByClassName("terminal_form");
+	if(terminals_form.length == 0) return;
+
+	const terminal_form = terminals_form[terminals_form.length - 1];
+	terminal_form.onsubmit = e => {
+		e.preventDefault();
+		handle_command(terminal_form);
+	}
 }
 
 // remove animation-retard elemet view from the dom, 

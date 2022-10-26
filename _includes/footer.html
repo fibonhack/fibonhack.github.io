@@ -1,15 +1,16 @@
 <nav class="
     {% if page.title == "home" %} animation-retard {% endif %} 
-    container
     flex flex-wrap mx-auto w-full md:px-0 px-4 text-white text-lg mb-6 
+    container
+    terminal
     "
 >
     <span class="text-green-500">fibonhack@templeos</span>
     <p>:</p>
     <span class="text-blue-400">~{% if page.title != "home" %}/{{page.title}}{% endif %}</span>
     <p>$</p>
-    <form id="command_form" class="flex ml-1 relative">
-        <input id="command" type="text" spellcheck="false" class="w-full bg-transparent focus:outline-0 border-none">
+    <form class="terminal_form flex ml-1 relative">
+        <input type="text" spellcheck="false" class="w-full bg-transparent focus:outline-0 border-none">
     </form>
 </nav>
 
