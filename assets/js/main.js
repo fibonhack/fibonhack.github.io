@@ -8,131 +8,150 @@ const copied_svg = `
 	</svg>
 `
 
-const code_snippets = () => {
+const add_code_snippets_copy_btn = () => {
 
 	const snippets = document.querySelectorAll(".highlighter-rouge > .highlight");
 
-	[].forEach.call(snippets, s => {
+	[].forEach.call(snippets, snippet => {
 		
-		s.classList.add("relative", "group");
+		snippet.classList.add("relative", "group");
 		
 		const copy_btn = document.createElement("div");
 
 		copy_btn.classList.add(
-			"absolute",
-			"hidden",
-			"p-2",
-			"right-1",
-			"top-1",
-			"color-zinc-400",
-			"group-hover:block",
-			"bg-[#2d333b]",
-			"rounded-lg",
-			"cursor-pointer",
-			"hover:brightness-150"
+			"absolute", "hidden", "p-2", "right-1",
+			"top-1", "color-zinc-400", "group-hover:block", "bg-[#2d333b]",
+			"rounded-lg", "cursor-pointer", "hover:brightness-150"
 		);
-
+		
 		copy_btn.innerHTML = copy_svg;
+		snippet.appendChild(copy_btn);
 
-		s.appendChild(copy_btn);
-
-		let disabled = false;
+		let copy_disabled = false;
 
 		copy_btn.onclick = () => {
 			
-			if (disabled) return;
+			if (copy_disabled) return;
 
-			navigator.clipboard.writeText(s.innerText);
+			navigator.clipboard.writeText(snippet.innerText);
 			
 			copy_btn.innerHTML = copied_svg;
 
-			disabled = true;
+			copy_disabled = true;
 
 			setTimeout(() => {
 				copy_btn.innerHTML = copy_svg;
-				disabled = false;
+				copy_disabled = false;
 			}, 1200);
 		}
 		
 	});
 }
 
-const handle_command = terminal_form => {
 
-	const terminals = document.getElementsByClassName("terminal");
-	if(terminals.length == 0) return;
+// for when @barsa and @nick0ve go nuts and break balls
+// HOW TO ADD A COMMAND
+// - add an if
+// - return the output as an html string
 
-	const terminal = terminals[terminals.length - 1];
-	const inputs = terminal_form.getElementsByTagName("input");
+const handle_command = command => {
 
-	if (inputs.length == 0) return;
+	if (command === "help")
+		return `<div class="text-white container mb-6">
+			ls  page listing<br>
+			cd  change page<br>
+			cat show a file<br>
+		</div>`;
 
-	const command = inputs[inputs.length - 1];
+	if (command === "ls")
+		return `<div class="text-white container mb-6">
+			Home<br>
+			Resources<br>
+			Posts<br>
+			WriteUps
+		</div>`;
 
-	if (command.value === "ls") {
-		
-		const output = document.createElement("div");
-		
-		output.classList.add(
-			"text-white",
-			"container",
-			"mb-6"
-		);
+	if (command === "cat flag.txt") 
+		return `<div class="text-white container mb-6">{
+			{kek}}
+		</div>`; 
 
-		output.innerHTML += "Home<br>Resources<br>Posts<br>WriteUps"	
+	if (command === "cat page.txt") {
 
-		terminal.parentElement.insertBefore(output, terminal);
-		
-		const clone = terminal.cloneNode(true);
-		terminal.parentElement.insertBefore(clone, output);
-
-		command.value = "";
-		window.scrollTo(0, document.body.scrollHeight);
-		return;
-	}
-
-	if (command.value === "cat flag.txt") {
-		alert("{{kek}}"); 
-		return;
+		const mains = document.getElementsByClassName("main");
+		if (mains.length == 0) return;
+		const last_main = mains[0];
+		return last_main.outerHTML;
 	} 
 
-	if (command.value === "cd /") {
+	if (command === "cd /") {
 		location.href ="/";
 		return; 
 	}
-	if (command.value === "cd .."){
+	if (command === "cd .."){
 		const location_divided = location.href.split("/"); 
 		location.href = location_divided.slice(0, location_divided.length - 2).join('/'); 
 		return; 
 	}
 
-	if (command.value.startsWith("cd /")){
-		location.href = "/" + command.value.split(" /")[1]; 
+	if (command.startsWith("cd /")){
+		location.href = "/" + command.split(" /")[1]; 
 		return; 
 	}
 
-	if (command.value.startsWith("cd ")){
-		location.href += command.value.split(" ")[1]; 
+	if (command.startsWith("cd ")){
+		location.href += command.split(" ")[1]; 
 		return; 
 	}
 
-	// CHALLENGE HERE
-
+	return `<div class="text-red-500 container mb-6">
+		command not found
+	</div>`; 
+	
 }
 
 const terminal = () => {
 
+	// find the last terminal form in the dom
 	const terminals_form = document.getElementsByClassName("terminal_form");
 	if(terminals_form.length == 0) return;
-
 	const terminal_form = terminals_form[terminals_form.length - 1];
+
 	terminal_form.onsubmit = e => {
+		
 		e.preventDefault();
-		handle_command(terminal_form);
+
+		// find the last terminal in the dom (the all object)
+		const terminals = document.getElementsByClassName("terminal");
+		if(terminals.length == 0) return;
+		const terminal = terminals[terminals.length - 1];
+		
+		// find the last input
+		const inputs = terminal_form.getElementsByTagName("input");
+		if (inputs.length == 0) return;
+		const command = inputs[inputs.length - 1];
+
+		// get the ouptut from the handle_command function
+		const output = handle_command(command.value);
+
+		// return if there is no output
+		if(output == undefined || output == null || output === "") return;
+
+		const clone = terminal.cloneNode(true);
+		terminal.parentElement.insertBefore(clone, terminal);
+
+		const output_element = document.createElement("div");
+		terminal.parentElement.insertBefore(output_element, terminal);
+		
+		output_element.outerHTML = output;
+
+
+		command.value = "";
+		window.scrollTo(0, document.body.scrollHeight);
 	}
 }
 
-// remove animation-retard elemet view from the dom, 
+// remove animation-retard element view from the dom, 
 // in the css only version the retard is provided by changing the visibility property
 
 const hide_retards = () => {
@@ -154,15 +173,18 @@ const hide_retards = () => {
 
 window.onload = () => {
 
-	// remove no-js class, thus css will know that css is active
+	// remove no-js class making css kow that javascript is active
+
 	[].forEach.call(
+		// over
 		document.getElementsByClassName("no-js"), 
+		// do
 		no_js => {
 			no_js.classList.remove("no-js");
 		}
 	);
 
 	terminal();
-	code_snippets();
+	add_code_snippets_copy_btn();
 	hide_retards();
 }
