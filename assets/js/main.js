@@ -58,9 +58,9 @@ const handle_command = command => {
 
 	if (command === "help")
 		return `<div class="text-white container mb-6">
-			ls  page listing<br>
-			cd  change page<br>
-			cat show a file<br>
+			ls  &nbsp;&nbsp;page listing<br>
+			cd  &nbsp;&nbsp;change page<br>
+			cat &nbsp;show a file<br>
 		</div>`;
 
 	if (command === "ls")
@@ -72,14 +72,15 @@ const handle_command = command => {
 		</div>`;
 
 	if (command === "cat flag.txt") 
-		return `<div class="text-white container mb-6">{
-			{kek}}
+		return `<div class="text-white container mb-6">
+			{{kek}}
 		</div>`; 
 
 	if (command === "cat page.txt") {
 
 		const mains = document.getElementsByClassName("main");
 		if (mains.length == 0) return;
+		
 		const last_main = mains[0];
 		return last_main.outerHTML;
 	} 
@@ -88,6 +89,7 @@ const handle_command = command => {
 		location.href ="/";
 		return; 
 	}
+
 	if (command === "cd .."){
 		const location_divided = location.href.split("/"); 
 		location.href = location_divided.slice(0, location_divided.length - 2).join('/'); 
@@ -104,8 +106,12 @@ const handle_command = command => {
 		return; 
 	}
 
+	if(command == ""){
+		return;
+	}
+
 	return `<div class="text-red-500 container mb-6">
-		command not found
+		${command}: command not found
 	</div>`; 
 	
 }
@@ -129,24 +135,26 @@ const terminal = () => {
 		// find the last input
 		const inputs = terminal_form.getElementsByTagName("input");
 		if (inputs.length == 0) return;
-		const command = inputs[inputs.length - 1];
+		const last_input = inputs[inputs.length - 1];
 
 		// get the ouptut from the handle_command function
-		const output = handle_command(command.value);
+		let output = handle_command(last_input.value);
 
 		// return if there is no output
-		if(output == undefined || output == null || output === "") return;
+		if(output == undefined || output == null) output = "";
 
 		const clone = terminal.cloneNode(true);
-		terminal.parentElement.insertBefore(clone, terminal);
+		const old_terminal = terminal.parentElement.insertBefore(clone, terminal);
+		const old_input = old_terminal.getElementsByTagName("input")[0];
 
+		old_input.disabled = true;
+		
 		const output_element = document.createElement("div");
 		terminal.parentElement.insertBefore(output_element, terminal);
 		
 		output_element.outerHTML = output;
 
-
-		command.value = "";
+		last_input.value = "";
 		window.scrollTo(0, document.body.scrollHeight);
 	}
 }
@@ -159,9 +167,7 @@ const hide_retards = () => {
 	
 	const retard = getComputedStyle(document.documentElement)?.getPropertyValue('--retard')?.replace("ms", "") || 900; 
 
-	[].forEach.call(retards, r => {
-		r.classList.add("hidden");
-	});
+	[].forEach.call(retards, r => r.classList.add("hidden"));
 
 	setTimeout(() => {
 		[].forEach.call(retards, r => {
