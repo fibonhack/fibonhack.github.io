@@ -794,6 +794,8 @@ The output should look something like this:
     Flag: SEKAI{test_flag}
 ```
 
+For all the files check out the [github repo](https://github.com/barsa2000/sekai2022_gft)
+
 ## To learn more abount solana
 
 - [solana cookbook](https://solanacookbook.com) - Essential concepts
