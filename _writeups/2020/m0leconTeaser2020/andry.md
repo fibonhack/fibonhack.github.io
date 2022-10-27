@@ -4,7 +4,7 @@ layout: writeup
 title:	"andry"
 date:	2020-05-24
 category: "reverse"
-author: "AvengerF12, NicolaVV"
+author: "AvengerF12, nick0ve"
 ---
 ### Tools
 - Ghidra

@@ -4,7 +4,7 @@ layout: writeup
 title:	"pheappo"
 date:	2020-11-16
 category: "pwn"
-author: "NicolaVV"
+author: "nick0ve"
 ---
 
 ### Chall Description

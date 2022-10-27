@@ -3,7 +3,7 @@ ctf_name: "m0lecon 2020 Teaser"
 title:	"knife"
 date:	2020-05-24
 category: "pwn"
-author: "OrsoBruno96, NicolaVV"
+author: "OrsoBruno96, nick0ve"
 ---
 
 ## The challenge
