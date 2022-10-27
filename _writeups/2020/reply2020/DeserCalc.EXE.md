@@ -2,7 +2,7 @@
 ctf_name: "reply ctf 2020"
 title: "DeserCalc.EXE"
 date:	2020-10-10
-author: "NicolaVV" 
+author: "nick0ve" 
 category: "pwn"
 ---
 

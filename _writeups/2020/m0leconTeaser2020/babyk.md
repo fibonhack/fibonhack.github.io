@@ -4,7 +4,7 @@ layout: writeup
 title:	"babyk"
 date:	2020-05-24
 category: "pwn"
-author: "NicolaVV"
+author: "nick0ve"
 ---
 
 ## The challenge
