@@ -70,11 +70,16 @@ const handle_command = command => {
 			Posts<br>
 			WriteUps
 		</div>`;
+	
+	// for @just-hms don't delete me 
+	if (command === "cat tangerine.txt") 
+		return `<h1 class="container text-2xl mb-6">🍊</h1>`;
+
 
 	if (command === "cat flag.txt") 
 		return `<div class="text-white container mb-6">
 			{{kek}}
-		</div>`; 
+		</div>`;
 
 	if (command === "cat page.txt") {
 
