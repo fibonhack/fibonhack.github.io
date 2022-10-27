@@ -282,31 +282,31 @@ ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsysca
 
 <p>On Linux it’s not so easy, it is possible to completely break ASLR only if you are able to allocate 16TB of memory.</p>
 
-<pre><code class="language-C">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// 64gb</span>
+    <span class="kt">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="mh">0x1000000000</span><span class="p">;</span>
 
-int main()
-{
-    // 64gb
-    size_t size = 0x1000000000;
+    <span class="c1">// 16TB allocations</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">void</span> <span class="o">*</span><span class="n">mem</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">size</span><span class="p">);</span> <span class="c1">// this ends up calling mmap</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">mem</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">puts</span><span class="p">(</span><span class="s">"Failed"</span><span class="p">);</span>
+            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">mem</span><span class="p">);</span>
+    <span class="p">}</span>
 
-    // 16TB allocations
-    for (int i = 0; i &lt; 256; i++) {
-        void *mem = malloc(size); // this ends up calling mmap
-        if (!mem) {
-            puts("Failed");
-            return 1;
-        }
-        printf("%p\n", mem);
-    }
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">mem</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="mh">0x7f0000000000ULL</span><span class="p">;</span>
+    <span class="o">*</span><span class="n">mem</span> <span class="o">=</span> <span class="mh">0x41414141</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"R/W to %p: %x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">mem</span><span class="p">,</span> <span class="o">*</span><span class="n">mem</span><span class="p">);</span>
 
-    unsigned int *mem = (void*)0x7f0000000000ULL;
-    *mem = 0x41414141;
-    printf("R/W to %p: %x\n", mem, *mem);
-
-    return 0;
-}
-</code></pre>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <h3 id="note-about-glibc-memory-allocation">Note about glibc memory allocation</h3>
 
@@ -423,10 +423,10 @@ int main()
   <li>From the Dockerfile we can learn some interesting things:
     <ol>
       <li>Build and install oatpp 1.2.5, maybe there are useful bugs in this specific version?
-        <pre><code class="language-Docker"># Install oatpp
-RUN git clone https://github.com/oatpp/oatpp.git
-RUN cd /oatpp &amp;&amp; git checkout 1.2.5 &amp;&amp; mkdir build &amp;&amp; cd build &amp;&amp; cmake .. &amp;&amp; make install
-</code></pre>
+        <div class="language-docker highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install oatpp</span>
+<span class="k">RUN </span>git clone https://github.com/oatpp/oatpp.git
+<span class="k">RUN </span><span class="nb">cd</span> /oatpp <span class="o">&amp;&amp;</span> git checkout 1.2.5 <span class="o">&amp;&amp;</span> <span class="nb">mkdir </span>build <span class="o">&amp;&amp;</span> <span class="nb">cd </span>build <span class="o">&amp;&amp;</span> cmake .. <span class="o">&amp;&amp;</span> make <span class="nb">install</span>
+</code></pre></div>        </div>
       </li>
       <li>It builds the challenge from scratch
         <div class="language-docker highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">WORKDIR</span><span class="s"> /home/ctf/challenge/src/</span>
@@ -489,57 +489,57 @@ docker <span class="nb">exec</span> <span class="nt">-it</span> &lt;CONTAINER ID
 </ul>
 
 <p>And one function implemented in <code class="language-plaintext highlighter-rouge">MyController.cpp</code></p>
-<pre><code class="language-C">std::shared_ptr&lt;oatpp::base::StrBuffer&gt; MyController::get_file(int file_id, bool extract) 
-</code></pre>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">oatpp</span><span class="o">::</span><span class="n">base</span><span class="o">::</span><span class="n">StrBuffer</span><span class="o">&gt;</span> <span class="n">MyController</span><span class="o">::</span><span class="n">get_file</span><span class="p">(</span><span class="kt">int</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">bool</span> <span class="n">extract</span><span class="p">)</span> 
+</code></pre></div></div>
 <p>which:</p>
 <ul>
   <li>Set <code class="language-plaintext highlighter-rouge">to_open</code> to <code class="language-plaintext highlighter-rouge">{file_id}</code> or <code class="language-plaintext highlighter-rouge">{file_id}.unkyle</code>
-    <pre><code class="language-C">std::ostringstream comp_fname;
-comp_fname &lt;&lt; filename;
-if (extract) {
-  // Want the un-kylezip-d version
-  comp_fname &lt;&lt; ".unkyle";
-}
-auto to_open = comp_fname.str();
-</code></pre>
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">std</span><span class="o">::</span><span class="n">ostringstream</span> <span class="n">comp_fname</span><span class="p">;</span>
+<span class="n">comp_fname</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">extract</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Want the un-kylezip-d version</span>
+  <span class="n">comp_fname</span> <span class="o">&lt;&lt;</span> <span class="s">".unkyle"</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">auto</span> <span class="n">to_open</span> <span class="o">=</span> <span class="n">comp_fname</span><span class="p">.</span><span class="n">str</span><span class="p">();</span>
+</code></pre></div>    </div>
   </li>
   <li>If it’s the first time we are requesting to extract <code class="language-plaintext highlighter-rouge">{file_id}</code> then it calls decompress on it,
 which will write the decompressed file of <code class="language-plaintext highlighter-rouge">{file_id}</code> to <code class="language-plaintext highlighter-rouge">{file_id}.unkyle</code>.
-    <pre><code class="language-C">int fd = open(to_open.c_str(), O_RDONLY);
-if (fd == -1) {
-    if (!extract) return NULL;
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">to_open</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">fd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">extract</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
 
-    /* Need to create decompressed version of file
+    <span class="cm">/* Need to create decompressed version of file
      * Kyle gave me a buggy library so we are going to fork
      * in case we crash the web server will still stay up.
-     */
-    pid_t p = fork();
-    if (p == 0) {
-      decompress(filename);
-      exit(0);
-    } else {
-      waitpid(p, NULL, 0);
-    }
+     */</span>
+    <span class="n">pid_t</span> <span class="n">p</span> <span class="o">=</span> <span class="n">fork</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">decompress</span><span class="p">(</span><span class="n">filename</span><span class="p">);</span>
+      <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">waitpid</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
 
 
-    fd = open(to_open.c_str(), O_RDONLY);
-    if (fd == -1) {
-      return NULL;
-    }
-}
-</code></pre>
+    <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">to_open</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
   </li>
   <li>In the end <code class="language-plaintext highlighter-rouge">mmap</code> the result in memory.
-    <pre><code class="language-C">struct stat sb;
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">stat</span> <span class="n">sb</span><span class="p">;</span>
   
-if (fstat(fd, &amp;sb) != 0) {
-    return NULL;
-}
+<span class="k">if</span> <span class="p">(</span><span class="n">fstat</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sb</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
   
-/* mmap the file in for performance, or something... idk kyle made me write this */
-// 
-void *mem = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-</code></pre>
+<span class="cm">/* mmap the file in for performance, or something... idk kyle made me write this */</span>
+<span class="c1">// </span>
+<span class="kt">void</span> <span class="o">*</span><span class="n">mem</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">sb</span><span class="p">.</span><span class="n">st_size</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</code></pre></div>    </div>
   </li>
 </ul>
 
@@ -559,9 +559,9 @@ void *mem = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
   </li>
   <li>
     <p>There is a call to <code class="language-plaintext highlighter-rouge">mmap</code> in the parent process:</p>
-    <pre><code class="language-C">void *mem = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="o">*</span><span class="n">mem</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">sb</span><span class="p">.</span><span class="n">st_size</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
   
-</code></pre>
+</code></pre></div>    </div>
     <p>if we can control <code class="language-plaintext highlighter-rouge">sb.st_size</code>, which is the size of the decompressed file, we could easily turn it into a memory spraying primitive.</p>
   </li>
 </ul>
@@ -570,8 +570,8 @@ void *mem = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 
 <h3 id="decompress">decompress()</h3>
 
-<pre><code class="language-C">int decompress(const char *fname)
-</code></pre>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">decompress</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fname</span><span class="p">)</span>
+</code></pre></div></div>
 
 <ul>
   <li>Maps the input file to the address <code class="language-plaintext highlighter-rouge">0x42069000000</code>.</li>
@@ -608,8 +608,8 @@ void *mem = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 
 <h3 id="do_decompress">do_decompress()</h3>
 
-<pre><code class="language-C">static void do_decompress(char *out, char *in, size_t insize)
-</code></pre>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">void</span> <span class="n">do_decompress</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">in</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">insize</span><span class="p">)</span>
+</code></pre></div></div>
 <p>You can view this function as a simple <em>virtual machine</em>, which executes the bytecode pointed by <code class="language-plaintext highlighter-rouge">in</code> and writes the output to the buffer pointed by <code class="language-plaintext highlighter-rouge">out</code>.</p>
 
 <p><code class="language-plaintext highlighter-rouge">in</code> points to our <code class="language-plaintext highlighter-rouge">{file_id}</code>.</p>
@@ -625,13 +625,13 @@ void *mem = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
     <p>writes <code class="language-plaintext highlighter-rouge">b</code> to <code class="language-plaintext highlighter-rouge">out</code>, increments out by <code class="language-plaintext highlighter-rouge">1</code>.</p>
 
     <p>Opcode implementation:</p>
-    <pre><code class="language-C">case 1: {
-    // Write byte
-    uint8_t b = in[cur++];
-    *(out++) = b;
-    break;
-}
-</code></pre>
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="mi">1</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1">// Write byte</span>
+    <span class="kt">uint8_t</span> <span class="n">b</span> <span class="o">=</span> <span class="n">in</span><span class="p">[</span><span class="n">cur</span><span class="o">++</span><span class="p">];</span>
+    <span class="o">*</span><span class="p">(</span><span class="n">out</span><span class="o">++</span><span class="p">)</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+    <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
   </li>
   <li>
     <p>2 -&gt; SEEK(u64 off)</p>
@@ -657,31 +657,31 @@ void *mem = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 </code></pre></div>    </div>
 
     <p>Opcode implementation:</p>
-    <pre><code class="language-C">case 2: {
-  // Seek
-  uint64_t off = *(uint64_t*)(&amp;in[cur]);
-  cur += sizeof(off);
-  out += off;
-  break;
-}
-</code></pre>
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="mi">2</span><span class="p">:</span> <span class="p">{</span>
+  <span class="c1">// Seek</span>
+  <span class="kt">uint64_t</span> <span class="n">off</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">uint64_t</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">[</span><span class="n">cur</span><span class="p">]);</span>
+  <span class="n">cur</span> <span class="o">+=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">off</span><span class="p">);</span>
+  <span class="n">out</span> <span class="o">+=</span> <span class="n">off</span><span class="p">;</span>
+  <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
   </li>
   <li>
     <p>3 -&gt; LOAD(off, size). 
 Copy <code class="language-plaintext highlighter-rouge">size</code> bytes from <code class="language-plaintext highlighter-rouge">out - off</code> to <code class="language-plaintext highlighter-rouge">out</code>, increment <code class="language-plaintext highlighter-rouge">out</code> by 8.</p>
 
     <p>Opcode implementation:</p>
-    <pre><code class="language-C">case 3: {
-  // Copy some previously written bytes
-  uint64_t off = *(uint64_t*)(&amp;in[cur]);
-  cur += sizeof(off);
-  uint64_t count = *(uint64_t*)(&amp;in[cur]);
-  cur += sizeof(off);
-  memcpy(out, out-off, count);
-  out += count;
-  break;
-}
-</code></pre>
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="mi">3</span><span class="p">:</span> <span class="p">{</span>
+  <span class="c1">// Copy some previously written bytes</span>
+  <span class="kt">uint64_t</span> <span class="n">off</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">uint64_t</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">[</span><span class="n">cur</span><span class="p">]);</span>
+  <span class="n">cur</span> <span class="o">+=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">off</span><span class="p">);</span>
+  <span class="kt">uint64_t</span> <span class="n">count</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">uint64_t</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">[</span><span class="n">cur</span><span class="p">]);</span>
+  <span class="n">cur</span> <span class="o">+=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">off</span><span class="p">);</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">out</span><span class="o">-</span><span class="n">off</span><span class="p">,</span> <span class="n">count</span><span class="p">);</span>
+  <span class="n">out</span> <span class="o">+=</span> <span class="n">count</span><span class="p">;</span>
+  <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
   </li>
 </ul>
 
