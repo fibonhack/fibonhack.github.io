@@ -112,7 +112,7 @@ Let's try to reproduce saelo's PoC to completely break aslr on Linux.
 
 On Linux it's not so easy, it is possible to completely break ASLR only if you are able to allocate 16TB of memory.
 
-```C
+```c
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -195,7 +195,7 @@ It's always a good thing to grasp some knowledge about the environment, let's sc
 
 * From the Dockerfile we can learn some interesting things:
   1. Build and install oatpp 1.2.5, maybe there are useful bugs in this specific version?
-     ```Docker
+     ```docker
      # Install oatpp
      RUN git clone https://github.com/oatpp/oatpp.git
      RUN cd /oatpp && git checkout 1.2.5 && mkdir build && cd build && cmake .. && make install
@@ -254,12 +254,12 @@ There are 3 endpoints:
 * `POST /upload/{fileId}` -> Upload a file given a {fileId}.
 
 And one function implemented in `MyController.cpp`
-```C
+```c
 std::shared_ptr<oatpp::base::StrBuffer> MyController::get_file(int file_id, bool extract) 
 ``` 
 which:
 * Set `to_open` to `{file_id}` or `{file_id}.unkyle`
-  ```C
+  ```c
   std::ostringstream comp_fname;
   comp_fname << filename;
   if (extract) {
@@ -271,7 +271,7 @@ which:
 
 * If it's the first time we are requesting to extract `{file_id}` then it calls decompress on it,
   which will write the decompressed file of `{file_id}` to `{file_id}.unkyle`.
-  ```C
+  ```c
   int fd = open(to_open.c_str(), O_RDONLY);
   if (fd == -1) {
       if (!extract) return NULL;
@@ -297,7 +297,7 @@ which:
   ```
 
 * In the end `mmap` the result in memory.
-  ```C
+  ```c
   struct stat sb;
   
   if (fstat(fd, &sb) != 0) {
@@ -320,7 +320,7 @@ which:
   We could use that primitive to infer the memory space of the parent.
 
 * There is a call to `mmap` in the parent process:
-  ```C
+  ```c
   void *mem = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
   
   ``` 
@@ -330,7 +330,7 @@ which:
 
 ### decompress()
 
-```C
+```c
 int decompress(const char *fname)
 ```
 
@@ -348,7 +348,7 @@ The file is expected to be in the format:
 ### do_decompress()
 
 
-```C
+```c
 static void do_decompress(char *out, char *in, size_t insize)
 ```
 You can view this function as a simple *virtual machine*, which executes the bytecode pointed by `in` and writes the output to the buffer pointed by `out`. 
@@ -364,7 +364,7 @@ This VM has 4 opcodes:
   writes `b` to `out`, increments out by `1`.
   
   Opcode implementation:
-  ```C
+  ```c
   case 1: {
       // Write byte
       uint8_t b = in[cur++];
@@ -397,7 +397,7 @@ This VM has 4 opcodes:
   ```
 
   Opcode implementation:
-  ```C
+  ```c
   case 2: {
     // Seek
     uint64_t off = *(uint64_t*)(&in[cur]);
@@ -411,7 +411,7 @@ This VM has 4 opcodes:
   Copy `size` bytes from `out - off` to `out`, increment `out` by 8.
 
   Opcode implementation:
-  ```C
+  ```c
   case 3: {
     // Copy some previously written bytes
     uint64_t off = *(uint64_t*)(&in[cur]);
