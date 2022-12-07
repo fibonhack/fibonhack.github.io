@@ -19,7 +19,9 @@ collections:
   ourposts:
     permalink: /:path
     output: true
-
+  logo:
+    permalink: /:collection/:path
+    output: true
 
 defaults:
   - scope:
