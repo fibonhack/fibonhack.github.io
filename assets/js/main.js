@@ -182,6 +182,11 @@ const hide_retards = () => {
 	
 }
 
+// low quality image preload from https://medium.com/@imgix/lqip-your-images-for-fast-loading-2523d9ee4a62
+const lqip = () => {
+	[...document.getElementsByClassName('lqip')].forEach(e => e.setAttribute('src', e.getAttribute('data-src')));
+}
+
 window.onload = () => {
 
 	// remove no-js class making css kow that javascript is active
@@ -198,4 +203,5 @@ window.onload = () => {
 	terminal();
 	add_code_snippets_copy_btn();
 	hide_retards();
+	lqip();
 }
