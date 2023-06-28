@@ -3,5 +3,3 @@ _site/
 .vscode
 .jekyll-metadata
 node_modules
-package-lock.json
-Gemfile.lock
