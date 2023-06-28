@@ -11,6 +11,10 @@ Check out how good (bad) we are doing at [CTFTime](https://ctftime.org/team/1175
 
 {% if site.social.email %} Contact us at `{{site.social.email}}` {% endif %}
 
+# News
+We just organized our first [CTF event](/events/2023/ifctfquals), check it out!
+
+
 # Members
 
 {% for author in site.authors %}

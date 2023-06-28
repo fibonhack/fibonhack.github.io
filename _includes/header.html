@@ -2,7 +2,7 @@
     <nav class="w-full p-6 flex flex-col items-center justify-center my-3">
 
 		<img class="w-2/5 md:w-1/4 lqip" data-src="/logo/transparent/800.png" src="/logo/transparent/100.png" alt="fibonhack"/>
- 
+
     </nav>
 
     <nav class="md:py-6">
@@ -11,43 +11,50 @@
             <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-center">
               <div class="sm:ml-6">
                 <div class="flex space-x-4">
-                  
+
                   <!-- TODO check current page -->
-                  
+
                   <a href="/" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl {%if page.title == "home" %} text-white font-black {% else %} text-zinc-300 font-medium {% endif %}" {% if page.title == "home" %} aria-current="page" {% endif %}>Home</a>
                   <a href="/resources" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl {%if page.title == "resources" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}" {% if page.title == "home" %} aria-current="page" {% endif %}>Resources</a>
                   <a href="/posts" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl {%if page.title == "posts" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}" {% if page.title == "home" %} aria-current="page" {% endif %}>Posts</a>
+                  <a href="/events" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl {%if page.title == "events" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}" {% if page.title == "home" %} aria-current="page" {% endif %}>Events</a>
                   <a href="/writeups" class="hover:border-1 border-zinc-600 hover:border-dashed hover:border-b px-3 py-2 text-xl  {%if page.title == "writeups" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}" {% if page.title == "home" %} aria-current="page" {% endif %}>Writeups</a>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      
+
         <div class="sm:hidden" id="mobile-menu">
           <div class="space-y-1 px-2 pt-2 pb-3">
-            <a href="/" 
-              {% if page.title == "home" %} aria-current="page" {% endif %} 
+            <a href="/"
+              {% if page.title == "home" %} aria-current="page" {% endif %}
               class="border-b border-dashed border-1 border-zinc-600 text-white block px-3 py-2 text-lg {%if page.title == "home" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
             >
               Home
             </a>
-            <a 
-              href="/resources" 
-              {% if page.title == "resources" %} aria-current="page" {% endif %} 
+            <a
+              href="/resources"
+              {% if page.title == "resources" %} aria-current="page" {% endif %}
               class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg {%if page.title == "resources" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
             >
               Resources
             </a>
-            <a href="/posts" 
-               {% if page.title == "posts" %} aria-current="page" {% endif %} 
-              class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg {%if page.title == "posts" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
+            <a href="/posts"
+               {% if page.title == "posts" %} aria-current="page" {% endif %}
+               class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg {%if page.title == "posts" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
             >
               Posts
             </a>
-            <a href="/writeups" 
-              {% if page.title == "writeups" %} aria-current="page" {% endif %} 
-              class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg {%if page.title == "writeups" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
+            <a href="/events"
+               {% if page.title == "events" %} aria-current="page" {% endif %}
+               class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg {%if page.title == "events" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
+            >
+              Events
+            </a>
+            <a href="/writeups"
+               {% if page.title == "writeups" %} aria-current="page" {% endif %}
+               class="border-b border-dashed border-1 border-zinc-600 block px-3 py-2 text-lg {%if page.title == "writeups" %} text-white  font-black {% else %} text-zinc-300 font-medium {% endif %}"
             >
               Writeups
             </a>
@@ -63,6 +70,5 @@
             cat page.txt
         </div>
     </nav>
-    
+
 </div>
-  
