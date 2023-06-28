@@ -6,8 +6,6 @@ services:
     ports:
       - 4000:4000
     volumes:
-      - ".:/srv/jekyll"
-
+      - ".:/srv/jekyll:z"
     working_dir: "/srv/jekyll"
-
     command: sh -c "npm install && npm run dev"
