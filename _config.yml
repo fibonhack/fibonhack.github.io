@@ -19,6 +19,9 @@ collections:
   ourposts:
     permalink: /:path
     output: true
+  ourevents:
+    permalink: /events/:path
+    output: true
   logo:
     permalink: /:collection/:path
     output: true
@@ -43,6 +46,12 @@ defaults:
       path: ""
     values:
       layout: "default"
+  - scope:
+      path: ""
+      type: "ourevents"
+    values:
+      layout: "event"
+
 
 plugins:
   - jekyll-postcss

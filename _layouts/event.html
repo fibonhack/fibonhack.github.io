@@ -1,0 +1,15 @@
+---
+layout: page
+---
+
+<div class="event">
+
+  <header class="event-header" style="padding-bottom: 0.8em;">
+    <p> {{ page.date | date: "%-d %b %Y" }} </p>
+    <h1 style="margin: -0.02em auto;"> {{ page.title }} </h1>
+  </header>
+
+  <article class="event-content">
+    {{ content }}
+  </article>
+</div>
