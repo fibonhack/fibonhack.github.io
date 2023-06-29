@@ -20,7 +20,7 @@ We just organized our first [CTF event](/events/2023/ifctfquals), check it out!
 {% for author in site.authors %}
 
 {% assign author_url = "/members/" | append: author.short_name %}
-* [{{ author.short_name }}]( {{ author_url  }} )
+* <abbr title="{{ author.position }}">{{ author.skill }}</abbr> [{{ author.short_name }}]( {{ author_url  }} )
 {% assign author_url = nil %}
 
 {% endfor %}
