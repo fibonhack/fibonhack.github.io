@@ -11,7 +11,7 @@ title: timeline
 	{% for event in site.data.timeline %}
 	<div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
 		<!-- dot icon -->
-		<div class="w-3 h-3 rounded-full border border-white bg-[#27374C] text-slate-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-[calc(2rem-50%)] md:group-even:translate-x-[calc(2rem-50%)]">
+		<div class="w-3 h-3 rounded-full border border-white bg-[#27374C] shadow md:order-1 md:group-odd:-translate-x-[calc(2rem-50%)] md:group-even:translate-x-[calc(2rem-50%)]">
 		</div>
 		<!-- card -->
 		<div class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] bg-[#181A1B] p-4 rounded border border-[#27374C] shadow">
