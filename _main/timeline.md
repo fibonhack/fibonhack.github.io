@@ -39,7 +39,7 @@ timeline:
     <div class="w-3 h-3 rounded-full border border-white bg-[#27374C] shadow order-1 md:order-2 md:group-even:order-2 ">
     </div>
     <!-- card -->
-    <div class="bg-[#181A1B] w-[calc(100%-2rem)]  p-4 rounded border border-[#27374C] shadow order-2 md:order-3 md:group-even:order-1">
+    <div class="bg-[#181A1B] w-[calc(100%-2rem)] p-4 rounded border border-[#27374C] shadow order-2 md:order-3 md:group-even:order-1">
       <div class="flex items-center justify-between space-x-2 mb-1">
         <div class="font-bold text-zinc-300">{{ event.title }}</div>
         <time class="font-caveat font-medium text-blue-400">{{ event.date }}</time>
