@@ -29,10 +29,10 @@ timeline:
 
   {% for event in page.timeline %}
   <div class="relative grid md:grid-cols-[1fr_0px_1fr] grid-cols-[0.75rem_1fr] gap-2 justify-items-center place-items-center group">
-		<!-- image (optional) -->
-    <div class="w-1/2 order-3 col-span-2 md:col-span-1 md:order-1 md:group-even:order-3">
+    <!-- image (optional) -->
+    <div class="md:w-1/2 w-4/5 order-3 col-span-2 md:col-span-1 md:order-1 md:group-even:order-3">
       {% if event.image %}
-      <img src="{{ event.image }}" alt="{{ event.title }}" class="border-t-[0.8rem] border-x-[0.6rem] border-b-[2.5rem] border-white">
+      <img src="{{ event.image }}" alt="{{ event.title }}" class="w-full aspect-[35/42] object-cover border-t-[0.8rem] border-x-[0.6rem] border-b-[2.5rem] border-white">
       {% endif %}
     </div>
     <!-- dot icon -->
@@ -44,7 +44,7 @@ timeline:
         <div class="font-bold text-zinc-300">{{ event.title }}</div>
         <time class="font-caveat font-medium text-blue-400">{{ event.date }}</time>
       </div>
-      <div class="text-[#9D9487] leading-tight not-prose">{{ event.description|markdownify|rstrip|newline_to_br }}</div>
+      <div class="text-[#9D9487] leading-tight not-prose [&_a]:underline">{{ event.description|markdownify|rstrip|newline_to_br }}</div>
     </div>
   </div>
   {% endfor %}
