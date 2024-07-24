@@ -2,27 +2,76 @@
 layout: page
 title: timeline
 
+# in the description you can use markdown, `|` ignores the newline, `>` keeps the newlines in the output
 timeline:
-  - date: January 2020
-    title: Sample Text
+  - date: Jun 2019
+    title: Team Formation
     description: >
-      A paragraph is defined as “a group of sentences or a single sentence that forms a unit” 
-      (Lunsford and Connors 116). Length and appearance do not determine whether a section 
-      in a paper is a paragraph. For instance, in some styles of writing, particularly journalistic styles, a paragraph can be just one sentence long.
-  - date: January 2020
-    title: Sample Text
+      The University of Pisa partecipates for the first time at **CyberChallenge.IT**,
+      after the [third place](https://cyberchallenge.it/attack-defense/2019){:target="_blank"} 
+      in the national competition the team was born.
+  - date: Jun 2020
+    title: CyberChallenge.IT winners
     description: |
-      A paragraph is defined as “a group of sentences or a single sentence that forms a unit” (Lunsford and Connors 116).
-      Length and appearance do not determine whether a section in a paper is a paragraph.
-      For instance, in some styles of writing, particularly journalistic styles, a paragraph can be just one sentence long.
-    image: /logo/square/800.png
-  - date: January 2020
-    title: Sample Title
-    description: A paragraph is defined as “a group of sentences or a single sentence that forms a unit” (Lunsford and Connors 116). Length and appearance do not determine whether a section in a paper is a paragraph. For instance, in some styles of writing, particularly journalistic styles, a paragraph can be just one sentence long.
-    image: /logo/square/800.png
+      We won the [CyberChallenge.IT](https://cyberchallenge.it/attack-defense/2020){:target="_blank"}!
+      The team grows :super:.
+  - date: Dec 2021
+    title: Our first CTF final on site
+    description: >
+      We qualified for the m0lecon 2021 ctf final, the ctf and conference organized by the team from [PoliTo](pwnthem0le.polito.it){:target="_blank"}.
+      We placed 4th and first among the Italian teams.
+  - date: May 2022
+    title: Meta BountyCon
+    description: >
+      We qualified and got invited to the [Meta BountyCon](https://bountycon.io/){:target="_blank"} bug bounty event in Madrid, Spain.
+    image: /assets/images/timeline/spain.jpg
+  - date: Dec 2022
+    title: m0lecon 2022 winners
+    description: >
+      We won the [m0lecon 2022](https://pwnthem0le.polito.it/){:target="_blank"} 
+      ctf final, the first time for the University of Pisa.
+    image: https://pbs.twimg.com/media/Fh8WA3sWQAA_HN-?format=jpg&name=large
+  - date: May 2023
+    title: HackTM CTF Finals
+    description: >
+      We qualified for the [HackTM](https://hacktm.ro/){:target="_blank"} 
+      ctf final, the first time for the University of Pisa.
+  - date: Aug 2023
+    title: DEFCON CTF Finals & HackASat winners
+    description: >
+      We qualified for the [DEFCON](https://www.defcon.org/){:target="_blank"} 
+      ctf final and won the [HackASat](https://www.hackasat.com/){:target="_blank"} 
+      ctf, the first time for the University of Pisa.
+    image: https://pbs.twimg.com/media/F3_mGD5W0AA49NQ?format=jpg&name=4096x4096
+  - date: Aug 2023
+    title: MidnightSun CTF finalists
+    description: >
+      We qualified for the [MidnightSun](https://midnightsunctf.se/){:target="_blank"} 
+      ctf final, the first time for the University of Pisa.
+  - date: Sep 2023
+    title: OliCyber organizers
+    description: >
+      We organized the [OliCyber](https://olicyber.it/){:target="_blank"} 
+      ctf, the first time for the University of Pisa.
+  - date: Oct 2023
+    title: Internet Festival CTF & High school organizers
+    description: >
+      We qualified for the [Hack.lu](https://hack.lu/){:target="_blank"} 
+      ctf final, the first time for the University of Pisa.
+  - date: May 2024
+    title: LakeCTF finalists
+    description: >
+      We qualified for the [LakeCTF](https://lakectf.it/){:target="_blank"} 
+      ctf final, the first time for the University of Pisa.
+  - date: May 2024
+    title: Space System Security Challenge finalists
+    description: >
+      We qualified for the [Space System Security Challenge](https://www.sssc.space/){:target="_blank"} 
+      ctf final, the first time for the University of Pisa.
 ---
 
 <!-- from https://cruip.com/3-examples-of-brilliant-vertical-timelines-with-tailwind-css/ -->
+<!-- TODO: fix hardcoded values (colors etc) -->
 
 <!-- vertical line -->
 <div class="space-y-8 relative before:absolute before:inset-0 before:ml-1.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
