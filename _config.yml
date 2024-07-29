@@ -52,18 +52,17 @@ defaults:
     values:
       layout: "event"
 
-
-plugins:
-  - jekyll-postcss
-
 social:
   email: echo ti.kcahnobif@ofni|rev
   twitter: https://twitter.com/fibonhack
   github: https://github.com/fibonhack
   ctftime: https://ctftime.org/team/117538
 
+# plugins:
+#   - jekyll-postcss-v2
+
 exclude:
-  - assets/css
+  - assets/css/*.css # done by postcss
   - docker-compose.yml
   - Dockerfile
   - package.json
@@ -71,10 +70,11 @@ exclude:
   - postcss.config.js
   - README
   - tailwind.config.js
+  - node_modules
 
-sass:
-  load_paths:
-    - _sass
-    - node_modules
+# sass:
+#   load_paths:
+#     - _sass
+#     - node_modules
 
-include: ["node_modules/tailwindcss"]
+# include: ["node_modules/tailwindcss"]
