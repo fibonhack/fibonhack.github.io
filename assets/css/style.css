@@ -3,7 +3,7 @@
 @import "tailwindcss/utilities";
 
 @import "animation-style.css";
-@import "syntax-highlight.css";
+@import "syntax-highlight.css"; /* TODO: is this necessary? */
 
 
 body{

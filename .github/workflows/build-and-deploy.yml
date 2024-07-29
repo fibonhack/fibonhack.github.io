@@ -9,20 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Install Dependencies
-      run: npm install
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Build the site
-      run: |
-        docker run \
-        -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
-        jekyll/jekyll:latest /bin/bash -c "chmod -R 777 /srv/jekyll && bundle install && JEKYLL_ENV=production bundle exec jekyll build --future && chmod -R 777 /srv/jekyll/_site"
+      - name: Build
+        run: |
+          docker build -t tmp . && docker run --rm -v ${{ github.workspace }}/_site:/site/_site tmp npm run build
 
-    - name: Build CSS
-      run: NODE_ENV=production ./node_modules/.bin/postcss assets/css/main.css --output _site/assets/css/style.css
-
-    - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        folder: _site
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: _site
