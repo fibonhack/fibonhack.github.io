@@ -1409,6 +1409,7 @@ html { -webkit-font-smoothing: antialiased; }
 /* heading */
 .highlight .gu { color: var(--operator); font-weight: bold; }
 /* subheading */
+/* TODO: is this necessary? */
 body {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
   overflow-wrap: break-word;
