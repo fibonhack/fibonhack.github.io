@@ -2,10 +2,10 @@
   "scripts": {
     "jekyll:dev": "JEKYLL_ENV=production bundle exec jekyll serve --incremental --force-polling --host 0.0.0.0",
     "jekyll:build": "JEKYLL_ENV=production bundle exec jekyll build --future",
-    "css:dev": "postcss assets/css/main.css --output _site/assets/css/style.css --watch",
-    "css:build": "NODE_ENV=production postcss assets/css/main.css --output _site/assets/css/style.css",
-    "dev": "concurrently --kill-others \"npm run jekyll:dev\" \"npm run css:dev\"",
-    "build": "npm run css:build && npm run jekyll:build"
+    "css:dev": "postcss assets/css/style.css --output _site/assets/css/style.css --watch --poll",
+    "css:build": "NODE_ENV=production postcss assets/css/style.css --output _site/assets/css/style.css",
+    "dev": "concurrently --kill-others 'npm run jekyll:dev' 'npm run css:dev'",
+    "build": "npm run jekyll:build && npm run css:build"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.7",
@@ -14,7 +14,8 @@
     "postcss": "^8.4.18",
     "postcss-cli": "^10.0.0",
     "postcss-import": "^15.0.0",
-    "tailwindcss": "^3.1.8"
+    "tailwindcss": "^3.1.8",
+    "watch": "^1.0.2"
   },
   "dependencies": {
     "concurrently": "^7.5.0"

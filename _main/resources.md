@@ -5,6 +5,7 @@ title: "resources"
 
 # CTF notes
 - [Binary exploitation]({{ "/resources/pwn" }})
+- [Wireshark notes]({{ "/resources/network" }})
 
 # Random links
 
