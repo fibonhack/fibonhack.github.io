@@ -72,6 +72,11 @@ exclude:
   - tailwind.config.js
   - node_modules
 
+# postcss build is faster than jekyll
+# so prevent jekyll from deleting the built css
+keep_files:
+  - assets/css/style.css
+
 # sass:
 #   load_paths:
 #     - _sass
