@@ -7,9 +7,9 @@ timeline:
   - date: Jun 2019
     title: Team Formation
     description: >
-      The University of Pisa partecipates for the first time at **CyberChallenge.IT**,
-      after the [third place](https://cyberchallenge.it/attack-defense/2019){:target="_blank"} 
-      in the national competition the team was born.
+      For the first time, the University of Pisa participates in **CyberChallenge.IT**.
+      The team was born after the university earned [third place](https://cyberchallenge.it/attack-defense/2019){:target="_blank"}
+      in the national competition.
   - date: Jun 2020
     title: CyberChallenge.IT winners
     description: |
@@ -18,36 +18,34 @@ timeline:
   - date: Dec 2021
     title: Our first CTF final on site
     description: >
-      We qualified for the m0lecon 2021 ctf final, the ctf and conference organized by the team from [PoliTo](pwnthem0le.polito.it){:target="_blank"}.
+      We qualified for the [m0lecon 2021 ctf final](https://ctftime.org/event/1456/){:target="_blank"}, the ctf and conference organized by the team from [PoliTo](pwnthem0le.polito.it){:target="_blank"}.
       We placed 4th and first among the Italian teams.
   - date: May 2022
     title: Meta BountyCon
     description: >
       We qualified and got invited to the [Meta BountyCon](https://bountycon.io/){:target="_blank"} bug bounty event in Madrid, Spain.
     image: /assets/images/timeline/spain.jpg
+  - date: Aug 2022
+    title: MidnightSun CTF finalists
+    description: >
+      Together with **pwnthem0le** team from [PoliTo](penthem0le.polito.it) we qualified for [MidnightSun CTF finals 2022](https://ctftime.org/event/1475/) as **AngryGabibbo** team.
   - date: Dec 2022
     title: m0lecon 2022 winners
     description: >
-      We won the [m0lecon 2022](https://pwnthem0le.polito.it/){:target="_blank"} 
-      ctf final, the first time for the University of Pisa.
-    image: https://pbs.twimg.com/media/Fh8WA3sWQAA_HN-?format=jpg&name=large
+      We won the [m0lecon 2022 ctf final](https://ctftime.org/event/1626){:target="_blank"}.
+    image: /assets/images/timeline/m0lecon-2022.jpeg
   - date: May 2023
     title: HackTM CTF Finals
     description: >
-      We qualified for the [HackTM](https://hacktm.ro/){:target="_blank"} 
-      ctf final, the first time for the University of Pisa.
+      We qualified for the [HackTM ctf finals](https://ctftime.org/event/1971){:target="_blank"} ctf final.
   - date: Aug 2023
     title: DEFCON CTF Finals & HackASat winners
     description: >
-      We qualified for the [DEFCON](https://www.defcon.org/){:target="_blank"} 
-      ctf final and won the [HackASat](https://www.hackasat.com/){:target="_blank"} 
-      ctf, the first time for the University of Pisa.
+      Together with **mhackeroni** team we qualified for the [DEFCON](https://www.defcon.org/){:target="_blank"} 
+      ctf final and [Hack-a-Sat 4](https://www.hackasat.com/){:target="_blank"}.
+      We won [Hack-a-Sat 4](https://ctftime.org/event/2083).
     image: https://pbs.twimg.com/media/F3_mGD5W0AA49NQ?format=jpg&name=4096x4096
-  - date: Aug 2023
-    title: MidnightSun CTF finalists
-    description: >
-      We qualified for the [MidnightSun](https://midnightsunctf.se/){:target="_blank"} 
-      ctf final, the first time for the University of Pisa.
+
   - date: Sep 2023
     title: OliCyber organizers
     description: >
