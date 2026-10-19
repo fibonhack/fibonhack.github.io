@@ -1,10 +1,8 @@
+# Local development only, see Dockerfile
 services:
   jekyll:
     build: .
     ports:
       - 4000:4000
-    develop:
-      watch:
-        - action: sync
-          path: ./
-          target: /site
+    volumes:
+      - .:/site:z

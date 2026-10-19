@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "jekyll:dev": "JEKYLL_ENV=production bundle exec jekyll serve --incremental --force-polling --host 0.0.0.0",
+    "jekyll:dev": "JEKYLL_ENV=production bundle exec jekyll serve --force-polling --host 0.0.0.0",
     "jekyll:build": "JEKYLL_ENV=production bundle exec jekyll build --future",
     "css:dev": "postcss assets/css/style.css --output _site/assets/css/style.css --watch --poll",
     "css:build": "NODE_ENV=production postcss assets/css/style.css --output _site/assets/css/style.css",
@@ -10,14 +10,11 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.7",
     "autoprefixer": "^10.4.12",
+    "concurrently": "^9.2.4",
     "cssnano": "^5.1.13",
     "postcss": "^8.4.18",
     "postcss-cli": "^10.0.0",
     "postcss-import": "^15.0.0",
-    "tailwindcss": "^3.1.8",
-    "watch": "^1.0.2"
-  },
-  "dependencies": {
-    "concurrently": "^7.5.0"
+    "tailwindcss": "^3.1.8"
   }
 }

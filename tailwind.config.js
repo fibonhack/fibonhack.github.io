@@ -1,14 +1,16 @@
 module.exports = {
   content: [
+    './*.{html,md}',
     './_includes/**/*.html',
-    './assets/css/*.*',
-    './assets/js/*.*',
-    './_includes/*.html',
     './_layouts/**/*.html',
-    './_layouts/*.html',
-    './_posts/*.md',
-    './*.html',
-    './_main/*.md',
+    './_main/**/*.{html,md}',
+    './_writeups/**/*.{html,md}',
+    './_ourposts/**/*.{html,md}',
+    './_ourevents/**/*.{html,md}',
+    './_authors/**/*.{html,md}',
+    './_logo/**/*.{html,md}',
+    './assets/css/*.css',
+    './assets/js/*.js',
   ],
   theme: {
     extend: {},

@@ -3,3 +3,5 @@ _site/
 .vscode
 .jekyll-metadata
 node_modules
+.bundle
+vendor

@@ -4,7 +4,7 @@ module.exports = {
     require('postcss-import'),
     require('tailwindcss'),
     require('autoprefixer'),
-    ...(process.env.JEKYLL_ENV == "production"
+    ...(process.env.NODE_ENV == "production"
       ? [require('cssnano')({ preset: 'default' })]
       : [])
   ]
