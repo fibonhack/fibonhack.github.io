@@ -16,9 +16,9 @@ timeline:
       We won the [CyberChallenge.IT](https://cyberchallenge.it/attack-defense/2020){:target="_blank"}!
       The team grows :super:.
   - date: Dec 2021
-    title: Our first CTF final on site
+    title: Our first CTF finals on site
     description: >
-      We qualified for the [m0lecon 2021 CTF final](https://ctftime.org/event/1456/){:target="_blank"}, the CTF and conference organized by the team from [PoliTo](pwnthem0le.polito.it){:target="_blank"}.
+      We qualified for the [m0lecon 2021 CTF finals](https://ctftime.org/event/1456/){:target="_blank"}, the CTF and conference organized by the team from [PoliTo](pwnthem0le.polito.it){:target="_blank"}.
       We placed 4th and first among the Italian teams.
   - date: May 2022
     title: Meta BountyCon
@@ -32,18 +32,18 @@ timeline:
   - date: Dec 2022
     title: m0lecon 2022 winners
     description: >
-      We won the [m0lecon 2022 CTF final](https://ctftime.org/event/1626){:target="_blank"}.
+      We won the [m0lecon 2022 CTF finals](https://ctftime.org/event/1626){:target="_blank"}.
     image: /assets/images/timeline/m0lecon-2022.jpeg
   - date: May 2023
     title: HackTM CTF Finals
     description: >
-      We qualified for the [HackTM CTF finals](https://ctftime.org/event/1971){:target="_blank"} CTF final.
+      We qualified for the [HackTM CTF finals](https://ctftime.org/event/1971){:target="_blank"}.
     image: /assets/images/timeline/hacktm.png
   - date: Aug 2023
     title: DEFCON CTF Finals & HackASat winners
     description: >
       Together with **mhackeroni** team we qualified for the [DEFCON](https://www.defcon.org/){:target="_blank"} 
-      CTF final and [Hack-a-Sat 4](https://www.hackasat.com/){:target="_blank"}.
+      CTF finals and [Hack-a-Sat 4 finals](https://www.hackasat.com/){:target="_blank"}.
       We won [Hack-a-Sat 4](https://ctftime.org/event/2083).
     image: /assets/images/timeline/hack-a-sat.jpeg
   - date: Oct 2023
@@ -59,23 +59,33 @@ timeline:
   - date: Dec 2023
     title: m0lecon 2023
     description: >
-      We qualified for the [m0lecon 2023 CTF final](https://ctftime.org/event/2033){:target="_blank"}.
+      We qualified for the [m0lecon 2023 CTF finals](https://ctftime.org/event/2033){:target="_blank"}.
     image: /assets/images/timeline/m0lecon-2023.jpeg
   - date: May 2024
     title: LakeCTF finalists
     description: >
-      We qualified for the [LakeCTF](https://ctftime.org/event/2246){:target="_blank"} CTF final.
+      We qualified for the [LakeCTF CTF finals](https://ctftime.org/event/2246){:target="_blank"}.
     image: /assets/images/timeline/lake-ctf-2024.jpeg
   - date: May 2024
     title: Space System Security Challenge finalists
     description: >
-      We achieved 2nd place at the [Space System Security Challenge](https://www.sssc.space/){:target="_blank"} CTF final, hosted by ESA.
+      We achieved 2nd place at the [Space System Security Challenge CTF finals](https://www.sssc.space/){:target="_blank"}, hosted by ESA.
     image: /assets/images/timeline/esa.jpeg
   - date: Sep 2024
     title: MOCA CTF 2024
     description: >
       Together with Metro Olografix we hosted the CTF of the Metro Olografix Camp 2024, bringing to Teramo teams from all around the world.
     image: /assets/images/timeline/moca-2024.jpeg
+  - date: Nov 2024
+    title: DefCamp 2024 finalists
+    description: >
+      We qualified for the [DefCamp CTF 2024 finals](https://ctftime.org/event/2480){:target="_blank"}.
+    image: /assets/images/timeline/defcamp-2024.png
+  - date: Nov 2025
+    title: DefCamp 2025 finalists
+    description: >
+      We qualified for the [DefCamp CTF 2025 finals](https://ctftime.org/event/2866){:target="_blank"}.
+    image: /assets/images/timeline/defcamp-2025.png
   - date: Sep 2026
     title: RomHack Camp CTF 2026
     description: >
