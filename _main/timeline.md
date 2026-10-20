@@ -24,7 +24,7 @@ timeline:
     title: Meta BountyCon
     description: >
       We qualified and got invited to the [Meta BountyCon](https://bountycon.io/){:target="_blank"} bug bounty event in Madrid, Spain.
-    image: /assets/images/timeline/spain.jpg
+    image: /assets/images/timeline/spain.jpeg
   - date: Aug 2022
     title: MidnightSun CTF finalists
     description: >
@@ -38,34 +38,50 @@ timeline:
     title: HackTM CTF Finals
     description: >
       We qualified for the [HackTM ctf finals](https://ctftime.org/event/1971){:target="_blank"} ctf final.
+    image: /assets/images/timeline/hacktm.png
   - date: Aug 2023
     title: DEFCON CTF Finals & HackASat winners
     description: >
       Together with **mhackeroni** team we qualified for the [DEFCON](https://www.defcon.org/){:target="_blank"} 
       ctf final and [Hack-a-Sat 4](https://www.hackasat.com/){:target="_blank"}.
       We won [Hack-a-Sat 4](https://ctftime.org/event/2083).
-    image: https://pbs.twimg.com/media/F3_mGD5W0AA49NQ?format=jpg&name=4096x4096
-
-  - date: Sep 2023
-    title: OliCyber organizers
-    description: >
-      We organized the [OliCyber](https://olicyber.it/){:target="_blank"} 
-      ctf, the first time for the University of Pisa.
+    image: /assets/images/timeline/hack-a-sat.jpeg
   - date: Oct 2023
-    title: Internet Festival CTF & High school organizers
+    title: Internet Festival CTF 2023
     description: >
-      We qualified for the [Hack.lu](https://hack.lu/){:target="_blank"} 
-      ctf final, the first time for the University of Pisa.
+      We hosted the CTF of the [Internet Festival 2023](https://ctftime.org/event/2039){:target="_blank"}, first on-site CTF in Pisa with teams from all around the world.
+    image: /assets/images/timeline/internet-festival-ctf-2023.jpeg
+  - date: Oct 2023
+    title: High School CTF Workshop Internet Festival 2023
+    description: >
+      In collaboration with Cybersecurity National Lab we hosted the [High School Workshop CTF](https://cybersecnatlab.it/gara-cybersicurezza-150-giovani-scuole-superiori-internet-festival-2023/){:target="_blank"} during the Internet Festival 2023. A CTF for the high school students as an introduction to the cybersecurity realm through the CTFs.
+    image: /assets/images/timeline/Highschools_CTF_Workshop_IF2023.webp
+  - date: Dec 2023
+    title: m0lecon 2023
+    description: >
+      We qualified for the [m0lecon 2023 ctf final](https://ctftime.org/event/2033){:target="_blank"}.
+    image: /assets/images/timeline/m0lecon-2023.jpeg
   - date: May 2024
     title: LakeCTF finalists
     description: >
-      We qualified for the [LakeCTF](https://lakectf.it/){:target="_blank"} 
-      ctf final, the first time for the University of Pisa.
+      We qualified for the [LakeCTF](https://ctftime.org/event/2246){:target="_blank"} ctf final.
+    image: /assets/images/timeline/lake-ctf-2024.jpeg
   - date: May 2024
     title: Space System Security Challenge finalists
     description: >
-      We qualified for the [Space System Security Challenge](https://www.sssc.space/){:target="_blank"} 
-      ctf final, the first time for the University of Pisa.
+      We achieved 2nd place at the [Space System Security Challenge](https://www.sssc.space/){:target="_blank"} ctf final, hosted by ESA.
+    image: /assets/images/timeline/esa.jpeg
+  - date: Sep 2024
+    title: MOCA CTF 2024
+    description: >
+      Together with Metro Olografix we hosted the CTF of the Metro Olografix Camp 2024, bringing to Teramo teams from all around the world.
+    image: /assets/images/timeline/moca-2024.jpeg
+  - date: Sep 2026
+    title: RomHack Camp CTF 2026
+    description: >
+      Together with Cyber Saiyan we hosted the CTF of the RomHack Camp 2026, bringing to Rome teams from all around the world.
+    image: /assets/images/timeline/romhack-camp-ctf-2026.jpeg
+
 ---
 
 <!-- from https://cruip.com/3-examples-of-brilliant-vertical-timelines-with-tailwind-css/ -->
