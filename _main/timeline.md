@@ -81,6 +81,11 @@ timeline:
     description: >
       Together with Cyber Saiyan we hosted the CTF of the RomHack Camp 2026, bringing to Rome teams from all around the world.
     image: /assets/images/timeline/romhack-camp-ctf-2026.jpeg
+  - date: Sep 2026
+    title: Sgabeo night at RomHack Camp CTF 2026
+    description: >
+      Always at RomHack Camp we hosted the Sgabeo night to let the whole camp enjoy some nice sgabeo in the fibonhack community area.
+    image: /assets/images/timeline/romhack-camp-ctf-2026-sgabeo.jpeg
 
 ---
 
