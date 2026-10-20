@@ -2,79 +2,80 @@
 layout: page
 title: timeline
 
-# in the description you can use markdown, `|` ignores the newline, `>` keeps the newlines in the output
+# Descriptions support Markdown: `|` preserves line breaks; `>` folds line breaks into spaces.
 timeline:
   - date: Jun 2019
-    title: Team Formation
+    title: Team formation
     description: >
-      For the first time, the University of Pisa participates in **CyberChallenge.IT**.
+      For the first time, the University of Pisa participated in **CyberChallenge.IT**.
       The team was born after the university earned [third place](https://cyberchallenge.it/attack-defense/2019){:target="_blank"}
       in the national competition.
   - date: Jun 2020
     title: CyberChallenge.IT winners
     description: |
-      We won the [CyberChallenge.IT](https://cyberchallenge.it/attack-defense/2020){:target="_blank"}!
-      The team grows :super:.
+      We won [CyberChallenge.IT](https://cyberchallenge.it/attack-defense/2020){:target="_blank"}!
+      The team grew.
   - date: Dec 2021
-    title: Our first CTF finals on site
+    title: Our first on-site CTF finals
     description: >
-      We qualified for the [m0lecon 2021 CTF finals](https://ctftime.org/event/1456/){:target="_blank"}, the CTF and conference organized by the team from [PoliTo](pwnthem0le.polito.it){:target="_blank"}.
-      We placed 4th and first among the Italian teams.
+      We qualified for the [m0lecon 2021 CTF finals](https://ctftime.org/event/1456/){:target="_blank"}, the CTF and conference organized by the team from [PoliTo](https://pwnthem0le.polito.it){:target="_blank"}.
+      We placed 4th overall and first among the Italian teams.
   - date: May 2022
     title: Meta BountyCon
     description: >
-      We qualified and got invited to the [Meta BountyCon](https://bountycon.io/){:target="_blank"} bug bounty event in Madrid, Spain.
+      We qualified and were invited to the [Meta BountyCon](https://bountycon.io/){:target="_blank"} bug bounty event in Madrid, Spain.
     image: /assets/images/timeline/spain.jpeg
   - date: Aug 2022
     title: MidnightSun CTF finalists
     description: >
-      Together with **pwnthem0le** team from [PoliTo](pwnthem0le.polito.it) we qualified for [MidnightSun CTF finals 2022](https://ctftime.org/event/1475/) as **AngryGabibbo** team.
+      Together with the **pwnthem0le** team from [PoliTo](https://pwnthem0le.polito.it){:target="_blank"}, we qualified for the [MidnightSun CTF 2022 finals](https://ctftime.org/event/1475/){:target="_blank"} as **AngryGabibbo**.
   - date: Dec 2022
     title: m0lecon 2022 winners
     description: >
       We won the [m0lecon 2022 CTF finals](https://ctftime.org/event/1626){:target="_blank"}.
     image: /assets/images/timeline/m0lecon-2022.jpeg
   - date: May 2023
-    title: HackTM CTF Finals
+    title: HackTM CTF finalists
     description: >
       We qualified for the [HackTM CTF finals](https://ctftime.org/event/1971){:target="_blank"}.
     image: /assets/images/timeline/hacktm.png
   - date: Aug 2023
-    title: DEFCON CTF Finals & HackASat winners
+    title: DEF CON CTF finalists and Hack-a-Sat winners
     description: >
-      Together with **mhackeroni** team we qualified for the [DEFCON](https://www.defcon.org/){:target="_blank"} 
+      Together with the **mhackeroni** team, we qualified for the [DEFCON](https://www.defcon.org/){:target="_blank"}
       CTF finals and [Hack-a-Sat 4 finals](https://www.hackasat.com/){:target="_blank"}.
-      We won [Hack-a-Sat 4](https://ctftime.org/event/2083).
+      We won [Hack-a-Sat 4](https://ctftime.org/event/2083){:target="_blank"}.
     image: /assets/images/timeline/hack-a-sat.jpeg
   - date: Oct 2023
     title: Internet Festival CTF 2023
     description: >
-      We hosted the CTF of the [Internet Festival 2023](https://ctftime.org/event/2039){:target="_blank"}, first on-site CTF in Pisa with teams from all around the world.
+      We hosted the [Internet Festival 2023 CTF](https://ctftime.org/event/2039){:target="_blank"}, the first on-site CTF in Pisa, with teams from around the world.
     image: /assets/images/timeline/internet-festival-ctf-2023.jpeg
   - date: Oct 2023
-    title: High School CTF Workshop Internet Festival 2023
+    title: High school CTF workshop at Internet Festival 2023
     description: >
-      In collaboration with Cybersecurity National Lab we hosted the [High School Workshop CTF](https://cybersecnatlab.it/gara-cybersicurezza-150-giovani-scuole-superiori-internet-festival-2023/){:target="_blank"} during the Internet Festival 2023. A CTF for the high school students as an introduction to the cybersecurity realm through the CTFs.
+      In collaboration with the Cybersecurity National Lab, we hosted the [high school CTF workshop](https://cybersecnatlab.it/gara-cybersicurezza-150-giovani-scuole-superiori-internet-festival-2023/){:target="_blank"} during Internet Festival 2023.
+      The workshop introduced high school students to cybersecurity through a CTF.
     image: /assets/images/timeline/Highschools_CTF_Workshop_IF2023.webp
   - date: Dec 2023
-    title: m0lecon 2023
+    title: m0lecon 2023 finalists
     description: >
       We qualified for the [m0lecon 2023 CTF finals](https://ctftime.org/event/2033){:target="_blank"}.
     image: /assets/images/timeline/m0lecon-2023.jpeg
   - date: May 2024
     title: LakeCTF finalists
     description: >
-      We qualified for the [LakeCTF CTF finals](https://ctftime.org/event/2246){:target="_blank"}.
+      We qualified for the [LakeCTF finals](https://ctftime.org/event/2246){:target="_blank"}.
     image: /assets/images/timeline/lake-ctf-2024.jpeg
   - date: May 2024
     title: Space System Security Challenge finalists
     description: >
-      We achieved 2nd place at the [Space System Security Challenge CTF finals](https://www.sssc.space/){:target="_blank"}, hosted by ESA.
+      We placed 2nd at the [Space System Security Challenge CTF finals](https://www.sssc.space/){:target="_blank"}, hosted by ESA.
     image: /assets/images/timeline/esa.jpeg
   - date: Sep 2024
     title: MOCA CTF 2024
     description: >
-      Together with Metro Olografix we hosted the CTF of the Metro Olografix Camp 2024, bringing to Teramo teams from all around the world.
+      Together with Metro Olografix, we hosted the Metro Olografix Camp 2024 CTF, bringing teams from around the world to Teramo.
     image: /assets/images/timeline/moca-2024.jpeg
   - date: Nov 2024
     title: DefCamp 2024 finalists
@@ -89,12 +90,12 @@ timeline:
   - date: Sep 2026
     title: RomHack Camp CTF 2026
     description: >
-      Together with Cyber Saiyan we hosted the CTF of the RomHack Camp 2026, bringing to Rome teams from all around the world.
+      Together with Cyber Saiyan, we hosted the RomHack Camp 2026 CTF, bringing teams from around the world to Rome.
     image: /assets/images/timeline/romhack-camp-ctf-2026.jpeg
   - date: Sep 2026
-    title: Sgabeo night at RomHack Camp CTF 2026
+    title: Sgabeo night at RomHack Camp 2026
     description: >
-      Always at RomHack Camp we hosted the Sgabeo night to let the whole camp enjoy some nice sgabeo in the fibonhack community area.
+      At RomHack Camp, we also hosted a sgabeo night so everyone at the camp could enjoy some sgabeo in the fibonhack community area.
     image: /assets/images/timeline/romhack-camp-ctf-2026-sgabeo.jpeg
 
 ---
